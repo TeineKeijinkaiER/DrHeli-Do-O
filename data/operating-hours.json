@@ -1,0 +1,11 @@
+[
+  {"periodLabel":"① 4/1〜4/15","startDate":"04-01","endDate":"04-15","startTime":"08:30","endTime":"17:30","requiresConfirmation":false,"sourceUrl":"https://www.notion.so/9763ed89e60a4512b4b322fcc9dda935"},
+  {"periodLabel":"② 4/16〜8/25","startDate":"04-16","endDate":"08-25","startTime":"08:30","endTime":"18:00","requiresConfirmation":false,"sourceUrl":"https://www.notion.so/9763ed89e60a4512b4b322fcc9dda935"},
+  {"periodLabel":"③ 8/26〜9/10","startDate":"08-26","endDate":"09-10","startTime":"08:30","endTime":"17:30","requiresConfirmation":false,"sourceUrl":"https://www.notion.so/9763ed89e60a4512b4b322fcc9dda935"},
+  {"periodLabel":"④ 9/11〜9/30","startDate":"09-11","endDate":"09-30","startTime":"08:30","endTime":"17:00","requiresConfirmation":false,"sourceUrl":"https://www.notion.so/9763ed89e60a4512b4b322fcc9dda935"},
+  {"periodLabel":"⑤ 10/1〜10/15","startDate":"10-01","endDate":"10-15","startTime":"08:30","endTime":"16:30","requiresConfirmation":false,"sourceUrl":"https://www.notion.so/9763ed89e60a4512b4b322fcc9dda935"},
+  {"periodLabel":"⑥ 10/16〜1/31","startDate":"10-16","endDate":"01-31","startTime":"08:30","endTime":"16:00","requiresConfirmation":false,"sourceUrl":"https://www.notion.so/9763ed89e60a4512b4b322fcc9dda935"},
+  {"periodLabel":"⑦ 2/1〜2/28","startDate":"02-01","endDate":"02-28","startTime":"08:30","endTime":"16:30","requiresConfirmation":false,"sourceUrl":"https://www.notion.so/9763ed89e60a4512b4b322fcc9dda935"},
+  {"periodLabel":"⑧ 3/1〜3/20","startDate":"03-01","endDate":"03-20","startTime":"08:30","endTime":"17:00","requiresConfirmation":false,"sourceUrl":"https://www.notion.so/9763ed89e60a4512b4b322fcc9dda935"},
+  {"periodLabel":"⑨ 3/21〜3/31","startDate":"03-21","endDate":"03-31","startTime":"08:30","endTime":"17:30","requiresConfirmation":false,"sourceUrl":"https://www.notion.so/9763ed89e60a4512b4b322fcc9dda935"}
+]

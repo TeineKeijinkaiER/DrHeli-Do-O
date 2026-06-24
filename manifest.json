@@ -1,0 +1,17 @@
+{
+  "name": "道央ドクターヘリ 判断支援",
+  "short_name": "DO-O Heli",
+  "description": "道央ドクターヘリ 搭乗スタッフ向け 現場判断支援アプリ",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#080f1f",
+  "theme_color": "#0a1224",
+  "lang": "ja",
+  "icons": [
+    { "src": "image/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "image/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "image/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

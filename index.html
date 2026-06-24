@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0a1224" />
+<title>道央ドクターヘリ 判断支援</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="image/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="DO-O Heli" />
+<link rel="preconnect" href="https://unpkg.com" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="appbar" id="appbar">
+  <button class="appbar__back" id="btnBack" aria-label="戻る" hidden>‹</button>
+  <div class="appbar__brand">
+    <img src="image/Heriteinu.png" alt="ていぬくん" class="appbar__logo" />
+    <div class="appbar__titles">
+      <span class="appbar__title">道央ドクターヘリ</span>
+      <span class="appbar__sub" id="appbarSub">判断支援アプリ</span>
+    </div>
+  </div>
+  <div class="appbar__status" id="opStatus" title="運航時間">—</div>
+</header>
+
+<main id="app">
+  <section class="screen screen--home is-active" id="screen-home">
+    <div class="hero">
+      <div class="hero__glow"></div>
+      <img src="image/Heli.png" alt="ドクターヘリ" class="hero__heli" />
+      <p class="hero__eyebrow">DO-O DOCTOR-HELI</p>
+    </div>
+    <nav class="modes" id="modeGrid" aria-label="モード選択"></nav>
+    <p class="home__foot">基地病院：手稲渓仁会病院 ／ 要請圏：概ね100km圏内</p>
+  </section>
+
+  <section class="screen screen--map" id="screen-map">
+    <div id="map" class="map"></div>
+    <div class="map__legend" id="mapLegend"></div>
+    <div class="sheet" id="sheet" aria-hidden="true">
+      <div class="sheet__grip"></div>
+      <div class="sheet__body" id="sheetBody"></div>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-beginner"><div class="modewrap" id="beginner-root"></div></section>
+  <section class="screen" id="screen-logi"><div class="modewrap" id="logi-root"></div></section>
+  <section class="screen" id="screen-quiz"><div class="modewrap" id="quiz-root"></div></section>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/app.js"></script>
+<script src="js/map.js"></script>
+<script src="js/modes.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>

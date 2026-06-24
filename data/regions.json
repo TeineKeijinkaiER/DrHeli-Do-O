@@ -1,0 +1,1805 @@
+[
+  {
+    "id": "region-ishikari-1",
+    "municipality": "江別市",
+    "subpref": "ishikari",
+    "fireDepartment": "",
+    "lat": 43.102689,
+    "lng": 141.521589,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "北海道消防学校",
+        "lat": 43.102689,
+        "lng": 141.521589,
+        "heliFlightMin": 11,
+        "heliHelipadMin": 6,
+        "rpCount": 29,
+        "groundToBaseMin": 35,
+        "hospitalTimes": [
+          {
+            "name": "札幌東徳洲会病院",
+            "min": 20
+          },
+          {
+            "name": "札幌徳洲会病院",
+            "min": 22
+          },
+          {
+            "name": "北海道大学病院",
+            "min": 30
+          }
+        ],
+        "heliDistanceKm": 22
+      }
+    ]
+  },
+  {
+    "id": "region-ishikari-2",
+    "municipality": "北広島市",
+    "subpref": "ishikari",
+    "fireDepartment": "",
+    "lat": 42.996385,
+    "lng": 141.584642,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "北広島地区河川防災ステーション",
+        "lat": 42.996385,
+        "lng": 141.584642,
+        "heliFlightMin": 13,
+        "heliHelipadMin": 6,
+        "rpCount": 16,
+        "groundToBaseMin": 50,
+        "hospitalTimes": [
+          {
+            "name": "札幌東徳洲会病院",
+            "min": 35
+          },
+          {
+            "name": "札幌徳洲会病院",
+            "min": 22
+          },
+          {
+            "name": "北海道大学病院",
+            "min": 45
+          }
+        ],
+        "heliDistanceKm": 30
+      }
+    ]
+  },
+  {
+    "id": "region-ishikari-3",
+    "municipality": "恵庭市",
+    "subpref": "ishikari",
+    "fireDepartment": "",
+    "lat": 42.8299,
+    "lng": 141.628083,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "陸上自衛隊北恵庭駐屯地",
+        "lat": 42.8299,
+        "lng": 141.628083,
+        "heliFlightMin": 14,
+        "heliHelipadMin": 6,
+        "rpCount": 16,
+        "groundToBaseMin": 55,
+        "hospitalTimes": [
+          {
+            "name": "札幌東徳洲会病院",
+            "min": 45
+          },
+          {
+            "name": "札幌徳洲会病院",
+            "min": 35
+          },
+          {
+            "name": "北海道大学病院",
+            "min": 55
+          }
+        ],
+        "heliDistanceKm": 44
+      }
+    ]
+  },
+  {
+    "id": "region-ishikari-4",
+    "municipality": "千歳市",
+    "subpref": "ishikari",
+    "fireDepartment": "",
+    "lat": 42.843677,
+    "lng": 141.639824,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "千歳市民病院",
+        "lat": 42.843677,
+        "lng": 141.639824,
+        "heliFlightMin": 15,
+        "heliHelipadMin": 6,
+        "rpCount": 12,
+        "groundToBaseMin": 55,
+        "hospitalTimes": [
+          {
+            "name": "札幌東徳洲会病院",
+            "min": 45
+          },
+          {
+            "name": "札幌徳洲会病院",
+            "min": 35
+          },
+          {
+            "name": "北海道大学病院",
+            "min": 55
+          }
+        ],
+        "heliDistanceKm": 44
+      }
+    ]
+  },
+  {
+    "id": "region-ishikari-5",
+    "municipality": "石狩市",
+    "subpref": "ishikari",
+    "fireDepartment": "石狩市消防本部",
+    "lat": 43.1713,
+    "lng": 141.3155,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "石狩湾新港支署",
+        "lat": 43.1713,
+        "lng": 141.3155,
+        "heliFlightMin": 6,
+        "heliHelipadMin": 6,
+        "rpCount": 6,
+        "groundToBaseMin": 35,
+        "hospitalTimes": [
+          {
+            "name": "札幌東徳洲会病院",
+            "min": 35
+          }
+        ],
+        "heliDistanceKm": 8
+      },
+      {
+        "rp": "浜益コミュニティーセンターきらり",
+        "lat": 43.601055,
+        "lng": 141.383149,
+        "heliFlightMin": 18,
+        "heliHelipadMin": 6,
+        "rpCount": 8,
+        "groundToBaseMin": 85,
+        "hospitalTimes": [],
+        "heliDistanceKm": 55
+      },
+      {
+        "rp": "望来コミュニセンターみなくる",
+        "lat": 43.317769654044994,
+        "lng": 141.41826171556238,
+        "heliFlightMin": 9,
+        "heliHelipadMin": 6,
+        "rpCount": 12,
+        "groundToBaseMin": 45,
+        "hospitalTimes": [],
+        "heliDistanceKm": 27
+      },
+      {
+        "rp": "厚田中学校",
+        "lat": 43.402128938321205,
+        "lng": 141.43221460132258,
+        "heliFlightMin": 12,
+        "heliHelipadMin": 6,
+        "rpCount": 3,
+        "groundToBaseMin": 55,
+        "hospitalTimes": [],
+        "heliDistanceKm": 35
+      }
+    ]
+  },
+  {
+    "id": "region-ishikari-6",
+    "municipality": "当別町",
+    "subpref": "ishikari",
+    "fireDepartment": "",
+    "lat": 43.2201,
+    "lng": 141.5087,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "当別消防署",
+        "lat": 43.2201,
+        "lng": 141.5087,
+        "heliFlightMin": 12,
+        "heliHelipadMin": 6,
+        "rpCount": 26,
+        "groundToBaseMin": 50,
+        "hospitalTimes": [
+          {
+            "name": "札幌東徳洲会病院",
+            "min": 35
+          },
+          {
+            "name": "勤医協中央病院",
+            "min": 35
+          },
+          {
+            "name": "北海道大学病院",
+            "min": 50
+          }
+        ],
+        "heliDistanceKm": 24
+      }
+    ]
+  },
+  {
+    "id": "region-ishikari-7",
+    "municipality": "新篠津村",
+    "subpref": "ishikari",
+    "fireDepartment": "",
+    "lat": 43.223636051814275,
+    "lng": 141.64970922887173,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "新篠津運動公園第2サッカー場",
+        "lat": 43.223636051814275,
+        "lng": 141.64970922887173,
+        "heliFlightMin": 14,
+        "heliHelipadMin": 6,
+        "rpCount": 3,
+        "groundToBaseMin": 55,
+        "hospitalTimes": [
+          {
+            "name": "札幌東徳洲会病院",
+            "min": 45
+          }
+        ],
+        "heliDistanceKm": 35
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-8",
+    "municipality": "小樽市",
+    "subpref": "shiribeshi",
+    "fireDepartment": "小樽市消防本部",
+    "lat": 43.185666976444104,
+    "lng": 141.00747511048297,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "小樽市立病院",
+        "lat": 43.185666976444104,
+        "lng": 141.00747511048297,
+        "heliFlightMin": 8,
+        "heliHelipadMin": 6,
+        "rpCount": 4,
+        "groundToBaseMin": 35,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 0
+          }
+        ],
+        "heliDistanceKm": 21
+      },
+      {
+        "rp": "朝里川温泉スキー場",
+        "lat": 43.14305437036121,
+        "lng": 141.03696305852927,
+        "heliFlightMin": 7,
+        "heliHelipadMin": 6,
+        "rpCount": 2,
+        "groundToBaseMin": 26,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 14
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-9",
+    "municipality": "余市町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 43.171291467501156,
+    "lng": 140.80745330996683,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "余市農道空港",
+        "lat": 43.171291467501156,
+        "lng": 140.80745330996683,
+        "heliFlightMin": 15,
+        "heliHelipadMin": 6,
+        "rpCount": 8,
+        "groundToBaseMin": 45,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 30
+          },
+          {
+            "name": "余市協会病院",
+            "min": 6
+          }
+        ],
+        "heliDistanceKm": 36
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-10",
+    "municipality": "仁木町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 43.1540304373008,
+    "lng": 140.7640617836927,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "仁木支署",
+        "lat": 43.1540304373008,
+        "lng": 140.7640617836927,
+        "heliFlightMin": 15,
+        "heliHelipadMin": 6,
+        "rpCount": 46,
+        "groundToBaseMin": 50,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 35
+          },
+          {
+            "name": "余市協会病院",
+            "min": 12
+          }
+        ],
+        "heliDistanceKm": 40
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-11",
+    "municipality": "赤井川村",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 43.0835,
+    "lng": 140.8136,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "赤井川支署",
+        "lat": 43.0835,
+        "lng": 140.8136,
+        "heliFlightMin": 14,
+        "heliHelipadMin": 6,
+        "rpCount": 7,
+        "groundToBaseMin": 55,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 40
+          },
+          {
+            "name": "余市協会病院",
+            "min": 18
+          }
+        ],
+        "heliDistanceKm": 36
+      },
+      {
+        "rp": "キロロ",
+        "lat": 43.068938386620566,
+        "lng": 140.98921045812662,
+        "heliFlightMin": 10,
+        "heliHelipadMin": 6,
+        "rpCount": 10,
+        "groundToBaseMin": 55,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 35
+          }
+        ],
+        "heliDistanceKm": 22
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-12",
+    "municipality": "古平町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 43.25988503313508,
+    "lng": 140.6396314156575,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "古平支署",
+        "lat": 43.25988503313508,
+        "lng": 140.6396314156575,
+        "heliFlightMin": 18,
+        "heliHelipadMin": 6,
+        "rpCount": 17,
+        "groundToBaseMin": 70,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 50
+          },
+          {
+            "name": "余市協会病院",
+            "min": 26
+          }
+        ],
+        "heliDistanceKm": 52
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-13",
+    "municipality": "積丹町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 43.291020505656995,
+    "lng": 140.59346634852344,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "美国中学校",
+        "lat": 43.291020505656995,
+        "lng": 140.59346634852344,
+        "heliFlightMin": 19,
+        "heliHelipadMin": 6,
+        "rpCount": 9,
+        "groundToBaseMin": 75,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 60
+          },
+          {
+            "name": "余市協会病院",
+            "min": 35
+          }
+        ],
+        "heliDistanceKm": 57
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-14",
+    "municipality": "倶知安町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 42.90525684574407,
+    "lng": 140.75485648938226,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "倶知安中央公園",
+        "lat": 42.90525684574407,
+        "lng": 140.75485648938226,
+        "heliFlightMin": 16,
+        "heliHelipadMin": 6,
+        "rpCount": 77,
+        "groundToBaseMin": 90,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 70
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 4
+          }
+        ],
+        "heliDistanceKm": 46
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-15",
+    "municipality": "ニセコ町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 42.83223374339047,
+    "lng": 140.672033885647,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "ニセコヘリポート",
+        "lat": 42.83223374339047,
+        "lng": 140.672033885647,
+        "heliFlightMin": 19,
+        "heliHelipadMin": 6,
+        "rpCount": 9,
+        "groundToBaseMin": 110,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 90
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 24
+          }
+        ],
+        "heliDistanceKm": 56
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-16",
+    "municipality": "蘭越町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 42.808835415661285,
+    "lng": 140.52532272685065,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "蘭越山村広場",
+        "lat": 42.808835415661285,
+        "lng": 140.52532272685065,
+        "heliFlightMin": 21,
+        "heliHelipadMin": 6,
+        "rpCount": 16,
+        "groundToBaseMin": 120,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 100
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 40
+          }
+        ],
+        "heliDistanceKm": 68
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-17",
+    "municipality": "共和町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 42.98354024296822,
+    "lng": 140.6119247074209,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "共和町憩いの広場 (総合公園)",
+        "lat": 42.98354024296822,
+        "lng": 140.6119247074209,
+        "heliFlightMin": 18,
+        "heliHelipadMin": 6,
+        "rpCount": 15,
+        "groundToBaseMin": 75,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 60
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 22
+          },
+          {
+            "name": "岩内協会病院",
+            "min": 14
+          }
+        ],
+        "heliDistanceKm": 54
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-18",
+    "municipality": "岩内町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 42.99761516212598,
+    "lng": 140.52143553989393,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "岩内新港東埠頭",
+        "lat": 42.99761516212598,
+        "lng": 140.52143553989393,
+        "heliFlightMin": 20,
+        "heliHelipadMin": 6,
+        "rpCount": 37,
+        "groundToBaseMin": 80,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 65
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 30
+          },
+          {
+            "name": "岩内協会病院",
+            "min": 7
+          }
+        ],
+        "heliDistanceKm": 61
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-19",
+    "municipality": "泊村",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 43.057317868023745,
+    "lng": 140.49854559355745,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "泊村公民館",
+        "lat": 43.057317868023745,
+        "lng": 140.49854559355745,
+        "heliFlightMin": 20,
+        "heliHelipadMin": 6,
+        "rpCount": 14,
+        "groundToBaseMin": 85,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 70
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 35
+          },
+          {
+            "name": "岩内協会病院",
+            "min": 18
+          }
+        ],
+        "heliDistanceKm": 61
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-20",
+    "municipality": "神恵内村",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 43.145409898445656,
+    "lng": 140.42436446758913,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "神恵内村総合グラウンド",
+        "lat": 43.145409898445656,
+        "lng": 140.42436446758913,
+        "heliFlightMin": 21,
+        "heliHelipadMin": 6,
+        "rpCount": 2,
+        "groundToBaseMin": 110,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 85
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 50
+          },
+          {
+            "name": "岩内協会病院",
+            "min": 35
+          }
+        ],
+        "heliDistanceKm": 67
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-21",
+    "municipality": "寿都町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 42.790850755061406,
+    "lng": 140.22909816977815,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "寿都町役場",
+        "lat": 42.790850755061406,
+        "lng": 140.22909816977815,
+        "heliFlightMin": 26,
+        "heliHelipadMin": 6,
+        "rpCount": 28,
+        "groundToBaseMin": 140,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 120
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 75
+          },
+          {
+            "name": "岩内協会病院",
+            "min": 50
+          }
+        ],
+        "heliDistanceKm": 90
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-22",
+    "municipality": "黒松内町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 42.68247177656002,
+    "lng": 140.302909361635,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "黒松内防災へリポート",
+        "lat": 42.68247177656002,
+        "lng": 140.302909361635,
+        "heliFlightMin": 26,
+        "heliHelipadMin": 6,
+        "rpCount": 3,
+        "groundToBaseMin": 140,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 120
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 65
+          },
+          {
+            "name": "岩内協会病院",
+            "min": 50
+          }
+        ],
+        "heliDistanceKm": 91
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-23",
+    "municipality": "島牧村",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 42.68613500579408,
+    "lng": 140.01248561044144,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "島牧村千走地区山村広場",
+        "lat": 42.68613500579408,
+        "lng": 140.01248561044144,
+        "heliFlightMin": 29,
+        "heliHelipadMin": 6,
+        "rpCount": 2,
+        "groundToBaseMin": 170,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 160
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 110
+          },
+          {
+            "name": "岩内協会病院",
+            "min": 80
+          }
+        ],
+        "heliDistanceKm": 111
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-24",
+    "municipality": "京極町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 42.85491131352583,
+    "lng": 140.88413397841305,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "リフレッシュパーク",
+        "lat": 42.85491131352583,
+        "lng": 140.88413397841305,
+        "heliFlightMin": 15,
+        "heliHelipadMin": 6,
+        "rpCount": 8,
+        "groundToBaseMin": 100,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 85
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 22
+          }
+        ],
+        "heliDistanceKm": 41
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-25",
+    "municipality": "喜茂別町",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 42.8568047498227,
+    "lng": 141.0965464376804,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "中山峠（喜茂別）",
+        "lat": 42.8568047498227,
+        "lng": 141.0965464376804,
+        "heliFlightMin": 16,
+        "heliHelipadMin": 6,
+        "rpCount": 7,
+        "groundToBaseMin": 85,
+        "hospitalTimes": [
+          {
+            "name": "札幌医科大学",
+            "min": 60
+          },
+          {
+            "name": "中村記念南病院",
+            "min": 45
+          },
+          {
+            "name": "自衛隊札幌病院",
+            "min": 50
+          }
+        ],
+        "heliDistanceKm": 31
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-26",
+    "municipality": "留寿都村",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 42.750190876034274,
+    "lng": 140.90179767282896,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "加森観光へリポート",
+        "lat": 42.750190876034274,
+        "lng": 140.90179767282896,
+        "heliFlightMin": 18,
+        "heliHelipadMin": 6,
+        "rpCount": 4,
+        "groundToBaseMin": 110,
+        "hospitalTimes": [
+          {
+            "name": "小樽市立病院",
+            "min": 100
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 40
+          }
+        ],
+        "heliDistanceKm": 49
+      }
+    ]
+  },
+  {
+    "id": "region-shiribeshi-27",
+    "municipality": "真狩村",
+    "subpref": "shiribeshi",
+    "fireDepartment": "",
+    "lat": 42.76354807537136,
+    "lng": 140.78973120944624,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "真狩村除雪センター",
+        "lat": 42.76354807537136,
+        "lng": 140.78973120944624,
+        "heliFlightMin": 18,
+        "heliHelipadMin": 6,
+        "rpCount": 11,
+        "groundToBaseMin": 120,
+        "hospitalTimes": [
+          {
+            "name": "札幌医科大学",
+            "min": 100
+          },
+          {
+            "name": "倶知安厚生病院",
+            "min": 28
+          }
+        ],
+        "heliDistanceKm": 54
+      }
+    ]
+  },
+  {
+    "id": "region-iburi-28",
+    "municipality": "室蘭市",
+    "subpref": "iburi",
+    "fireDepartment": "室蘭市消防本部",
+    "lat": 42.35361061144519,
+    "lng": 141.0247634267625,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "中島公園野球場",
+        "lat": 42.35361061144519,
+        "lng": 141.0247634267625,
+        "heliFlightMin": 26,
+        "heliHelipadMin": 6,
+        "rpCount": 3,
+        "groundToBaseMin": 100,
+        "hospitalTimes": [
+          {
+            "name": "製鉄記念室蘭病院",
+            "min": 4
+          },
+          {
+            "name": "日鋼記念病院",
+            "min": 14
+          }
+        ],
+        "heliDistanceKm": 86
+      }
+    ]
+  },
+  {
+    "id": "region-iburi-29",
+    "municipality": "登別市",
+    "subpref": "iburi",
+    "fireDepartment": "",
+    "lat": 42.41250359230969,
+    "lng": 141.10680001513256,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "登別市街",
+        "lat": 42.41250359230969,
+        "lng": 141.10680001513256,
+        "heliFlightMin": 23,
+        "heliHelipadMin": 6,
+        "rpCount": null,
+        "groundToBaseMin": 100,
+        "hospitalTimes": [
+          {
+            "name": "製鉄記念室蘭病院",
+            "min": 24
+          },
+          {
+            "name": "日鋼記念病院",
+            "min": 26
+          }
+        ],
+        "heliDistanceKm": 79
+      }
+    ]
+  },
+  {
+    "id": "region-iburi-30",
+    "municipality": "伊達市",
+    "subpref": "iburi",
+    "fireDepartment": "",
+    "lat": 42.50899468602918,
+    "lng": 140.86193544376266,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "上長和駐車公園",
+        "lat": 42.50899468602918,
+        "lng": 140.86193544376266,
+        "heliFlightMin": 23,
+        "heliHelipadMin": 6,
+        "rpCount": 3,
+        "groundToBaseMin": 120,
+        "hospitalTimes": [
+          {
+            "name": "製鉄記念室蘭病院",
+            "min": 35
+          },
+          {
+            "name": "日鋼記念病院",
+            "min": 35
+          },
+          {
+            "name": "伊達赤十字病院",
+            "min": 8
+          }
+        ],
+        "heliDistanceKm": 74
+      },
+      {
+        "rp": "大滝総合運動公園",
+        "lat": 42.64839251987832,
+        "lng": 141.06255838240082,
+        "heliFlightMin": 17,
+        "heliHelipadMin": 6,
+        "rpCount": 3,
+        "groundToBaseMin": 110,
+        "hospitalTimes": [
+          {
+            "name": "製鉄記念室蘭病院",
+            "min": 60
+          },
+          {
+            "name": "日鋼記念病院",
+            "min": 60
+          },
+          {
+            "name": "伊達赤十字病院",
+            "min": 35
+          }
+        ],
+        "heliDistanceKm": 54
+      }
+    ]
+  },
+  {
+    "id": "region-iburi-31",
+    "municipality": "洞爺湖町",
+    "subpref": "iburi",
+    "fireDepartment": "",
+    "lat": 42.666048353646474,
+    "lng": 140.83681003961667,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "望羊台広場",
+        "lat": 42.666048353646474,
+        "lng": 140.83681003961667,
+        "heliFlightMin": 22,
+        "heliHelipadMin": 6,
+        "rpCount": 3,
+        "groundToBaseMin": 130,
+        "hospitalTimes": [
+          {
+            "name": "製鉄記念室蘭病院",
+            "min": 55
+          },
+          {
+            "name": "日鋼記念病院",
+            "min": 55
+          },
+          {
+            "name": "伊達赤十字病院",
+            "min": 35
+          }
+        ],
+        "heliDistanceKm": 60
+      }
+    ]
+  },
+  {
+    "id": "region-iburi-32",
+    "municipality": "壮瞥町",
+    "subpref": "iburi",
+    "fireDepartment": "",
+    "lat": 42.55596346144265,
+    "lng": 140.88361246840162,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "壮瞥町総合グラウンド",
+        "lat": 42.55596346144265,
+        "lng": 140.88361246840162,
+        "heliFlightMin": 21,
+        "heliHelipadMin": 6,
+        "rpCount": 2,
+        "groundToBaseMin": 130,
+        "hospitalTimes": [
+          {
+            "name": "製鉄記念室蘭病院",
+            "min": 40
+          },
+          {
+            "name": "日鋼記念病院",
+            "min": 45
+          },
+          {
+            "name": "伊達赤十字病院",
+            "min": 16
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "region-iburi-33",
+    "municipality": "白老町",
+    "subpref": "iburi",
+    "fireDepartment": "",
+    "lat": 42.52666255705174,
+    "lng": 141.32010709827415,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "白老町消防本部",
+        "lat": 42.52666255705174,
+        "lng": 141.32010709827415,
+        "heliFlightMin": 20,
+        "heliHelipadMin": 6,
+        "rpCount": 5,
+        "groundToBaseMin": 80,
+        "hospitalTimes": [
+          {
+            "name": "苫小牧市立病院",
+            "min": 30
+          },
+          {
+            "name": "王子総合病院",
+            "min": 35
+          },
+          {
+            "name": "製鉄記念室蘭病院",
+            "min": 50
+          }
+        ],
+        "heliDistanceKm": 65
+      }
+    ]
+  },
+  {
+    "id": "region-iburi-34",
+    "municipality": "苫小牧市",
+    "subpref": "iburi",
+    "fireDepartment": "",
+    "lat": 42.669897813573485,
+    "lng": 141.65329930393108,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "苫小牧市消防本部",
+        "lat": 42.669897813573485,
+        "lng": 141.65329930393108,
+        "heliFlightMin": 19,
+        "heliHelipadMin": 6,
+        "rpCount": 23,
+        "groundToBaseMin": 65,
+        "hospitalTimes": [
+          {
+            "name": "苫小牧市立病院",
+            "min": 12
+          },
+          {
+            "name": "王子総合病院",
+            "min": 16
+          }
+        ],
+        "heliDistanceKm": 59
+      }
+    ]
+  },
+  {
+    "id": "region-iburi-35",
+    "municipality": "安平町",
+    "subpref": "iburi",
+    "fireDepartment": "",
+    "lat": 42.76988304844238,
+    "lng": 141.82472625667822,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "はだしの広場",
+        "lat": 42.76988304844238,
+        "lng": 141.82472625667822,
+        "heliFlightMin": 19,
+        "heliHelipadMin": 6,
+        "rpCount": 8,
+        "groundToBaseMin": 75,
+        "hospitalTimes": [
+          {
+            "name": "苫小牧市立病院",
+            "min": 35
+          },
+          {
+            "name": "王子総合病院",
+            "min": 35
+          }
+        ],
+        "heliDistanceKm": 60
+      }
+    ]
+  },
+  {
+    "id": "region-iburi-36",
+    "municipality": "厚真町",
+    "subpref": "iburi",
+    "fireDepartment": "",
+    "lat": 42.62397503331541,
+    "lng": 141.83971110887433,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "厚真IC旋回場",
+        "lat": 42.62397503331541,
+        "lng": 141.83971110887433,
+        "heliFlightMin": 21,
+        "heliHelipadMin": 6,
+        "rpCount": 11,
+        "groundToBaseMin": 65,
+        "hospitalTimes": [
+          {
+            "name": "苫小牧市立病院",
+            "min": 28
+          },
+          {
+            "name": "王子総合病院",
+            "min": 35
+          }
+        ],
+        "heliDistanceKm": 67
+      }
+    ]
+  },
+  {
+    "id": "region-iburi-37",
+    "municipality": "むかわ町",
+    "subpref": "iburi",
+    "fireDepartment": "",
+    "lat": 42.75802431181793,
+    "lng": 142.1388110435187,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "鵡川左岸ヘリポート",
+        "lat": 42.75802431181793,
+        "lng": 142.1388110435187,
+        "heliFlightMin": 24,
+        "heliHelipadMin": 6,
+        "rpCount": 8,
+        "groundToBaseMin": 120,
+        "hospitalTimes": [
+          {
+            "name": "苫小牧市立病院",
+            "min": 80
+          },
+          {
+            "name": "王子総合病院",
+            "min": 80
+          }
+        ],
+        "heliDistanceKm": 81
+      }
+    ]
+  },
+  {
+    "id": "region-iburi-toyoura",
+    "municipality": "豊浦町",
+    "subpref": "iburi",
+    "fireDepartment": "",
+    "lat": 42.58683746247152,
+    "lng": 140.7018576417762,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "豊浦ふるさとドーム駐車場",
+        "lat": 42.58683746247152,
+        "lng": 140.7018576417762,
+        "heliFlightMin": 22,
+        "heliHelipadMin": 6,
+        "rpCount": 1,
+        "groundToBaseMin": 140,
+        "hospitalTimes": [
+          {
+            "name": "製鉄記念室蘭病院",
+            "min": 45
+          },
+          {
+            "name": "日鋼記念病院",
+            "min": 50
+          },
+          {
+            "name": "伊達赤十字病院",
+            "min": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "region-sorachi-38",
+    "municipality": "岩見沢市",
+    "subpref": "sorachi",
+    "fireDepartment": "",
+    "lat": 43.16427378198946,
+    "lng": 141.8132156385144,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "岩見沢市野球場駐車場",
+        "lat": 43.16427378198946,
+        "lng": 141.8132156385144,
+        "heliFlightMin": 16,
+        "heliHelipadMin": 6,
+        "rpCount": 1,
+        "groundToBaseMin": 55,
+        "hospitalTimes": [
+          {
+            "name": "岩見沢市立病院",
+            "min": 14
+          },
+          {
+            "name": "札幌徳洲会病院",
+            "min": 40
+          },
+          {
+            "name": "札幌東徳洲会病院",
+            "min": 40
+          }
+        ],
+        "heliDistanceKm": 44
+      }
+    ]
+  },
+  {
+    "id": "region-sorachi-39",
+    "municipality": "美唄市",
+    "subpref": "sorachi",
+    "fireDepartment": "",
+    "lat": 43.328528899631735,
+    "lng": 141.86964605853612,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "北海道せき損センター",
+        "lat": 43.328528899631735,
+        "lng": 141.86964605853612,
+        "heliFlightMin": 18,
+        "heliHelipadMin": 6,
+        "rpCount": 26,
+        "groundToBaseMin": 60,
+        "hospitalTimes": [
+          {
+            "name": "札幌東徳洲会病院",
+            "min": 50
+          },
+          {
+            "name": "札幌徳洲会病院",
+            "min": 50
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "region-sorachi-40",
+    "municipality": "三笠市",
+    "subpref": "sorachi",
+    "fireDepartment": "",
+    "lat": 43.25221475716454,
+    "lng": 141.98049412804687,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "桂沢スキー場駐車場",
+        "lat": 43.25221475716454,
+        "lng": 141.98049412804687,
+        "heliFlightMin": 20,
+        "heliHelipadMin": 6,
+        "rpCount": 14,
+        "groundToBaseMin": 70,
+        "hospitalTimes": [
+          {
+            "name": "札幌東徳洲会病院",
+            "min": 55
+          },
+          {
+            "name": "札幌徳洲会病院",
+            "min": 55
+          },
+          {
+            "name": "三笠総合病院",
+            "min": 16
+          }
+        ],
+        "heliDistanceKm": 63
+      }
+    ]
+  },
+  {
+    "id": "region-sorachi-41",
+    "municipality": "夕張市",
+    "subpref": "sorachi",
+    "fireDepartment": "",
+    "lat": 42.99460005463742,
+    "lng": 142.00898818126362,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "夕張市消防署",
+        "lat": 42.99460005463742,
+        "lng": 142.00898818126362,
+        "heliFlightMin": 20,
+        "heliHelipadMin": 6,
+        "rpCount": 36,
+        "groundToBaseMin": 90,
+        "hospitalTimes": [
+          {
+            "name": "岩見沢市立病院",
+            "min": 55
+          },
+          {
+            "name": "夕張市立診療所",
+            "min": 10
+          }
+        ],
+        "heliDistanceKm": 63
+      }
+    ]
+  },
+  {
+    "id": "region-sorachi-42",
+    "municipality": "南幌町",
+    "subpref": "sorachi",
+    "fireDepartment": "",
+    "lat": 43.059733380515176,
+    "lng": 141.65266185838072,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "南幌町総合保安センター",
+        "lat": 43.059733380515176,
+        "lng": 141.65266185838072,
+        "heliFlightMin": 14,
+        "heliHelipadMin": 6,
+        "rpCount": 19,
+        "groundToBaseMin": 45,
+        "hospitalTimes": [
+          {
+            "name": "町立長沼病院",
+            "min": 14
+          }
+        ],
+        "heliDistanceKm": 33
+      }
+    ]
+  },
+  {
+    "id": "region-sorachi-43",
+    "municipality": "長沼町",
+    "subpref": "sorachi",
+    "fireDepartment": "",
+    "lat": 43.00342050680974,
+    "lng": 141.68732449219556,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "りふれ公園",
+        "lat": 43.00342050680974,
+        "lng": 141.68732449219556,
+        "heliFlightMin": 15,
+        "heliHelipadMin": 6,
+        "rpCount": 3,
+        "groundToBaseMin": 55,
+        "hospitalTimes": [
+          {
+            "name": "町立長沼病院",
+            "min": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "region-sorachi-44",
+    "municipality": "由仁町",
+    "subpref": "sorachi",
+    "fireDepartment": "",
+    "lat": 42.99894289968756,
+    "lng": 141.78964277878828,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "由仁消防前",
+        "lat": 42.99894289968756,
+        "lng": 141.78964277878828,
+        "heliFlightMin": 16,
+        "heliHelipadMin": 6,
+        "rpCount": 8,
+        "groundToBaseMin": 60,
+        "hospitalTimes": [
+          {
+            "name": "町立長沼病院",
+            "min": 16
+          }
+        ],
+        "heliDistanceKm": 46
+      }
+    ]
+  },
+  {
+    "id": "region-sorachi-45",
+    "municipality": "栗山町",
+    "subpref": "sorachi",
+    "fireDepartment": "",
+    "lat": 43.05560022811103,
+    "lng": 141.78073461555883,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "栗山小学校",
+        "lat": 43.05560022811103,
+        "lng": 141.78073461555883,
+        "heliFlightMin": 16,
+        "heliHelipadMin": 6,
+        "rpCount": 3,
+        "groundToBaseMin": 60,
+        "hospitalTimes": [
+          {
+            "name": "町立長沼病院",
+            "min": 18
+          }
+        ],
+        "heliDistanceKm": 44
+      }
+    ]
+  },
+  {
+    "id": "region-sorachi-46",
+    "municipality": "月形町",
+    "subpref": "sorachi",
+    "fireDepartment": "",
+    "lat": 43.33701498899916,
+    "lng": 141.66795503535923,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "月形支署",
+        "lat": 43.33701498899916,
+        "lng": 141.66795503535923,
+        "heliFlightMin": 16,
+        "heliHelipadMin": 6,
+        "rpCount": 8,
+        "groundToBaseMin": 70,
+        "hospitalTimes": [
+          {
+            "name": "岩見沢市立病院",
+            "min": 30
+          }
+        ],
+        "heliDistanceKm": 42
+      }
+    ]
+  },
+  {
+    "id": "region-hidaka-48",
+    "municipality": "日高町",
+    "subpref": "hidaka",
+    "fireDepartment": "",
+    "lat": 42.49798314326513,
+    "lng": 142.05392976835796,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "富川東防災広場",
+        "lat": 42.49798314326513,
+        "lng": 142.05392976835796,
+        "heliFlightMin": 27,
+        "heliHelipadMin": 6,
+        "rpCount": 16,
+        "groundToBaseMin": 85,
+        "hospitalTimes": [
+          {
+            "name": "王子総合病院",
+            "min": 60
+          },
+          {
+            "name": "苫小牧市立病院",
+            "min": 50
+          }
+        ],
+        "heliDistanceKm": 97
+      }
+    ]
+  },
+  {
+    "id": "region-hidaka-49",
+    "municipality": "平取町",
+    "subpref": "hidaka",
+    "fireDepartment": "",
+    "lat": 42.58699366155127,
+    "lng": 142.1397160794922,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "親水公園",
+        "lat": 42.58699366155127,
+        "lng": 142.1397160794922,
+        "heliFlightMin": 26,
+        "heliHelipadMin": 6,
+        "rpCount": 12,
+        "groundToBaseMin": 100,
+        "hospitalTimes": [
+          {
+            "name": "王子総合病院",
+            "min": 65
+          },
+          {
+            "name": "苫小牧市立病院",
+            "min": 55
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "region-hidaka-50",
+    "municipality": "新冠町",
+    "subpref": "hidaka",
+    "fireDepartment": "",
+    "lat": 42.361998454310076,
+    "lng": 142.31214685446164,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "新冠支署",
+        "lat": 42.361998454310076,
+        "lng": 142.31214685446164,
+        "heliFlightMin": 32,
+        "heliHelipadMin": 6,
+        "rpCount": 4,
+        "groundToBaseMin": 110,
+        "hospitalTimes": [
+          {
+            "name": "王子総合病院",
+            "min": 70
+          },
+          {
+            "name": "苫小牧市立病院",
+            "min": 70
+          }
+        ],
+        "heliDistanceKm": 121
+      }
+    ]
+  },
+  {
+    "id": "region-hidaka-51",
+    "municipality": "新ひだか町",
+    "subpref": "hidaka",
+    "fireDepartment": "",
+    "lat": 42.338245422981814,
+    "lng": 142.3771156893487,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "静内川右岸イベント広場",
+        "lat": 42.338245422981814,
+        "lng": 142.3771156893487,
+        "heliFlightMin": 33,
+        "heliHelipadMin": 6,
+        "rpCount": 46,
+        "groundToBaseMin": 130,
+        "hospitalTimes": [
+          {
+            "name": "町立静内病院",
+            "min": 4
+          },
+          {
+            "name": "日高徳洲会病院",
+            "min": 4
+          },
+          {
+            "name": "苫小牧市立病院",
+            "min": 85
+          }
+        ],
+        "heliDistanceKm": 125
+      }
+    ]
+  },
+  {
+    "id": "region-hidaka-52",
+    "municipality": "浦河町",
+    "subpref": "hidaka",
+    "fireDepartment": "",
+    "lat": 42.16482501795506,
+    "lng": 142.77725766185083,
+    "withinRequestArea": true,
+    "nearbyHospitals": [],
+    "points": [
+      {
+        "rp": "浦河野球場",
+        "lat": 42.16482501795506,
+        "lng": 142.77725766185083,
+        "heliFlightMin": 41,
+        "heliHelipadMin": 6,
+        "rpCount": 12,
+        "groundToBaseMin": 170,
+        "hospitalTimes": [
+          {
+            "name": "浦河町立病院",
+            "min": 5
+          },
+          {
+            "name": "苫小牧市立病院",
+            "min": 140
+          },
+          {
+            "name": "王子総合病院",
+            "min": 140
+          }
+        ],
+        "heliDistanceKm": 163
+      }
+    ]
+  }
+]
