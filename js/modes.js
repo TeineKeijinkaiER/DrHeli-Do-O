@@ -71,7 +71,7 @@ const Modes = (() => {
 
   /* ---------- ロジスティック ---------- */
   function rLogi(){
-    const d=DATA.logi||{bags:[]};
+    const d=DATA[FILES.logi]||{bags:[]};
     const meta=(d.meta||[]).map(m=>`<label class="lmeta"><span>${esc(m)}</span><input type="text"></label>`).join('');
     root('logi').innerHTML=`<div class="mode-hd"><h2>ロジスティック</h2><p>${esc(d.title||'バッグ別の物品。階層ごとに読み上げできます')}</p></div>
       ${banner('編集: data/logistics.json（表示用フロント。構造化バックエンドは別途）')}
