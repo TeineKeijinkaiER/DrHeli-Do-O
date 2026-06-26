@@ -110,11 +110,16 @@ const Modes = (() => {
       const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='物品点検.csv';a.click();msg('CSVを保存しました');});
     R.querySelector('#logiCfg').addEventListener('click',()=>{
       const cur=localStorage.getItem(LOGI_EP)||(d.config&&d.config.submitUrl)||'';
-      const v=prompt('Google Apps Script ウェブアプリ URL を入力',cur);
-      if(v!==null){localStorage.setItem(LOGI_EP,v.trim());msg('送信先URLを保存しました');}});
+      const v=prompt('Apps Script ウェブアプリ URL（script.google.com/macros/s/…/exec）を入力。スプレッドシートのURLは不可',cur);
+      if(v===null)return;
+      const u=v.trim();
+      if(u && !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(u)){
+        msg('そのURLは受け口ではありません。Apps Scriptを「ウェブアプリ」公開して得た script.google.com/macros/s/…/exec を入れてください（スプレッドシートのURLは不可）','warn');return;}
+      localStorage.setItem(LOGI_EP,u);msg('送信先URLを保存しました');});
     R.querySelector('#logiSend').addEventListener('click',()=>{
       const ep=localStorage.getItem(LOGI_EP)||(d.config&&d.config.submitUrl)||'';
       if(!ep){msg('先に「⚙ 送信先設定」でURLを設定してください（CSVダウンロードも可）','warn');return;}
+      if(/docs\.google\.com\/spreadsheets/.test(ep)){msg('送信先がスプレッドシートのURLになっています。Apps Scriptの …/exec URL に設定し直してください','warn');return;}
       fetch(ep,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({header:HEAD,rows:rows()})})
         .then(()=>msg('送信しました。スプレッドシートをご確認ください'))
         .catch(()=>msg('送信に失敗しました。通信とURLをご確認ください','warn'));});
