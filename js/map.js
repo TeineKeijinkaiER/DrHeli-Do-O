@@ -14,7 +14,7 @@ const MapMode = (() => {
   async function ensure(){
     if(ready){ setTimeout(()=>map.invalidateSize(),120); return; }
     ready=true;
-    regions=await fetch('data/regions.json').then(r=>r.json());
+    regions=await fetch('data/regions.json',{cache:'no-cache'}).then(r=>r.json());
     lessons=await fetch('data/case-lessons.json').then(r=>r.ok?r.json():[]).catch(()=>[]);
     initMap(); renderLegend();
   }
