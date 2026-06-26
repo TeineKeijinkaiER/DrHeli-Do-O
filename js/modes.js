@@ -2,12 +2,13 @@
 const Modes = (() => {
   const root = id => document.getElementById(id+'-root');
   const esc = s => String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-  function speak(t){ try{ if(!('speechSynthesis' in window)) return; speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(t); u.lang='ja-JP'; u.rate=1.0; speechSynthesis.speak(u);}catch(e){} }
+  function speak(t,rate){ try{ if(!('speechSynthesis' in window)) return; speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(t); u.lang='ja-JP'; u.rate=rate||1.0; speechSynthesis.speak(u);}catch(e){} }
+  const LOGI_STATE='doo-logi-state-v1',LOGI_EP='doo-logi-endpoint',LOGI_SPD='doo-logi-speed';
   const banner = txt => `<div class="proto-note">${txt}</div>`;
 
   /* 各モードの編集対象データファイル */
-  const FILES = { beginner:'beginner', logi:'logistics', quiz:'quiz' };
+  const FILES = { beginner:'beginner', expert:'expert', logi:'logistics', quiz:'quiz', stats:'stats' };
   const DATA = {};
   async function load(){
     const need = Object.values(FILES).filter(f=>!(f in DATA));
@@ -71,17 +72,51 @@ const Modes = (() => {
 
   /* ---------- ロジスティック ---------- */
   function rLogi(){
-    const d=DATA[FILES.logi]||{bags:[]};
-    const meta=(d.meta||[]).map(m=>`<label class="lmeta"><span>${esc(m)}</span><input type="text"></label>`).join('');
-    root('logi').innerHTML=`<div class="mode-hd"><h2>ロジスティック</h2><p>${esc(d.title||'バッグ別の物品。階層ごとに読み上げできます')}</p></div>
-      ${banner('編集: data/logistics.json（表示用フロント。構造化バックエンドは別途）')}
-      ${meta?`<div class="lmetarow">${meta}</div>`:''}
+    const d=DATA.logi||{bags:[],speeds:[],meta:[]};
+    const speeds=(d.speeds&&d.speeds.length)?d.speeds:[["ゆっくり",0.7],["標準",1.0],["速い",1.4]];
+    let spd=parseFloat(localStorage.getItem(LOGI_SPD)||'1.0');
+    const st=JSON.parse(localStorage.getItem(LOGI_STATE)||'{}');st.checks=st.checks||{};st.notes=st.notes||{};st.meta=st.meta||{};
+    const save=()=>localStorage.setItem(LOGI_STATE,JSON.stringify(st));
+    const key=(b,s,n)=>b+'|'+s+'|'+n;
+    const R=root('logi');
+    R.innerHTML=`
+      <div class="mode-hd"><h2>ロジスティック</h2><p>${esc(d.title||'')}</p></div>
+      ${banner('よみがな・物品の入れ替えは data/logistics.json（adminのモードデータ）で編集。点検結果はスプレッドシートへ送信できます')}
+      <div class="lmetarow">${(d.meta||[]).map((m,i)=>`<label class="lmeta"><span>${esc(m)}</span><input type="text" data-meta="${i}" value="${esc(st.meta[i]||'')}"></label>`).join('')}</div>
+      <div class="scene"><span class="scene__lbl">読み上げ速度</span><div class="scene__b" id="logiSpd">${speeds.map(([nm,r])=>`<button data-r="${r}" class="${r==spd?'on':''}">${esc(nm)}</button>`).join('')}</div></div>
       ${d.bags.map(b=>`<div class="bag">
-        <div class="bag__h"><span>${esc(b.bag)}</span><button class="say" data-say="${esc(b.bag+'。'+b.sections.map(s=>s.s+'、'+s.items.join('、')).join('。'))}">▶ 全体読み上げ</button></div>
-        ${b.sections.map(s=>`<div class="sect"><div class="sect__h">${esc(s.s)}<button class="say" data-say="${esc(s.s+'。'+s.items.join('、'))}">▶ 読み上げ</button></div>
-          <div class="sect__items">${s.items.map(it=>`<label class="chk"><input type="checkbox"> ${esc(it)}</label>`).join('')}</div></div>`).join('')}
-      </div>`).join('')}`;
-    root('logi').querySelectorAll('.say').forEach(b=>b.addEventListener('click',()=>speak(b.dataset.say)));
+        <div class="bag__h"><span>${esc(b.bag)}</span><button class="say" data-say="${esc(b.bag+'。'+b.sections.map(s=>s.s+'、'+s.items.map(it=>it.y||it.n).join('、')).join('。'))}">▶ 全体読み上げ</button></div>
+        ${b.sections.map(s=>`<div class="sect"><div class="sect__h">${esc(s.s)}<button class="say" data-say="${esc(s.s+'。'+s.items.map(it=>it.y||it.n).join('、'))}">▶</button></div>
+          <div class="sect__items">${s.items.map(it=>{const k=key(b.bag,s.s,it.n);return `<label class="chk"><input type="checkbox" data-k="${esc(k)}" ${st.checks[k]?'checked':''}><span class="chk__n">${esc(it.n)}</span><button class="say sayi" data-say="${esc(it.y||it.n)}">🔊</button></label>`;}).join('')}</div></div>`).join('')}
+        <div class="bagnote"><label>Note（不足・交換など）</label><textarea data-note="${esc(b.bag)}" placeholder="例: 挿管チューブ6.0が1本なし">${esc(st.notes[b.bag]||'')}</textarea></div>
+      </div>`).join('')}
+      <div class="logibtns"><button class="bigbtn" id="logiSend">スプレッドシートに送信</button>
+        <button class="logisub" id="logiCsv">CSVダウンロード</button><button class="logisub" id="logiCfg">⚙ 送信先設定</button></div>
+      <div id="logiMsg" class="logimsg"></div>`;
+    const msg=(t,c)=>{const m=R.querySelector('#logiMsg');m.textContent=t;m.className='logimsg'+(c?' '+c:'');};
+    R.querySelector('#logiSpd').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
+      spd=parseFloat(btn.dataset.r);localStorage.setItem(LOGI_SPD,spd);
+      R.querySelector('#logiSpd').querySelectorAll('button').forEach(x=>x.classList.remove('on'));btn.classList.add('on');speak('速度'+(btn.textContent),spd);}));
+    R.querySelectorAll('.say').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();speak(b.dataset.say,spd);}));
+    R.querySelectorAll('input[data-k]').forEach(c=>c.addEventListener('change',()=>{st.checks[c.dataset.k]=c.checked;save();}));
+    R.querySelectorAll('input[data-meta]').forEach(i=>i.addEventListener('input',()=>{st.meta[i.dataset.meta]=i.value;save();}));
+    R.querySelectorAll('textarea[data-note]').forEach(t=>t.addEventListener('input',()=>{st.notes[t.dataset.note]=t.value;save();}));
+    const HEAD=['日時',...(d.meta||[]),'バッグ','区画','品名','点検','Note'];
+    const rows=()=>{const o=[];const ts=new Date().toLocaleString('ja-JP');const meta=(d.meta||[]).map((m,i)=>st.meta[i]||'');
+      d.bags.forEach(b=>b.sections.forEach(s=>s.items.forEach(it=>{const k=key(b.bag,s.s,it.n);o.push([ts,...meta,b.bag,s.s,it.n,st.checks[k]?'OK':'',st.notes[b.bag]||'']);})));return o;};
+    R.querySelector('#logiCsv').addEventListener('click',()=>{
+      const csv=[HEAD,...rows()].map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+      const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='物品点検.csv';a.click();msg('CSVを保存しました');});
+    R.querySelector('#logiCfg').addEventListener('click',()=>{
+      const cur=localStorage.getItem(LOGI_EP)||(d.config&&d.config.submitUrl)||'';
+      const v=prompt('Google Apps Script ウェブアプリ URL を入力',cur);
+      if(v!==null){localStorage.setItem(LOGI_EP,v.trim());msg('送信先URLを保存しました');}});
+    R.querySelector('#logiSend').addEventListener('click',()=>{
+      const ep=localStorage.getItem(LOGI_EP)||(d.config&&d.config.submitUrl)||'';
+      if(!ep){msg('先に「⚙ 送信先設定」でURLを設定してください（CSVダウンロードも可）','warn');return;}
+      fetch(ep,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({header:HEAD,rows:rows()})})
+        .then(()=>msg('送信しました。スプレッドシートをご確認ください'))
+        .catch(()=>msg('送信に失敗しました。通信とURLをご確認ください','warn'));});
   }
 
   /* ---------- ビギナー ---------- */
@@ -107,6 +142,6 @@ const Modes = (() => {
       <div class="statgrid">${d.cards.map(c=>`<div class="statc"><div class="statc__v">${esc(c.v)}</div><div class="statc__k">${esc(c.k)}</div></div>`).join('')}</div>`;
   }
 
-  async function open(id){ await load(); ({beginner:rBeginner,logi:rLogi,quiz:rQuiz}[id]||(()=>{}))(); }
+  async function open(id){ await load(); ({beginner:rBeginner,expert:rExpert,logi:rLogi,quiz:rQuiz,stats:rStats}[id]||(()=>{}))(); }
   return { open };
 })();
