@@ -11,8 +11,8 @@ const Modes = (() => {
   const FILES = { beginner:'beginner', expert:'expert', logi:'logistics', quiz:'quiz', stats:'stats' };
   const DATA = {};
   async function load(){
-    const need = Object.values(FILES).filter(f=>!(f in DATA));
-    await Promise.all(need.map(f=>fetch('data/'+f+'.json').then(r=>r.json()).then(j=>DATA[f]=j).catch(()=>DATA[f]=null)));
+    const need = Object.values(FILES).filter(f=>!DATA[f]); // 失敗(null/未設定)は次回再試行
+    await Promise.all(need.map(f=>fetch('data/'+f+'.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.json();}).then(j=>DATA[f]=j).catch(()=>{})));
   }
 
   /* ---------- エキスパート ---------- */
@@ -84,7 +84,8 @@ const Modes = (() => {
       ${banner('よみがな・物品の入れ替えは data/logistics.json（adminのモードデータ）で編集。点検結果はスプレッドシートへ送信できます')}
       <div class="lmetarow">${(d.meta||[]).map((m,i)=>`<label class="lmeta"><span>${esc(m)}</span><input type="text" data-meta="${i}" value="${esc(st.meta[i]||'')}"></label>`).join('')}</div>
       <div class="scene"><span class="scene__lbl">読み上げ速度</span><div class="scene__b" id="logiSpd">${speeds.map(([nm,r])=>`<button data-r="${r}" class="${r==spd?'on':''}">${esc(nm)}</button>`).join('')}</div></div>
-      ${d.bags.map(b=>`<div class="bag">
+      ${(!d.bags||!d.bags.length)?'<div class="proto-note warn">物品データを読み込めませんでした。ページを再読込してください（Ctrl+F5）。</div>':''}
+      ${(d.bags||[]).map(b=>`<div class="bag">
         <div class="bag__h"><span>${esc(b.bag)}</span><button class="say" data-say="${esc(b.bag+'。'+b.sections.map(s=>s.s+'、'+s.items.map(it=>it.y||it.n).join('、')).join('。'))}">▶ 全体読み上げ</button></div>
         ${b.sections.map(s=>`<div class="sect"><div class="sect__h">${esc(s.s)}<button class="say" data-say="${esc(s.s+'。'+s.items.map(it=>it.y||it.n).join('、'))}">▶</button></div>
           <div class="sect__items">${s.items.map(it=>{const k=key(b.bag,s.s,it.n);return `<label class="chk"><input type="checkbox" data-k="${esc(k)}" ${st.checks[k]?'checked':''}><span class="chk__n">${esc(it.n)}</span><button class="say sayi" data-say="${esc(it.y||it.n)}">🔊</button></label>`;}).join('')}</div></div>`).join('')}
@@ -103,7 +104,7 @@ const Modes = (() => {
     R.querySelectorAll('textarea[data-note]').forEach(t=>t.addEventListener('input',()=>{st.notes[t.dataset.note]=t.value;save();}));
     const HEAD=['日時',...(d.meta||[]),'バッグ','区画','品名','点検','Note'];
     const rows=()=>{const o=[];const ts=new Date().toLocaleString('ja-JP');const meta=(d.meta||[]).map((m,i)=>st.meta[i]||'');
-      d.bags.forEach(b=>b.sections.forEach(s=>s.items.forEach(it=>{const k=key(b.bag,s.s,it.n);o.push([ts,...meta,b.bag,s.s,it.n,st.checks[k]?'OK':'',st.notes[b.bag]||'']);})));return o;};
+      (d.bags||[]).forEach(b=>b.sections.forEach(s=>s.items.forEach(it=>{const k=key(b.bag,s.s,it.n);o.push([ts,...meta,b.bag,s.s,it.n,st.checks[k]?'OK':'',st.notes[b.bag]||'']);})));return o;};
     R.querySelector('#logiCsv').addEventListener('click',()=>{
       const csv=[HEAD,...rows()].map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\r\n');
       const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='物品点検.csv';a.click();msg('CSVを保存しました');});
