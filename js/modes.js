@@ -95,6 +95,8 @@ const Modes = (() => {
     if(!Number.isFinite(spd)) spd=1.0;
     const st=loadInvState();st.checks=st.checks||{};st.notes=st.notes||{};st.meta=st.meta||{};st.collapsed=st.collapsed||{};
     if(typeof st.handover!=='string') st.handover='';
+    const today=new Date().toLocaleDateString('sv-SE');
+    (d.meta||[]).forEach((m,i)=>{ if(/日付|date/i.test(m) && !st.meta[i]) st.meta[i]=today; });
     const save=()=>{try{localStorage.setItem(INVENTORY_STATE,JSON.stringify(st));}catch(e){}};
     const key=(b,s,n)=>b+'|'+s+'|'+n;
     const sk=(b,s)=>b+'|'+s;
@@ -102,7 +104,7 @@ const Modes = (() => {
     const R=root('inventory');
     R.innerHTML=`
       <div class="mode-hd"><h2>インベントリー</h2><p>${esc(d.title||'')}</p></div>
-      <div class="lmetarow">${(d.meta||[]).map((m,i)=>`<label class="lmeta"><span>${esc(m)}</span><input type="text" data-meta="${i}" value="${escAttr(st.meta[i]||'')}"></label>`).join('')}</div>
+      <div class="lmetarow">${(d.meta||[]).map((m,i)=>{const dt=/日付|date/i.test(m);return `<label class="lmeta"><span>${esc(m)}</span><input type="${dt?'date':'text'}" data-meta="${i}" value="${escAttr(st.meta[i]||'')}"></label>`;}).join('')}</div>
       <div class="audiobar">
         <div class="scene"><span class="scene__lbl">読み上げ速度</span><div class="scene__b" id="invSpd">${speeds.map(([nm,r])=>`<button type="button" data-r="${r}" class="${r==spd?'on':''}">${esc(nm)}</button>`).join('')}</div></div>
         <div class="audioctl">
@@ -146,7 +148,7 @@ const Modes = (() => {
       btn.querySelector('.sect__chev').textContent=now?'＋':'−';}));
     /* チェック・メタ・Note・申し送り */
     R.querySelectorAll('input[data-k]').forEach(c=>c.addEventListener('change',()=>{st.checks[c.dataset.k]=c.checked;save();}));
-    R.querySelectorAll('input[data-meta]').forEach(i=>i.addEventListener('input',()=>{st.meta[i.dataset.meta]=i.value;save();}));
+    R.querySelectorAll('input[data-meta]').forEach(i=>['input','change'].forEach(ev=>i.addEventListener(ev,()=>{st.meta[i.dataset.meta]=i.value;save();})));
     R.querySelectorAll('textarea[data-note]').forEach(t=>t.addEventListener('input',()=>{st.notes[t.dataset.note]=t.value;save();}));
     R.querySelector('#invHandover').addEventListener('input',e=>{st.handover=e.target.value;save();});
     /* 前日チェック全削除 */
