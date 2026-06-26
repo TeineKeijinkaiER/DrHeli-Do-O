@@ -47,7 +47,7 @@ const MapMode = (() => {
   }
   const sheet=document.getElementById('sheet'), sheetBody=document.getElementById('sheetBody');
   function setScene(v){ scene=v; renderDetail(); }
-  function openDetail(r,p){ curR=r; curP=p; renderDetail();
+  function openDetail(r,p){ curR=r; curP=p; scene=20; renderDetail();
     sheet.classList.add('is-open'); sheet.setAttribute('aria-hidden','false');
     if(map&&p.lat!=null) map.flyTo([p.lat,p.lng],Math.max(map.getZoom(),10),{duration:.6}); }
   function fmtYM(ym){const m=/^(\d{4})-(\d{1,2})$/.exec(ym||'');return m?`${m[1]}年${Number(m[2])}月`:'';}

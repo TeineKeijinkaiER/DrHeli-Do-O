@@ -18,11 +18,9 @@ const App = (() => {
   /* --- モード定義 --- */
   const MODES = [
     { id:'map',      name:'地図モード',         tag:'市町村別の注意事項',   icon:I.map,      accent:'accent-blue',   primary:true },
-    { id:'beginner', name:'ビギナーモード',     tag:'OJT医療スタッフの覚書', icon:I.beginner, accent:'accent-green',  proto:true },
-    { id:'expert',   name:'エクスパートモード', tag:'Dr・Ns向け注意事項',   icon:I.expert,   accent:'accent-red',    proto:true },
-    { id:'inventory', name:'インベントリーモード', tag:'バッグ物品管理',      icon:I.inventory, accent:'accent-amber',  proto:true },
-    { id:'quiz',     name:'クイズモード',       tag:'',                     icon:I.quiz,     accent:'accent-cyan',   proto:true },
-    { id:'stats',    name:'統計モード',         tag:'',                     icon:I.stats,    accent:'accent-purple', proto:true },
+    { id:'beginner', name:'ビギナーモード',     tag:'OJT医療スタッフの覚書', icon:I.beginner, accent:'accent-green' },
+    { id:'inventory', name:'インベントリーモード', tag:'バッグ物品管理',      icon:I.inventory, accent:'accent-amber' },
+    { id:'quiz',     name:'クイズモード',       tag:'',                     icon:I.quiz,     accent:'accent-cyan',    },
   ];
 
   function renderModes(){
