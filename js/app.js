@@ -10,7 +10,7 @@ const App = (() => {
     map:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>`,
     beginner:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h10a2 2 0 0 1 2 2v15l-3-2-3 2-3-2-3 2V5a2 2 0 0 1 2-2Z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>`,
     expert:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.6 3 7.6 7 9 4-1.4 7-4.4 7-9V6l-7-3Z"/><path d="M8.3 12h2l1-2 1.6 4 1-2h1.8"/></svg>`,
-    logi:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 12.5v3.5M10.25 14.25h3.5"/></svg>`,
+    inventory:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 12.5v3.5M10.25 14.25h3.5"/></svg>`,
     quiz:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.3a2.8 2.8 0 0 1 5.3 1c0 1.8-2.6 2.3-2.6 4"/><path d="M12 17.5h.01"/></svg>`,
     stats:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>`,
   };
@@ -18,9 +18,11 @@ const App = (() => {
   /* --- モード定義 --- */
   const MODES = [
     { id:'map',      name:'地図モード',         tag:'市町村別の注意事項',   icon:I.map,      accent:'accent-blue',   primary:true },
-    { id:'beginner', name:'ビギナーモード',     tag:'OJT医療スタッフの覚書', icon:I.beginner, accent:'accent-green' },
-    { id:'logi',     name:'ロジスティックモード', tag:'バッグ物品管理',      icon:I.logi,     accent:'accent-amber' },
-    { id:'quiz',     name:'クイズモード',       tag:'',                     icon:I.quiz,     accent:'accent-cyan' },
+    { id:'beginner', name:'ビギナーモード',     tag:'OJT医療スタッフの覚書', icon:I.beginner, accent:'accent-green',  proto:true },
+    { id:'expert',   name:'エクスパートモード', tag:'Dr・Ns向け注意事項',   icon:I.expert,   accent:'accent-red',    proto:true },
+    { id:'inventory', name:'インベントリーモード', tag:'バッグ物品管理',      icon:I.inventory, accent:'accent-amber',  proto:true },
+    { id:'quiz',     name:'クイズモード',       tag:'',                     icon:I.quiz,     accent:'accent-cyan',   proto:true },
+    { id:'stats',    name:'統計モード',         tag:'',                     icon:I.stats,    accent:'accent-purple', proto:true },
   ];
 
   function renderModes(){
@@ -41,7 +43,7 @@ const App = (() => {
     });
   }
 
-  const TITLES={map:'地図モード',beginner:'ビギナーモード',expert:'エクスパートモード',logi:'ロジスティックモード',quiz:'クイズモード',stats:'統計モード'};
+  const TITLES={map:'地図モード',beginner:'ビギナーモード',expert:'エクスパートモード',inventory:'インベントリーモード',quiz:'クイズモード',stats:'統計モード'};
   function open(id){
     appbarSub.textContent=TITLES[id]||'';
     show(id);

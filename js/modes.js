@@ -4,12 +4,18 @@ const Modes = (() => {
   const esc = s => String(s ?? '').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   const escAttr = s => esc(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   function speak(t,rate){ try{ if(!('speechSynthesis' in window)) return; speechSynthesis.cancel();
+    const pauseBtn = document.getElementById('btnSpeakPause');
+    const resumeBtn = document.getElementById('btnSpeakResume');
+    if (pauseBtn && resumeBtn) {
+      pauseBtn.style.display = 'inline-block';
+      resumeBtn.style.display = 'none';
+    }
     const u=new SpeechSynthesisUtterance(t); u.lang='ja-JP'; u.rate=rate||1.0; speechSynthesis.speak(u);}catch(e){} }
-  const LOGI_STATE='doo-logi-state-v1',LOGI_EP='doo-logi-endpoint',LOGI_SPD='doo-logi-speed';
+  const INVENTORY_STATE='doo-inventory-state-v1',INVENTORY_EP='doo-inventory-endpoint',INVENTORY_SPD='doo-inventory-speed';
   const banner = txt => `<div class="proto-note">${txt}</div>`;
 
   /* 各モードの編集対象データファイル */
-  const FILES = { beginner:'beginner', expert:'expert', logi:'logistics', quiz:'quiz', stats:'stats' };
+  const FILES = { beginner:'beginner', expert:'expert', inventory:'inventory', quiz:'quiz', stats:'stats' };
   const DATA = {};
   async function load(id){
     const targets = id ? [FILES[id]].filter(Boolean) : Object.values(FILES).filter((f,i,a)=>a.indexOf(f)===i);
@@ -72,50 +78,86 @@ const Modes = (() => {
     }));
   }
 
-  /* ---------- ロジスティック ---------- */
-  function loadLogiState(){
+  /* ---------- インベントリー ---------- */
+  function loadInvState(){
     try{
-      const raw = JSON.parse(localStorage.getItem(LOGI_STATE)||'{}');
+      const raw = JSON.parse(localStorage.getItem(INVENTORY_STATE)||'{}');
       return raw && typeof raw === 'object' ? raw : {};
     }catch(e){
-      localStorage.removeItem(LOGI_STATE);
+      localStorage.removeItem(INVENTORY_STATE);
       return {};
     }
   }
-  function rLogi(){
-    const d=DATA.logistics||{bags:[],speeds:[],meta:[]};
+  function rInventory(){
+    const d=DATA.inventory||{bags:[],speeds:[],meta:[]};
     const speeds=(d.speeds&&d.speeds.length)?d.speeds:[["ゆっくり",0.7],["標準",1.0],["速い",1.4]];
-    let spd=parseFloat(localStorage.getItem(LOGI_SPD)||'1.0');
+    let spd=parseFloat(localStorage.getItem(INVENTORY_SPD)||'1.0');
     if(!Number.isFinite(spd)) spd=1.0;
-    const st=loadLogiState();st.checks=st.checks||{};st.notes=st.notes||{};st.meta=st.meta||{};
-    const save=()=>{try{localStorage.setItem(LOGI_STATE,JSON.stringify(st));}catch(e){}};
+    const st=loadInvState();st.checks=st.checks||{};st.notes=st.notes||{};st.meta=st.meta||{};st.collapsed=st.collapsed||{};
+    if(typeof st.handover!=='string') st.handover='';
+    const save=()=>{try{localStorage.setItem(INVENTORY_STATE,JSON.stringify(st));}catch(e){}};
     const key=(b,s,n)=>b+'|'+s+'|'+n;
-    const endpoint=()=>{const stored=localStorage.getItem(LOGI_EP);return stored!==null?stored:((d.config&&d.config.submitUrl)||'');};
-    const R=root('logi');
+    const sk=(b,s)=>b+'|'+s;
+    const endpoint=()=>{const stored=localStorage.getItem(INVENTORY_EP);return stored!==null?stored:((d.config&&d.config.submitUrl)||'');};
+    const R=root('inventory');
     R.innerHTML=`
-      <div class="mode-hd"><h2>ロジスティック</h2><p>${esc(d.title||'')}</p></div>
-      ${banner('よみがな・物品の入れ替えは data/logistics.json（adminのモードデータ）で編集。点検結果はスプレッドシートへ送信できます')}
+      <div class="mode-hd"><h2>インベントリー</h2><p>${esc(d.title||'')}</p></div>
+      ${banner('よみがな・物品の入れ替えは data/inventory.json（adminのモードデータ）で編集。点検結果はスプレッドシートへ送信できます')}
       <div class="lmetarow">${(d.meta||[]).map((m,i)=>`<label class="lmeta"><span>${esc(m)}</span><input type="text" data-meta="${i}" value="${escAttr(st.meta[i]||'')}"></label>`).join('')}</div>
-      <div class="scene"><span class="scene__lbl">読み上げ速度</span><div class="scene__b" id="logiSpd">${speeds.map(([nm,r])=>`<button type="button" data-r="${r}" class="${r==spd?'on':''}">${esc(nm)}</button>`).join('')}</div></div>
+      <div class="audiobar">
+        <div class="scene"><span class="scene__lbl">読み上げ速度</span><div class="scene__b" id="invSpd">${speeds.map(([nm,r])=>`<button type="button" data-r="${r}" class="${r==spd?'on':''}">${esc(nm)}</button>`).join('')}</div></div>
+        <div class="audioctl">
+          <button type="button" class="actl" id="btnSpeakPause">⏸ 一時停止</button>
+          <button type="button" class="actl" id="btnSpeakResume" style="display:none">▶ 再開</button>
+          <button type="button" class="actl actl--stop" id="btnSpeakStop">⏹ 停止</button>
+        </div>
+      </div>
+      <div class="handover">
+        <label class="handover__lbl">前日担当者からの申し送り（物品）</label>
+        <textarea id="invHandover" placeholder="例: 青バッグの挿管チューブ6.0が1本欠品。本日補充予定。">${esc(st.handover)}</textarea>
+        <button type="button" class="dangerbtn" id="invClear">前日のチェックを全削除</button>
+      </div>
       ${(!d.bags||!d.bags.length)?'<div class="proto-note warn">物品データを読み込めませんでした。ページを再読込してください（Ctrl+F5）。</div>':''}
       ${(d.bags||[]).map(b=>{const sections=b.sections||[];return `<div class="bag">
         <div class="bag__h"><span>${esc(b.bag)}</span><button type="button" class="say" data-say="${escAttr(b.bag+'。'+sections.map(s=>s.s+'、'+(s.items||[]).map(it=>it.y||it.n).join('、')).join('。'))}">▶ 全体読み上げ</button></div>
-        ${sections.map(s=>{const items=s.items||[];return `<div class="sect"><div class="sect__h">${esc(s.s)}<button type="button" class="say" data-say="${escAttr(s.s+'。'+items.map(it=>it.y||it.n).join('、'))}">▶</button></div>
-          <div class="sect__items">${items.map(it=>{const k=key(b.bag,s.s,it.n);return `<label class="chk"><input type="checkbox" data-k="${escAttr(k)}" ${st.checks[k]?'checked':''}><span class="chk__n">${esc(it.n)}</span><button type="button" class="say sayi" data-say="${escAttr(it.y||it.n)}">🔊</button></label>`;}).join('')}</div></div>`;}).join('')}
+        ${sections.map(s=>{const items=s.items||[];const folded=!!st.collapsed[sk(b.bag,s.s)];return `<div class="sect ${folded?'sect--folded':''}" data-sk="${escAttr(sk(b.bag,s.s))}">
+          <div class="sect__h"><button type="button" class="sect__toggle" data-sk="${escAttr(sk(b.bag,s.s))}"><span class="sect__chev">${folded?'＋':'−'}</span>${esc(s.s)}</button><button type="button" class="say" data-say="${escAttr(s.s+'。'+items.map(it=>it.y||it.n).join('、'))}">▶</button></div>
+          <div class="sect__items">${items.map(it=>{const k=key(b.bag,s.s,it.n);return `<label class="chk"><input type="checkbox" data-k="${escAttr(k)}" ${st.checks[k]?'checked':''}><span class="chk__n">${esc(it.n)}</span></label>`;}).join('')}</div></div>`;}).join('')}
         <div class="bagnote"><label>Note（不足・交換など）</label><textarea data-note="${escAttr(b.bag)}" placeholder="例: 挿管チューブ6.0が1本なし">${esc(st.notes[b.bag]||'')}</textarea></div>
       </div>`;}).join('')}
-      <div class="logibtns"><button type="button" class="bigbtn" id="logiSend">スプレッドシートに送信</button>
-        <button type="button" class="logisub" id="logiCsv">CSVダウンロード</button><button type="button" class="logisub" id="logiCfg">⚙ 送信先設定</button></div>
-      <div id="logiMsg" class="logimsg"></div>`;
-    const msg=(t,c)=>{const m=R.querySelector('#logiMsg');m.textContent=t;m.className='logimsg'+(c?' '+c:'');};
-    R.querySelector('#logiSpd').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
-      spd=parseFloat(btn.dataset.r);localStorage.setItem(LOGI_SPD,spd);
-      R.querySelector('#logiSpd').querySelectorAll('button').forEach(x=>x.classList.remove('on'));btn.classList.add('on');speak('速度'+(btn.textContent),spd);}));
+      <div class="logibtns"><button type="button" class="bigbtn" id="invSend">スプレッドシートに送信</button>
+        <button type="button" class="logisub" id="invCsv">CSVダウンロード</button><button type="button" class="logisub" id="invCfg">⚙ 送信先設定</button></div>
+      <div id="invMsg" class="logimsg"></div>`;
+    const msg=(t,c)=>{const m=R.querySelector('#invMsg');m.textContent=t;m.className='logimsg'+(c?' '+c:'');};
+    /* 速度 */
+    R.querySelector('#invSpd').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
+      spd=parseFloat(btn.dataset.r);localStorage.setItem(INVENTORY_SPD,spd);
+      R.querySelector('#invSpd').querySelectorAll('button').forEach(x=>x.classList.remove('on'));btn.classList.add('on');speak('速度'+(btn.textContent),spd);}));
+    /* 音声 一時停止 / 再開 / 停止 */
+    const bPause=R.querySelector('#btnSpeakPause'),bResume=R.querySelector('#btnSpeakResume'),bStop=R.querySelector('#btnSpeakStop');
+    bPause.addEventListener('click',()=>{try{speechSynthesis.pause();}catch(e){} bPause.style.display='none';bResume.style.display='inline-block';});
+    bResume.addEventListener('click',()=>{try{speechSynthesis.resume();}catch(e){} bResume.style.display='none';bPause.style.display='inline-block';});
+    bStop.addEventListener('click',()=>{try{speechSynthesis.cancel();}catch(e){} bResume.style.display='none';bPause.style.display='inline-block';});
+    /* セクション読み上げ・全体読み上げ */
     R.querySelectorAll('.say').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();speak(b.dataset.say,spd);}));
+    /* セクション折り畳み */
+    R.querySelectorAll('.sect__toggle').forEach(btn=>btn.addEventListener('click',()=>{
+      const id=btn.dataset.sk;const sect=R.querySelector('.sect[data-sk="'+CSS.escape(id)+'"]');
+      const now=sect.classList.toggle('sect--folded');st.collapsed[id]=now;save();
+      btn.querySelector('.sect__chev').textContent=now?'＋':'−';}));
+    /* チェック・メタ・Note・申し送り */
     R.querySelectorAll('input[data-k]').forEach(c=>c.addEventListener('change',()=>{st.checks[c.dataset.k]=c.checked;save();}));
     R.querySelectorAll('input[data-meta]').forEach(i=>i.addEventListener('input',()=>{st.meta[i.dataset.meta]=i.value;save();}));
     R.querySelectorAll('textarea[data-note]').forEach(t=>t.addEventListener('input',()=>{st.notes[t.dataset.note]=t.value;save();}));
-    const HEAD = ['日時', ...(d.meta || [])];
+    R.querySelector('#invHandover').addEventListener('input',e=>{st.handover=e.target.value;save();});
+    /* 前日チェック全削除 */
+    R.querySelector('#invClear').addEventListener('click',()=>{
+      if(!confirm('前日のチェック（全項目のチェック）を全て外します。よろしいですか？\n※申し送りメモ・バッグNoteは保持されます。')) return;
+      st.checks={};save();
+      R.querySelectorAll('input[data-k]').forEach(c=>{c.checked=false;});
+      msg('前日のチェックを全削除しました');});
+    /* CSV/送信 ヘッダ・行 */
+    const HEAD = ['日時', ...(d.meta || []), '申し送り'];
     (d.bags || []).forEach(b => { HEAD.push(`Note: ${b.bag}`); });
     (d.bags || []).forEach(b => {
       (b.sections || []).forEach(s => {
@@ -124,11 +166,10 @@ const Modes = (() => {
         });
       });
     });
-
     const rows = () => {
       const ts = new Date().toLocaleString('ja-JP');
       const meta = (d.meta || []).map((m, i) => st.meta[i] || '');
-      const row = [ts, ...meta];
+      const row = [ts, ...meta, st.handover || ''];
       (d.bags || []).forEach(b => { row.push(st.notes[b.bag] || ''); });
       (d.bags || []).forEach(b => {
         (b.sections || []).forEach(s => {
@@ -140,26 +181,19 @@ const Modes = (() => {
       });
       return [row];
     };
-
-    R.querySelector('#logiCsv').addEventListener('click', () => {
+    R.querySelector('#invCsv').addEventListener('click', () => {
       const csv = [HEAD, ...rows()].map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(',')).join('\r\n');
-      const url = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' }));
+      const url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' }));
       const a = document.createElement('a'); a.href = url; a.download = '物品点検.csv'; a.click(); URL.revokeObjectURL(url); msg('CSVを保存しました');
     });
-
     const appName = location.pathname.includes('DrHeli-Do-O') || location.hostname.includes('teinekeijinkaier.github.io') ? 'DrHeli-Do-O' : 'DO-O';
     const payload = () => ({ app: appName, sentAt: new Date().toISOString(), header: HEAD, rows: rows() });
-
-    const sendFetch = (ep, data) => {
-      return fetch(ep, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'payload=' + encodeURIComponent(JSON.stringify(data))
-      });
-    };
-
-    R.querySelector('#logiCfg').addEventListener('click', () => {
+    const sendFetch = (ep, data) => fetch(ep, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'payload=' + encodeURIComponent(JSON.stringify(data))
+    });
+    R.querySelector('#invCfg').addEventListener('click', () => {
       const cur = endpoint();
       const v = prompt('Apps Script ウェブアプリ URL（script.google.com/macros/s/…/exec）を入力。スプレッドシートのURLは不可', cur);
       if (v === null) return;
@@ -167,22 +201,16 @@ const Modes = (() => {
       if (u && !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(u)) {
         msg('そのURLは受け口ではありません。Apps Scriptを「ウェブアプリ」公開して得た script.google.com/macros/s/…/exec を入れてください（スプレッドシートのURLは不可）', 'warn'); return;
       }
-      localStorage.setItem(LOGI_EP, u); msg('送信先URLを保存しました');
+      localStorage.setItem(INVENTORY_EP, u); msg('送信先URLを保存しました');
     });
-
-    R.querySelector('#logiSend').addEventListener('click', () => {
+    R.querySelector('#invSend').addEventListener('click', () => {
       const ep = endpoint();
       if (!ep) { msg('先に「⚙ 送信先設定」でURLを設定してください（CSVダウンロードも可）', 'warn'); return; }
       if (/docs\.google\.com\/spreadsheets/.test(ep)) { msg('送信先がスプレッドシートのURLになっています。Apps Scriptの …/exec URL に設定し直してください', 'warn'); return; }
       msg('送信中...');
       sendFetch(ep, payload())
-        .then(() => {
-          msg('スプレッドシートに送信しました。シートをご確認ください');
-        })
-        .catch(e => {
-          console.error(e);
-          msg('送信に失敗しました。通信とURLをご確認ください', 'warn');
-        });
+        .then(() => msg('スプレッドシートに送信しました。シートをご確認ください'))
+        .catch(e => { console.error(e); msg('送信に失敗しました。通信とURLをご確認ください', 'warn'); });
     });
   }
 
@@ -212,7 +240,7 @@ const Modes = (() => {
   async function open(id){
     if(!root(id)) return;
     await load(id);
-    ({beginner:rBeginner,expert:rExpert,logi:rLogi,quiz:rQuiz,stats:rStats}[id]||(()=>{}))();
+    ({beginner:rBeginner,expert:rExpert,inventory:rInventory,quiz:rQuiz,stats:rStats}[id]||(()=>{}))();
   }
   return { open };
 })();

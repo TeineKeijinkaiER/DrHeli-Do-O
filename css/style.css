@@ -344,8 +344,28 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .bagnote{padding:10px 14px;border-top:1px solid var(--line)}
 .bagnote label{display:block;font-size:11.5px;font-weight:800;color:var(--sky);margin-bottom:5px}
 .bagnote textarea{width:100%;min-height:46px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);font-size:13px;padding:8px 10px;font-family:inherit;line-height:1.5}
-.logibtns{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
-.logibtns .bigbtn{flex:1;margin-top:0;min-width:180px}
-.logisub{font-size:13px;font-weight:700;color:var(--sky);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
-.logimsg{font-size:12.5px;color:#9fdcb0;margin-top:10px;min-height:1em}
-.logimsg.warn{color:var(--warn)}
+
+/* インベントリー: 送信ボタン群・メッセージ（旧inventory*/logi*別名を統一） */
+.inventorybtns,.logibtns{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
+.inventorybtns .bigbtn,.logibtns .bigbtn{flex:1;margin-top:0;min-width:180px}
+.inventorysub,.logisub{font-size:13px;font-weight:700;color:var(--sky);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.inventorymsg,.logimsg{font-size:12.5px;color:#1f8b46;margin-top:10px;min-height:1em}
+.inventorymsg.warn,.logimsg.warn{color:var(--warn)}
+
+/* インベントリー: 音声操作バー */
+.audiobar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 12px}
+.audioctl{display:flex;gap:8px}
+.actl{font-size:12.5px;font-weight:700;color:var(--sky);background:rgba(86,177,255,.12);border:1px solid rgba(86,177,255,.32);border-radius:999px;padding:7px 13px}
+.actl--stop{color:#c0392b;background:rgba(192,57,43,.10);border-color:rgba(192,57,43,.32)}
+
+/* インベントリー: 申し送り＋全削除 */
+.handover{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:0 0 16px;background:rgba(255,176,32,.07)}
+.handover__lbl{display:block;font-size:12px;font-weight:800;color:#b9791a;margin-bottom:6px}
+.handover textarea{width:100%;min-height:54px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);font-size:13px;padding:8px 10px;font-family:inherit;line-height:1.55}
+.dangerbtn{margin-top:10px;width:100%;padding:11px;border-radius:12px;font-weight:800;font-size:13.5px;color:#fff;background:linear-gradient(120deg,#e05757,#c0392b);border:none}
+
+/* インベントリー: セクション折り畳み */
+.sect__h{gap:8px}
+.sect__toggle{flex:1;display:flex;align-items:center;gap:8px;text-align:left;font-weight:700;font-size:13.5px;color:var(--sky);background:none;border:none;padding:0}
+.sect__chev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;background:rgba(86,177,255,.14);font-weight:800;font-size:14px;line-height:1}
+.sect--folded .sect__items{display:none}
