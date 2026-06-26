@@ -122,7 +122,7 @@ const Modes = (() => {
       ${(d.bags||[]).map(b=>{const sections=b.sections||[];return `<div class="bag">
         <div class="bag__h"><span>${esc(b.bag)}</span><button type="button" class="say" data-say="${escAttr(b.bag+'。'+sections.map(s=>s.s+'、'+(s.items||[]).map(it=>it.y||it.n).join('、')).join('。'))}">▶ 全体読み上げ</button></div>
         ${sections.map(s=>{const items=s.items||[];const folded=!!st.collapsed[sk(b.bag,s.s)];return `<div class="sect ${folded?'sect--folded':''}" data-sk="${escAttr(sk(b.bag,s.s))}">
-          <div class="sect__h"><button type="button" class="sect__toggle" data-sk="${escAttr(sk(b.bag,s.s))}"><span class="sect__chev">${folded?'＋':'−'}</span>${esc(s.s)}</button><button type="button" class="say" data-say="${escAttr(s.s+'。'+items.map(it=>it.y||it.n).join('、'))}">▶</button></div>
+          <div class="sect__h"><button type="button" class="sect__toggle" data-sk="${escAttr(sk(b.bag,s.s))}"><span class="sect__chev">${folded?'＋':'−'}</span>${esc(s.s)}</button><button type="button" class="sectall" data-sk="${escAttr(sk(b.bag,s.s))}">全✓</button><button type="button" class="say" data-say="${escAttr(s.s+'。'+items.map(it=>it.y||it.n).join('、'))}">▶</button></div>
           <div class="sect__items">${items.map(it=>{const k=key(b.bag,s.s,it.n);return `<label class="chk"><input type="checkbox" data-k="${escAttr(k)}" ${st.checks[k]?'checked':''}><span class="chk__n">${esc(it.n)}</span></label>`;}).join('')}</div></div>`;}).join('')}
         <div class="bagnote"><label>Note（不足・交換など）</label><textarea data-note="${escAttr(b.bag)}" placeholder="">${esc(st.notes[b.bag]||'')}</textarea></div>
       </div>`;}).join('')}
@@ -148,6 +148,13 @@ const Modes = (() => {
       btn.querySelector('.sect__chev').textContent=now?'＋':'−';}));
     /* チェック・メタ・Note・申し送り */
     R.querySelectorAll('input[data-k]').forEach(c=>c.addEventListener('change',()=>{st.checks[c.dataset.k]=c.checked;save();}));
+    /* セクション一括チェック/解除（トグル） */
+    R.querySelectorAll('.sectall').forEach(btn=>btn.addEventListener('click',()=>{
+      const sect=R.querySelector('.sect[data-sk="'+CSS.escape(btn.dataset.sk)+'"]');
+      const boxes=sect.querySelectorAll('input[data-k]');
+      const allOn=Array.from(boxes).every(c=>c.checked);
+      boxes.forEach(c=>{c.checked=!allOn;st.checks[c.dataset.k]=!allOn;});
+      save();}));
     R.querySelectorAll('input[data-meta]').forEach(i=>['input','change'].forEach(ev=>i.addEventListener(ev,()=>{st.meta[i.dataset.meta]=i.value;save();})));
     R.querySelectorAll('textarea[data-note]').forEach(t=>t.addEventListener('input',()=>{st.notes[t.dataset.note]=t.value;save();}));
     R.querySelector('#invHandover').addEventListener('input',e=>{st.handover=e.target.value;save();});

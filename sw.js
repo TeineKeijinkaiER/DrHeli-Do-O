@@ -1,5 +1,5 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v9';
+const CACHE = 'doo-heli-v10';
 const CORE = [
   './','./index.html','./manifest.json',
   './css/style.css','./js/app.js','./js/map.js','./js/modes.js',

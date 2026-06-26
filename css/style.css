@@ -369,3 +369,6 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .sect__toggle{flex:1;display:flex;align-items:center;gap:8px;text-align:left;font-weight:700;font-size:13.5px;color:var(--sky);background:none;border:none;padding:0}
 .sect__chev{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;background:rgba(86,177,255,.14);font-weight:800;font-size:14px;line-height:1}
 .sect--folded .sect__items{display:none}
+
+/* インベントリー: セクション一括チェック */
+.sectall{font-size:11.5px;font-weight:800;color:var(--ok);background:rgba(47,208,122,.12);border:1px solid rgba(47,208,122,.34);border-radius:999px;padding:5px 11px;white-space:nowrap}
