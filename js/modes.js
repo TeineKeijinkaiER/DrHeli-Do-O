@@ -102,7 +102,6 @@ const Modes = (() => {
     const R=root('inventory');
     R.innerHTML=`
       <div class="mode-hd"><h2>インベントリー</h2><p>${esc(d.title||'')}</p></div>
-      ${banner('よみがな・物品の入れ替えは data/inventory.json（adminのモードデータ）で編集。点検結果はスプレッドシートへ送信できます')}
       <div class="lmetarow">${(d.meta||[]).map((m,i)=>`<label class="lmeta"><span>${esc(m)}</span><input type="text" data-meta="${i}" value="${escAttr(st.meta[i]||'')}"></label>`).join('')}</div>
       <div class="audiobar">
         <div class="scene"><span class="scene__lbl">読み上げ速度</span><div class="scene__b" id="invSpd">${speeds.map(([nm,r])=>`<button type="button" data-r="${r}" class="${r==spd?'on':''}">${esc(nm)}</button>`).join('')}</div></div>
@@ -114,7 +113,7 @@ const Modes = (() => {
       </div>
       <div class="handover">
         <label class="handover__lbl">前日担当者からの申し送り（物品）</label>
-        <textarea id="invHandover" placeholder="例: 青バッグの挿管チューブ6.0が1本欠品。本日補充予定。">${esc(st.handover)}</textarea>
+        <textarea id="invHandover" placeholder="">${esc(st.handover)}</textarea>
         <button type="button" class="dangerbtn" id="invClear">前日のチェックを全削除</button>
       </div>
       ${(!d.bags||!d.bags.length)?'<div class="proto-note warn">物品データを読み込めませんでした。ページを再読込してください（Ctrl+F5）。</div>':''}
@@ -123,7 +122,7 @@ const Modes = (() => {
         ${sections.map(s=>{const items=s.items||[];const folded=!!st.collapsed[sk(b.bag,s.s)];return `<div class="sect ${folded?'sect--folded':''}" data-sk="${escAttr(sk(b.bag,s.s))}">
           <div class="sect__h"><button type="button" class="sect__toggle" data-sk="${escAttr(sk(b.bag,s.s))}"><span class="sect__chev">${folded?'＋':'−'}</span>${esc(s.s)}</button><button type="button" class="say" data-say="${escAttr(s.s+'。'+items.map(it=>it.y||it.n).join('、'))}">▶</button></div>
           <div class="sect__items">${items.map(it=>{const k=key(b.bag,s.s,it.n);return `<label class="chk"><input type="checkbox" data-k="${escAttr(k)}" ${st.checks[k]?'checked':''}><span class="chk__n">${esc(it.n)}</span></label>`;}).join('')}</div></div>`;}).join('')}
-        <div class="bagnote"><label>Note（不足・交換など）</label><textarea data-note="${escAttr(b.bag)}" placeholder="例: 挿管チューブ6.0が1本なし">${esc(st.notes[b.bag]||'')}</textarea></div>
+        <div class="bagnote"><label>Note（不足・交換など）</label><textarea data-note="${escAttr(b.bag)}" placeholder="">${esc(st.notes[b.bag]||'')}</textarea></div>
       </div>`;}).join('')}
       <div class="logibtns"><button type="button" class="bigbtn" id="invSend">スプレッドシートに送信</button>
         <button type="button" class="logisub" id="invCsv">CSVダウンロード</button><button type="button" class="logisub" id="invCfg">⚙ 送信先設定</button></div>
