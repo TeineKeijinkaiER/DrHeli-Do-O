@@ -12,6 +12,8 @@ const Modes = (() => {
     }
     const u=new SpeechSynthesisUtterance(t); u.lang='ja-JP'; u.rate=rate||1.0; speechSynthesis.speak(u);}catch(e){} }
   const INVENTORY_STATE='doo-inventory-state-v1',INVENTORY_EP='doo-inventory-endpoint',INVENTORY_SPD='doo-inventory-speed';
+  const INVENTORY_MASTER_URL='doo-inventory-master-url',INVENTORY_MASTER_CACHE='doo-inventory-master-cache';
+  let invMasterDone=false;
   const banner = txt => `<div class="proto-note">${txt}</div>`;
 
   /* 各モードの編集対象データファイル */
@@ -79,6 +81,48 @@ const Modes = (() => {
   }
 
   /* ---------- インベントリー ---------- */
+  /* 物品マスター(スプレッドシート公開CSV)→bags配列 */
+  function parseCSV_(text){
+    text=String(text||'').replace(/^\uFEFF/,'');
+    const rows=[]; let row=[],cur='',q=false;
+    for(let i=0;i<text.length;i++){const ch=text[i];
+      if(q){ if(ch==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=ch; }
+      else { if(ch==='"')q=true; else if(ch===','){row.push(cur);cur='';} else if(ch==='\n'){row.push(cur);rows.push(row);row=[];cur='';} else if(ch==='\r'){} else cur+=ch; } }
+    if(cur!==''||row.length){row.push(cur);rows.push(row);}
+    return rows;
+  }
+  function csvToBags_(text){
+    const rows=parseCSV_(text).filter(r=>r.some(c=>String(c).trim()!==''));
+    if(!rows.length) return [];
+    let start=0; if(rows[0] && /バッグ|bag/i.test(rows[0][0]||'')) start=1;
+    const bagMap=new Map();
+    for(let i=start;i<rows.length;i++){
+      const c=rows[i].map(x=>(x||'').trim());
+      const bag=c[0],sec=c[1]||'',name=c[2],yomi=c[3]||'';
+      if(!bag||!name) continue;
+      if(!bagMap.has(bag)) bagMap.set(bag,new Map());
+      const sm=bagMap.get(bag);
+      if(!sm.has(sec)) sm.set(sec,[]);
+      sm.get(sec).push({n:name,y:yomi});
+    }
+    const bags=[];
+    for(const [bag,sm] of bagMap){ const sections=[]; for(const [sname,items] of sm) sections.push({s:sname,items}); bags.push({bag,sections}); }
+    return bags;
+  }
+  function masterUrl_(d){ const u=localStorage.getItem(INVENTORY_MASTER_URL); return (u!==null&&u!=='')?u:((d.config&&d.config.masterCsvUrl)||''); }
+  async function refreshMaster_(d){
+    const url=masterUrl_(d); if(!url) return false;
+    try{
+      const t=await fetch(url,{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.text();});
+      const bags=csvToBags_(t);
+      if(bags&&bags.length){
+        const changed=JSON.stringify(d.bags||[])!==JSON.stringify(bags);
+        d.bags=bags; try{localStorage.setItem(INVENTORY_MASTER_CACHE,JSON.stringify(bags));}catch(e){}
+        return changed;
+      }
+    }catch(e){}
+    return false;
+  }
   function loadInvState(){
     try{
       const raw = JSON.parse(localStorage.getItem(INVENTORY_STATE)||'{}');
@@ -90,6 +134,7 @@ const Modes = (() => {
   }
   function rInventory(){
     const d=DATA.inventory||{bags:[],speeds:[],meta:[]};
+    try{const c=localStorage.getItem(INVENTORY_MASTER_CACHE); if(c){const cb=JSON.parse(c); if(Array.isArray(cb)&&cb.length) d.bags=cb;}}catch(e){}
     const speeds=(d.speeds&&d.speeds.length)?d.speeds:[["ゆっくり",0.7],["標準",1.0],["速い",1.4]];
     let spd=parseFloat(localStorage.getItem(INVENTORY_SPD)||'1.0');
     if(!Number.isFinite(spd)) spd=1.0;
@@ -127,7 +172,7 @@ const Modes = (() => {
         <div class="bagnote"><label>Note（不足・交換など）</label><textarea data-note="${escAttr(b.bag)}" placeholder="">${esc(st.notes[b.bag]||'')}</textarea></div>
       </div>`;}).join('')}
       <div class="logibtns"><button type="button" class="bigbtn" id="invSend">スプレッドシートに送信</button>
-        <button type="button" class="logisub" id="invCsv">CSVダウンロード</button><button type="button" class="logisub" id="invCfg">⚙ 送信先設定</button></div>
+        <button type="button" class="logisub" id="invCsv">CSVダウンロード</button><button type="button" class="logisub" id="invCfg">⚙ 送信先設定</button><button type="button" class="logisub" id="invMaster">📋 物品マスターURL</button></div>
       <div id="invMsg" class="logimsg"></div>`;
     const msg=(t,c)=>{const m=R.querySelector('#invMsg');m.textContent=t;m.className='logimsg'+(c?' '+c:'');};
     /* 速度 */
@@ -220,6 +265,21 @@ const Modes = (() => {
         .then(() => msg('スプレッドシートに送信しました。シートをご確認ください'))
         .catch(e => { console.error(e); msg('送信に失敗しました。通信とURLをご確認ください', 'warn'); });
     });
+    /* 物品マスターURL設定 */
+    R.querySelector('#invMaster').addEventListener('click', () => {
+      const cur = masterUrl_(d);
+      const v = prompt('物品マスターのCSV公開URL\n（Googleスプレッドシート→ファイル→共有→ウェブに公開→CSV、または .../gviz/tq?tqx=out:csv&sheet=シート名）\n空欄で解除（同梱データに戻す）', cur);
+      if (v === null) return;
+      localStorage.setItem(INVENTORY_MASTER_URL, v.trim());
+      invMasterDone = false;
+      msg(v.trim() ? '物品マスターURLを保存しました。最新を取得します…' : '物品マスターURLを解除しました（次回は同梱データ）');
+      rInventory();
+    });
+    /* オンライン時にマスターを取得して最新化（変われば再描画） */
+    if (!invMasterDone && masterUrl_(d)) {
+      invMasterDone = true;
+      refreshMaster_(d).then(changed => { if (changed) rInventory(); });
+    }
   }
 
   /* ---------- ビギナー ---------- */
