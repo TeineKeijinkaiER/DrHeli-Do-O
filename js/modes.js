@@ -72,7 +72,7 @@ const Modes = (() => {
 
   /* ---------- ロジスティック ---------- */
   function rLogi(){
-    const d=DATA.logi||{bags:[],speeds:[],meta:[]};
+    const d=DATA.logistics||{bags:[],speeds:[],meta:[]};
     const speeds=(d.speeds&&d.speeds.length)?d.speeds:[["ゆっくり",0.7],["標準",1.0],["速い",1.4]];
     let spd=parseFloat(localStorage.getItem(LOGI_SPD)||'1.0');
     const st=JSON.parse(localStorage.getItem(LOGI_STATE)||'{}');st.checks=st.checks||{};st.notes=st.notes||{};st.meta=st.meta||{};
