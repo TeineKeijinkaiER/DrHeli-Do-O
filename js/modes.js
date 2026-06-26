@@ -115,54 +115,75 @@ const Modes = (() => {
     R.querySelectorAll('input[data-k]').forEach(c=>c.addEventListener('change',()=>{st.checks[c.dataset.k]=c.checked;save();}));
     R.querySelectorAll('input[data-meta]').forEach(i=>i.addEventListener('input',()=>{st.meta[i.dataset.meta]=i.value;save();}));
     R.querySelectorAll('textarea[data-note]').forEach(t=>t.addEventListener('input',()=>{st.notes[t.dataset.note]=t.value;save();}));
-    const HEAD=['日時',...(d.meta||[]),'バッグ','区画','品名','点検','Note'];
-    const rows=()=>{const o=[];const ts=new Date().toLocaleString('ja-JP');const meta=(d.meta||[]).map((m,i)=>st.meta[i]||'');
-      (d.bags||[]).forEach(b=>(b.sections||[]).forEach(s=>(s.items||[]).forEach(it=>{const k=key(b.bag,s.s,it.n);o.push([ts,...meta,b.bag,s.s,it.n,st.checks[k]?'OK':'',st.notes[b.bag]||'']);})));return o;};
-    R.querySelector('#logiCsv').addEventListener('click',()=>{
-      const csv=[HEAD,...rows()].map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\r\n');
-      const url=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));
-      const a=document.createElement('a');a.href=url;a.download='物品点検.csv';a.click();URL.revokeObjectURL(url);msg('CSVを保存しました');});
-    const payload=()=>({app:'DrHeli-Do-O',sentAt:new Date().toISOString(),header:HEAD,rows:rows()});
-    const postForm=(ep,data)=>{
-      const target='logiPost_'+Date.now();
-      const frame=document.createElement('iframe');
-      frame.name=target;
-      frame.style.display='none';
-      const form=document.createElement('form');
-      form.method='POST';
-      form.action=ep;
-      form.target=target;
-      form.enctype='application/x-www-form-urlencoded';
-      form.acceptCharset='UTF-8';
-      form.style.display='none';
-      const input=document.createElement('input');
-      input.type='hidden';
-      input.name='payload';
-      input.value=JSON.stringify(data);
-      form.appendChild(input);
-      document.body.appendChild(frame);
-      document.body.appendChild(form);
-      form.submit();
-      setTimeout(()=>{form.remove();frame.remove();},15000);
+    const HEAD = ['日時', ...(d.meta || [])];
+    (d.bags || []).forEach(b => { HEAD.push(`Note: ${b.bag}`); });
+    (d.bags || []).forEach(b => {
+      (b.sections || []).forEach(s => {
+        (s.items || []).forEach(it => {
+          HEAD.push(`[${b.bag}] ${s.s} > ${it.n}`);
+        });
+      });
+    });
+
+    const rows = () => {
+      const ts = new Date().toLocaleString('ja-JP');
+      const meta = (d.meta || []).map((m, i) => st.meta[i] || '');
+      const row = [ts, ...meta];
+      (d.bags || []).forEach(b => { row.push(st.notes[b.bag] || ''); });
+      (d.bags || []).forEach(b => {
+        (b.sections || []).forEach(s => {
+          (s.items || []).forEach(it => {
+            const k = key(b.bag, s.s, it.n);
+            row.push(st.checks[k] ? 'OK' : '');
+          });
+        });
+      });
+      return [row];
     };
-    R.querySelector('#logiCfg').addEventListener('click',()=>{
-      const cur=endpoint();
-      const v=prompt('Apps Script ウェブアプリ URL（script.google.com/macros/s/…/exec）を入力。スプレッドシートのURLは不可',cur);
-      if(v===null)return;
-      const u=v.trim();
-      if(u && !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(u)){
-        msg('そのURLは受け口ではありません。Apps Scriptを「ウェブアプリ」公開して得た script.google.com/macros/s/…/exec を入れてください（スプレッドシートのURLは不可）','warn');return;}
-      localStorage.setItem(LOGI_EP,u);msg('送信先URLを保存しました');});
-    R.querySelector('#logiSend').addEventListener('click',()=>{
-      const ep=endpoint();
-      if(!ep){msg('先に「⚙ 送信先設定」でURLを設定してください（CSVダウンロードも可）','warn');return;}
-      if(/docs\.google\.com\/spreadsheets/.test(ep)){msg('送信先がスプレッドシートのURLになっています。Apps Scriptの …/exec URL に設定し直してください','warn');return;}
-      try{
-        postForm(ep,payload());
-        msg('フォームPOSTで送信しました。スプレッドシートをご確認ください');
-      }catch(e){
-        msg('送信に失敗しました。通信とURLをご確認ください','warn');
-      }});
+
+    R.querySelector('#logiCsv').addEventListener('click', () => {
+      const csv = [HEAD, ...rows()].map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+      const url = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' }));
+      const a = document.createElement('a'); a.href = url; a.download = '物品点検.csv'; a.click(); URL.revokeObjectURL(url); msg('CSVを保存しました');
+    });
+
+    const appName = location.pathname.includes('DrHeli-Do-O') || location.hostname.includes('teinekeijinkaier.github.io') ? 'DrHeli-Do-O' : 'DO-O';
+    const payload = () => ({ app: appName, sentAt: new Date().toISOString(), header: HEAD, rows: rows() });
+
+    const sendFetch = (ep, data) => {
+      return fetch(ep, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'payload=' + encodeURIComponent(JSON.stringify(data))
+      });
+    };
+
+    R.querySelector('#logiCfg').addEventListener('click', () => {
+      const cur = endpoint();
+      const v = prompt('Apps Script ウェブアプリ URL（script.google.com/macros/s/…/exec）を入力。スプレッドシートのURLは不可', cur);
+      if (v === null) return;
+      const u = v.trim();
+      if (u && !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(u)) {
+        msg('そのURLは受け口ではありません。Apps Scriptを「ウェブアプリ」公開して得た script.google.com/macros/s/…/exec を入れてください（スプレッドシートのURLは不可）', 'warn'); return;
+      }
+      localStorage.setItem(LOGI_EP, u); msg('送信先URLを保存しました');
+    });
+
+    R.querySelector('#logiSend').addEventListener('click', () => {
+      const ep = endpoint();
+      if (!ep) { msg('先に「⚙ 送信先設定」でURLを設定してください（CSVダウンロードも可）', 'warn'); return; }
+      if (/docs\.google\.com\/spreadsheets/.test(ep)) { msg('送信先がスプレッドシートのURLになっています。Apps Scriptの …/exec URL に設定し直してください', 'warn'); return; }
+      msg('送信中...');
+      sendFetch(ep, payload())
+        .then(() => {
+          msg('スプレッドシートに送信しました。シートをご確認ください');
+        })
+        .catch(e => {
+          console.error(e);
+          msg('送信に失敗しました。通信とURLをご確認ください', 'warn');
+        });
+    });
   }
 
   /* ---------- ビギナー ---------- */
