@@ -13,7 +13,7 @@
         "rp": "北海道消防学校",
         "lat": 43.102689,
         "lng": 141.521589,
-        "heliFlightMin": 11,
+        "heliFlightMin": 9,
         "heliHelipadMin": 6,
         "rpCount": 29,
         "groundToBaseMin": 35,
@@ -31,7 +31,14 @@
             "min": 30
           }
         ],
-        "heliDistanceKm": 22
+        "heliDistanceKm": 22.1,
+        "heliFlightReg": 10,
+        "heliFlightN": 28,
+        "heliFlightIqr": [
+          8,
+          10
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -49,7 +56,7 @@
         "rp": "北広島地区河川防災ステーション",
         "lat": 42.996385,
         "lng": 141.584642,
-        "heliFlightMin": 13,
+        "heliFlightMin": 11,
         "heliHelipadMin": 6,
         "rpCount": 16,
         "groundToBaseMin": 50,
@@ -67,7 +74,14 @@
             "min": 45
           }
         ],
-        "heliDistanceKm": 30
+        "heliDistanceKm": 30.1,
+        "heliFlightReg": 12,
+        "heliFlightN": 15,
+        "heliFlightIqr": [
+          10,
+          12
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -85,7 +99,7 @@
         "rp": "陸上自衛隊北恵庭駐屯地",
         "lat": 42.8299,
         "lng": 141.628083,
-        "heliFlightMin": 14,
+        "heliFlightMin": 12,
         "heliHelipadMin": 6,
         "rpCount": 16,
         "groundToBaseMin": 55,
@@ -103,7 +117,14 @@
             "min": 55
           }
         ],
-        "heliDistanceKm": 44
+        "heliDistanceKm": 44.0,
+        "heliFlightReg": 16,
+        "heliFlightN": 15,
+        "heliFlightIqr": [
+          12,
+          12
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -121,7 +142,7 @@
         "rp": "千歳市民病院",
         "lat": 42.843677,
         "lng": 141.639824,
-        "heliFlightMin": 15,
+        "heliFlightMin": 14,
         "heliHelipadMin": 6,
         "rpCount": 12,
         "groundToBaseMin": 55,
@@ -139,7 +160,14 @@
             "min": 55
           }
         ],
-        "heliDistanceKm": 44
+        "heliDistanceKm": 43.6,
+        "heliFlightReg": 16,
+        "heliFlightN": 9,
+        "heliFlightIqr": [
+          13,
+          15
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -157,7 +185,7 @@
         "rp": "石狩湾新港支署",
         "lat": 43.1713,
         "lng": 141.3155,
-        "heliFlightMin": 6,
+        "heliFlightMin": 17,
         "heliHelipadMin": 6,
         "rpCount": 6,
         "groundToBaseMin": 35,
@@ -167,40 +195,64 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 8
+        "heliDistanceKm": 8.5,
+        "heliFlightReg": 7,
+        "heliFlightN": 5,
+        "heliFlightIqr": [
+          16,
+          18
+        ],
+        "heliFlightSource": "実績中央値"
       },
       {
         "rp": "浜益コミュニティーセンターきらり",
         "lat": 43.601055,
         "lng": 141.383149,
-        "heliFlightMin": 18,
+        "heliFlightMin": 17,
         "heliHelipadMin": 6,
         "rpCount": 8,
         "groundToBaseMin": 85,
         "hospitalTimes": [],
-        "heliDistanceKm": 55
+        "heliDistanceKm": 55.4,
+        "heliFlightReg": 19,
+        "heliFlightN": 7,
+        "heliFlightIqr": [
+          17,
+          18
+        ],
+        "heliFlightSource": "実績中央値"
       },
       {
         "rp": "望来コミュニセンターみなくる",
         "lat": 43.317769654044994,
         "lng": 141.41826171556238,
-        "heliFlightMin": 9,
+        "heliFlightMin": 11,
         "heliHelipadMin": 6,
         "rpCount": 12,
         "groundToBaseMin": 45,
         "hospitalTimes": [],
-        "heliDistanceKm": 27
+        "heliDistanceKm": 26.6,
+        "heliFlightReg": 11,
+        "heliFlightN": 0,
+        "heliFlightSource": "回帰推定"
       },
       {
         "rp": "厚田中学校",
         "lat": 43.402128938321205,
         "lng": 141.43221460132258,
-        "heliFlightMin": 12,
+        "heliFlightMin": 15,
         "heliHelipadMin": 6,
         "rpCount": 3,
         "groundToBaseMin": 55,
         "hospitalTimes": [],
-        "heliDistanceKm": 35
+        "heliDistanceKm": 35.5,
+        "heliFlightReg": 14,
+        "heliFlightN": 3,
+        "heliFlightIqr": [
+          14,
+          22
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -218,7 +270,7 @@
         "rp": "当別消防署",
         "lat": 43.2201,
         "lng": 141.5087,
-        "heliFlightMin": 12,
+        "heliFlightMin": 9,
         "heliHelipadMin": 6,
         "rpCount": 26,
         "groundToBaseMin": 50,
@@ -236,7 +288,14 @@
             "min": 50
           }
         ],
-        "heliDistanceKm": 24
+        "heliDistanceKm": 24.2,
+        "heliFlightReg": 11,
+        "heliFlightN": 25,
+        "heliFlightIqr": [
+          8,
+          14
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -254,7 +313,7 @@
         "rp": "新篠津運動公園第2サッカー場",
         "lat": 43.223636051814275,
         "lng": 141.64970922887173,
-        "heliFlightMin": 14,
+        "heliFlightMin": 12,
         "heliHelipadMin": 6,
         "rpCount": 3,
         "groundToBaseMin": 55,
@@ -264,7 +323,14 @@
             "min": 45
           }
         ],
-        "heliDistanceKm": 35
+        "heliDistanceKm": 34.7,
+        "heliFlightReg": 13,
+        "heliFlightN": 4,
+        "heliFlightIqr": [
+          12,
+          12
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -292,13 +358,20 @@
             "min": 0
           }
         ],
-        "heliDistanceKm": 21
+        "heliDistanceKm": 21.3,
+        "heliFlightReg": 10,
+        "heliFlightN": 4,
+        "heliFlightIqr": [
+          7,
+          13
+        ],
+        "heliFlightSource": "実績中央値"
       },
       {
         "rp": "朝里川温泉スキー場",
         "lat": 43.14305437036121,
         "lng": 141.03696305852927,
-        "heliFlightMin": 7,
+        "heliFlightMin": 10,
         "heliHelipadMin": 6,
         "rpCount": 2,
         "groundToBaseMin": 26,
@@ -307,7 +380,15 @@
             "name": "小樽市立病院",
             "min": 14
           }
-        ]
+        ],
+        "heliDistanceKm": 17.6,
+        "heliFlightReg": 9,
+        "heliFlightN": 2,
+        "heliFlightIqr": [
+          8,
+          11
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -325,7 +406,7 @@
         "rp": "余市農道空港",
         "lat": 43.171291467501156,
         "lng": 140.80745330996683,
-        "heliFlightMin": 15,
+        "heliFlightMin": 12,
         "heliHelipadMin": 6,
         "rpCount": 8,
         "groundToBaseMin": 45,
@@ -339,7 +420,14 @@
             "min": 6
           }
         ],
-        "heliDistanceKm": 36
+        "heliDistanceKm": 36.5,
+        "heliFlightReg": 14,
+        "heliFlightN": 8,
+        "heliFlightIqr": [
+          12,
+          13
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -357,7 +445,7 @@
         "rp": "仁木支署",
         "lat": 43.1540304373008,
         "lng": 140.7640617836927,
-        "heliFlightMin": 15,
+        "heliFlightMin": 13,
         "heliHelipadMin": 6,
         "rpCount": 46,
         "groundToBaseMin": 50,
@@ -371,7 +459,14 @@
             "min": 12
           }
         ],
-        "heliDistanceKm": 40
+        "heliDistanceKm": 39.7,
+        "heliFlightReg": 15,
+        "heliFlightN": 46,
+        "heliFlightIqr": [
+          13,
+          15
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -389,7 +484,7 @@
         "rp": "赤井川支署",
         "lat": 43.0835,
         "lng": 140.8136,
-        "heliFlightMin": 14,
+        "heliFlightMin": 12,
         "heliHelipadMin": 6,
         "rpCount": 7,
         "groundToBaseMin": 55,
@@ -403,7 +498,14 @@
             "min": 18
           }
         ],
-        "heliDistanceKm": 36
+        "heliDistanceKm": 35.5,
+        "heliFlightReg": 14,
+        "heliFlightN": 7,
+        "heliFlightIqr": [
+          12,
+          12
+        ],
+        "heliFlightSource": "実績中央値"
       },
       {
         "rp": "キロロ",
@@ -419,7 +521,10 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 22
+        "heliDistanceKm": 21.7,
+        "heliFlightReg": 10,
+        "heliFlightN": 0,
+        "heliFlightSource": "回帰推定"
       }
     ]
   },
@@ -451,7 +556,14 @@
             "min": 26
           }
         ],
-        "heliDistanceKm": 52
+        "heliDistanceKm": 52.1,
+        "heliFlightReg": 18,
+        "heliFlightN": 16,
+        "heliFlightIqr": [
+          16,
+          21
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -469,7 +581,7 @@
         "rp": "美国中学校",
         "lat": 43.291020505656995,
         "lng": 140.59346634852344,
-        "heliFlightMin": 19,
+        "heliFlightMin": 18,
         "heliHelipadMin": 6,
         "rpCount": 9,
         "groundToBaseMin": 75,
@@ -483,7 +595,14 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 57
+        "heliDistanceKm": 56.8,
+        "heliFlightReg": 19,
+        "heliFlightN": 9,
+        "heliFlightIqr": [
+          17,
+          27
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -515,7 +634,14 @@
             "min": 4
           }
         ],
-        "heliDistanceKm": 46
+        "heliDistanceKm": 46.3,
+        "heliFlightReg": 16,
+        "heliFlightN": 76,
+        "heliFlightIqr": [
+          15,
+          18
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -547,7 +673,14 @@
             "min": 24
           }
         ],
-        "heliDistanceKm": 56
+        "heliDistanceKm": 56.4,
+        "heliFlightReg": 19,
+        "heliFlightN": 9,
+        "heliFlightIqr": [
+          18,
+          21
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -565,7 +698,7 @@
         "rp": "蘭越山村広場",
         "lat": 42.808835415661285,
         "lng": 140.52532272685065,
-        "heliFlightMin": 21,
+        "heliFlightMin": 22,
         "heliHelipadMin": 6,
         "rpCount": 16,
         "groundToBaseMin": 120,
@@ -579,7 +712,10 @@
             "min": 40
           }
         ],
-        "heliDistanceKm": 68
+        "heliDistanceKm": 67.9,
+        "heliFlightReg": 22,
+        "heliFlightN": 0,
+        "heliFlightSource": "回帰推定"
       }
     ]
   },
@@ -615,7 +751,14 @@
             "min": 14
           }
         ],
-        "heliDistanceKm": 54
+        "heliDistanceKm": 53.7,
+        "heliFlightReg": 18,
+        "heliFlightN": 15,
+        "heliFlightIqr": [
+          16,
+          18
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -651,7 +794,14 @@
             "min": 7
           }
         ],
-        "heliDistanceKm": 61
+        "heliDistanceKm": 60.5,
+        "heliFlightReg": 20,
+        "heliFlightN": 36,
+        "heliFlightIqr": [
+          19,
+          21
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -669,7 +819,7 @@
         "rp": "泊村公民館",
         "lat": 43.057317868023745,
         "lng": 140.49854559355745,
-        "heliFlightMin": 20,
+        "heliFlightMin": 19,
         "heliHelipadMin": 6,
         "rpCount": 14,
         "groundToBaseMin": 85,
@@ -687,7 +837,14 @@
             "min": 18
           }
         ],
-        "heliDistanceKm": 61
+        "heliDistanceKm": 61.3,
+        "heliFlightReg": 20,
+        "heliFlightN": 14,
+        "heliFlightIqr": [
+          16,
+          20
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -705,7 +862,7 @@
         "rp": "神恵内村総合グラウンド",
         "lat": 43.145409898445656,
         "lng": 140.42436446758913,
-        "heliFlightMin": 21,
+        "heliFlightMin": 32,
         "heliHelipadMin": 6,
         "rpCount": 2,
         "groundToBaseMin": 110,
@@ -723,7 +880,14 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 67
+        "heliDistanceKm": 67.1,
+        "heliFlightReg": 22,
+        "heliFlightN": 2,
+        "heliFlightIqr": [
+          28,
+          36
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -759,7 +923,14 @@
             "min": 50
           }
         ],
-        "heliDistanceKm": 90
+        "heliDistanceKm": 90.4,
+        "heliFlightReg": 28,
+        "heliFlightN": 27,
+        "heliFlightIqr": [
+          25,
+          29
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -777,7 +948,7 @@
         "rp": "黒松内防災へリポート",
         "lat": 42.68247177656002,
         "lng": 140.302909361635,
-        "heliFlightMin": 26,
+        "heliFlightMin": 28,
         "heliHelipadMin": 6,
         "rpCount": 3,
         "groundToBaseMin": 140,
@@ -795,7 +966,14 @@
             "min": 50
           }
         ],
-        "heliDistanceKm": 91
+        "heliDistanceKm": 90.7,
+        "heliFlightReg": 28,
+        "heliFlightN": 3,
+        "heliFlightIqr": [
+          28,
+          28
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -813,7 +991,7 @@
         "rp": "島牧村千走地区山村広場",
         "lat": 42.68613500579408,
         "lng": 140.01248561044144,
-        "heliFlightMin": 29,
+        "heliFlightMin": 33,
         "heliHelipadMin": 6,
         "rpCount": 2,
         "groundToBaseMin": 170,
@@ -831,7 +1009,14 @@
             "min": 80
           }
         ],
-        "heliDistanceKm": 111
+        "heliDistanceKm": 111.3,
+        "heliFlightReg": 33,
+        "heliFlightN": 2,
+        "heliFlightIqr": [
+          32,
+          34
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -863,7 +1048,10 @@
             "min": 22
           }
         ],
-        "heliDistanceKm": 41
+        "heliDistanceKm": 41.3,
+        "heliFlightReg": 15,
+        "heliFlightN": 0,
+        "heliFlightSource": "回帰推定"
       }
     ]
   },
@@ -881,7 +1069,7 @@
         "rp": "中山峠（喜茂別）",
         "lat": 42.8568047498227,
         "lng": 141.0965464376804,
-        "heliFlightMin": 16,
+        "heliFlightMin": 12,
         "heliHelipadMin": 6,
         "rpCount": 7,
         "groundToBaseMin": 85,
@@ -899,7 +1087,10 @@
             "min": 50
           }
         ],
-        "heliDistanceKm": 31
+        "heliDistanceKm": 31.0,
+        "heliFlightReg": 12,
+        "heliFlightN": 0,
+        "heliFlightSource": "回帰推定"
       }
     ]
   },
@@ -931,7 +1122,14 @@
             "min": 40
           }
         ],
-        "heliDistanceKm": 49
+        "heliDistanceKm": 49.2,
+        "heliFlightReg": 17,
+        "heliFlightN": 4,
+        "heliFlightIqr": [
+          17,
+          21
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -949,7 +1147,7 @@
         "rp": "真狩村除雪センター",
         "lat": 42.76354807537136,
         "lng": 140.78973120944624,
-        "heliFlightMin": 18,
+        "heliFlightMin": 20,
         "heliHelipadMin": 6,
         "rpCount": 11,
         "groundToBaseMin": 120,
@@ -963,7 +1161,14 @@
             "min": 28
           }
         ],
-        "heliDistanceKm": 54
+        "heliDistanceKm": 53.9,
+        "heliFlightReg": 18,
+        "heliFlightN": 11,
+        "heliFlightIqr": [
+          18,
+          20
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -981,7 +1186,7 @@
         "rp": "中島公園野球場",
         "lat": 42.35361061144519,
         "lng": 141.0247634267625,
-        "heliFlightMin": 26,
+        "heliFlightMin": 27,
         "heliHelipadMin": 6,
         "rpCount": 3,
         "groundToBaseMin": 100,
@@ -995,7 +1200,14 @@
             "min": 14
           }
         ],
-        "heliDistanceKm": 86
+        "heliDistanceKm": 86.3,
+        "heliFlightReg": 27,
+        "heliFlightN": 3,
+        "heliFlightIqr": [
+          26,
+          28
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1013,7 +1225,7 @@
         "rp": "登別市街",
         "lat": 42.41250359230969,
         "lng": 141.10680001513256,
-        "heliFlightMin": 23,
+        "heliFlightMin": 25,
         "heliHelipadMin": 6,
         "rpCount": null,
         "groundToBaseMin": 100,
@@ -1027,7 +1239,10 @@
             "min": 26
           }
         ],
-        "heliDistanceKm": 79
+        "heliDistanceKm": 78.7,
+        "heliFlightReg": 25,
+        "heliFlightN": 0,
+        "heliFlightSource": "回帰推定"
       }
     ]
   },
@@ -1045,7 +1260,7 @@
         "rp": "上長和駐車公園",
         "lat": 42.50899468602918,
         "lng": 140.86193544376266,
-        "heliFlightMin": 23,
+        "heliFlightMin": 29,
         "heliHelipadMin": 6,
         "rpCount": 3,
         "groundToBaseMin": 120,
@@ -1063,13 +1278,20 @@
             "min": 8
           }
         ],
-        "heliDistanceKm": 74
+        "heliDistanceKm": 74.2,
+        "heliFlightReg": 24,
+        "heliFlightN": 2,
+        "heliFlightIqr": [
+          29,
+          29
+        ],
+        "heliFlightSource": "実績中央値"
       },
       {
         "rp": "大滝総合運動公園",
         "lat": 42.64839251987832,
         "lng": 141.06255838240082,
-        "heliFlightMin": 17,
+        "heliFlightMin": 27,
         "heliHelipadMin": 6,
         "rpCount": 3,
         "groundToBaseMin": 110,
@@ -1087,7 +1309,14 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 54
+        "heliDistanceKm": 53.8,
+        "heliFlightReg": 18,
+        "heliFlightN": 2,
+        "heliFlightIqr": [
+          22,
+          32
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1105,7 +1334,7 @@
         "rp": "望羊台広場",
         "lat": 42.666048353646474,
         "lng": 140.83681003961667,
-        "heliFlightMin": 22,
+        "heliFlightMin": 20,
         "heliHelipadMin": 6,
         "rpCount": 3,
         "groundToBaseMin": 130,
@@ -1123,7 +1352,10 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 60
+        "heliDistanceKm": 59.9,
+        "heliFlightReg": 20,
+        "heliFlightN": 0,
+        "heliFlightSource": "回帰推定"
       }
     ]
   },
@@ -1158,7 +1390,15 @@
             "name": "伊達赤十字病院",
             "min": 16
           }
-        ]
+        ],
+        "heliDistanceKm": 68.7,
+        "heliFlightReg": 22,
+        "heliFlightN": 2,
+        "heliFlightIqr": [
+          20,
+          22
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1176,7 +1416,7 @@
         "rp": "白老町消防本部",
         "lat": 42.52666255705174,
         "lng": 141.32010709827415,
-        "heliFlightMin": 20,
+        "heliFlightMin": 22,
         "heliHelipadMin": 6,
         "rpCount": 5,
         "groundToBaseMin": 80,
@@ -1194,7 +1434,14 @@
             "min": 50
           }
         ],
-        "heliDistanceKm": 65
+        "heliDistanceKm": 65.4,
+        "heliFlightReg": 21,
+        "heliFlightN": 5,
+        "heliFlightIqr": [
+          20,
+          25
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1212,7 +1459,7 @@
         "rp": "苫小牧市消防本部",
         "lat": 42.669897813573485,
         "lng": 141.65329930393108,
-        "heliFlightMin": 19,
+        "heliFlightMin": 16,
         "heliHelipadMin": 6,
         "rpCount": 23,
         "groundToBaseMin": 65,
@@ -1226,7 +1473,14 @@
             "min": 16
           }
         ],
-        "heliDistanceKm": 59
+        "heliDistanceKm": 59.2,
+        "heliFlightReg": 20,
+        "heliFlightN": 23,
+        "heliFlightIqr": [
+          12,
+          19
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1244,7 +1498,7 @@
         "rp": "はだしの広場",
         "lat": 42.76988304844238,
         "lng": 141.82472625667822,
-        "heliFlightMin": 19,
+        "heliFlightMin": 21,
         "heliHelipadMin": 6,
         "rpCount": 8,
         "groundToBaseMin": 75,
@@ -1258,7 +1512,14 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 60
+        "heliDistanceKm": 60.4,
+        "heliFlightReg": 20,
+        "heliFlightN": 7,
+        "heliFlightIqr": [
+          19,
+          22
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1276,7 +1537,7 @@
         "rp": "厚真IC旋回場",
         "lat": 42.62397503331541,
         "lng": 141.83971110887433,
-        "heliFlightMin": 21,
+        "heliFlightMin": 26,
         "heliHelipadMin": 6,
         "rpCount": 11,
         "groundToBaseMin": 65,
@@ -1290,7 +1551,14 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 67
+        "heliDistanceKm": 72.5,
+        "heliFlightReg": 23,
+        "heliFlightN": 10,
+        "heliFlightIqr": [
+          23,
+          27
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1308,7 +1576,7 @@
         "rp": "鵡川左岸ヘリポート",
         "lat": 42.75802431181793,
         "lng": 142.1388110435187,
-        "heliFlightMin": 24,
+        "heliFlightMin": 28,
         "heliHelipadMin": 6,
         "rpCount": 8,
         "groundToBaseMin": 120,
@@ -1322,7 +1590,14 @@
             "min": 80
           }
         ],
-        "heliDistanceKm": 81
+        "heliDistanceKm": 82.4,
+        "heliFlightReg": 26,
+        "heliFlightN": 7,
+        "heliFlightIqr": [
+          26,
+          28
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1340,7 +1615,7 @@
         "rp": "豊浦ふるさとドーム駐車場",
         "lat": 42.58683746247152,
         "lng": 140.7018576417762,
-        "heliFlightMin": 22,
+        "heliFlightMin": 23,
         "heliHelipadMin": 6,
         "rpCount": 1,
         "groundToBaseMin": 140,
@@ -1357,7 +1632,15 @@
             "name": "伊達赤十字病院",
             "min": 30
           }
-        ]
+        ],
+        "heliDistanceKm": 73.5,
+        "heliFlightReg": 23,
+        "heliFlightN": 1,
+        "heliFlightIqr": [
+          23,
+          23
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1375,7 +1658,7 @@
         "rp": "岩見沢市野球場駐車場",
         "lat": 43.16427378198946,
         "lng": 141.8132156385144,
-        "heliFlightMin": 16,
+        "heliFlightMin": 13,
         "heliHelipadMin": 6,
         "rpCount": 1,
         "groundToBaseMin": 55,
@@ -1393,7 +1676,14 @@
             "min": 40
           }
         ],
-        "heliDistanceKm": 44
+        "heliDistanceKm": 46.1,
+        "heliFlightReg": 16,
+        "heliFlightN": 1,
+        "heliFlightIqr": [
+          13,
+          13
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1424,7 +1714,15 @@
             "name": "札幌徳洲会病院",
             "min": 50
           }
-        ]
+        ],
+        "heliDistanceKm": 55.7,
+        "heliFlightReg": 19,
+        "heliFlightN": 7,
+        "heliFlightIqr": [
+          10,
+          21
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1442,7 +1740,7 @@
         "rp": "桂沢スキー場駐車場",
         "lat": 43.25221475716454,
         "lng": 141.98049412804687,
-        "heliFlightMin": 20,
+        "heliFlightMin": 21,
         "heliHelipadMin": 6,
         "rpCount": 14,
         "groundToBaseMin": 70,
@@ -1460,7 +1758,14 @@
             "min": 16
           }
         ],
-        "heliDistanceKm": 63
+        "heliDistanceKm": 61.3,
+        "heliFlightReg": 20,
+        "heliFlightN": 13,
+        "heliFlightIqr": [
+          19,
+          25
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1492,7 +1797,14 @@
             "min": 10
           }
         ],
-        "heliDistanceKm": 63
+        "heliDistanceKm": 63.1,
+        "heliFlightReg": 21,
+        "heliFlightN": 34,
+        "heliFlightIqr": [
+          19,
+          23
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1510,7 +1822,7 @@
         "rp": "南幌町総合保安センター",
         "lat": 43.059733380515176,
         "lng": 141.65266185838072,
-        "heliFlightMin": 14,
+        "heliFlightMin": 11,
         "heliHelipadMin": 6,
         "rpCount": 19,
         "groundToBaseMin": 45,
@@ -1520,7 +1832,14 @@
             "min": 14
           }
         ],
-        "heliDistanceKm": 33
+        "heliDistanceKm": 33.3,
+        "heliFlightReg": 13,
+        "heliFlightN": 18,
+        "heliFlightIqr": [
+          11,
+          14
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1538,7 +1857,7 @@
         "rp": "りふれ公園",
         "lat": 43.00342050680974,
         "lng": 141.68732449219556,
-        "heliFlightMin": 15,
+        "heliFlightMin": 14,
         "heliHelipadMin": 6,
         "rpCount": 3,
         "groundToBaseMin": 55,
@@ -1547,7 +1866,15 @@
             "name": "町立長沼病院",
             "min": 3
           }
-        ]
+        ],
+        "heliDistanceKm": 37.6,
+        "heliFlightReg": 14,
+        "heliFlightN": 4,
+        "heliFlightIqr": [
+          13,
+          29
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1565,7 +1892,7 @@
         "rp": "由仁消防前",
         "lat": 42.99894289968756,
         "lng": 141.78964277878828,
-        "heliFlightMin": 16,
+        "heliFlightMin": 18,
         "heliHelipadMin": 6,
         "rpCount": 8,
         "groundToBaseMin": 60,
@@ -1575,7 +1902,14 @@
             "min": 16
           }
         ],
-        "heliDistanceKm": 46
+        "heliDistanceKm": 45.7,
+        "heliFlightReg": 16,
+        "heliFlightN": 8,
+        "heliFlightIqr": [
+          15,
+          20
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1593,7 +1927,7 @@
         "rp": "栗山小学校",
         "lat": 43.05560022811103,
         "lng": 141.78073461555883,
-        "heliFlightMin": 16,
+        "heliFlightMin": 11,
         "heliHelipadMin": 6,
         "rpCount": 3,
         "groundToBaseMin": 60,
@@ -1603,7 +1937,14 @@
             "min": 18
           }
         ],
-        "heliDistanceKm": 44
+        "heliDistanceKm": 43.6,
+        "heliFlightReg": 16,
+        "heliFlightN": 3,
+        "heliFlightIqr": [
+          6,
+          12
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1621,7 +1962,7 @@
         "rp": "月形支署",
         "lat": 43.33701498899916,
         "lng": 141.66795503535923,
-        "heliFlightMin": 16,
+        "heliFlightMin": 15,
         "heliHelipadMin": 6,
         "rpCount": 8,
         "groundToBaseMin": 70,
@@ -1631,7 +1972,14 @@
             "min": 30
           }
         ],
-        "heliDistanceKm": 42
+        "heliDistanceKm": 42.1,
+        "heliFlightReg": 15,
+        "heliFlightN": 7,
+        "heliFlightIqr": [
+          15,
+          16
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1649,7 +1997,7 @@
         "rp": "富川東防災広場",
         "lat": 42.49798314326513,
         "lng": 142.05392976835796,
-        "heliFlightMin": 27,
+        "heliFlightMin": 31,
         "heliHelipadMin": 6,
         "rpCount": 16,
         "groundToBaseMin": 85,
@@ -1663,7 +2011,14 @@
             "min": 50
           }
         ],
-        "heliDistanceKm": 97
+        "heliDistanceKm": 94.7,
+        "heliFlightReg": 29,
+        "heliFlightN": 15,
+        "heliFlightIqr": [
+          28,
+          32
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1681,7 +2036,7 @@
         "rp": "親水公園",
         "lat": 42.58699366155127,
         "lng": 142.1397160794922,
-        "heliFlightMin": 26,
+        "heliFlightMin": 30,
         "heliHelipadMin": 6,
         "rpCount": 12,
         "groundToBaseMin": 100,
@@ -1694,7 +2049,15 @@
             "name": "苫小牧市立病院",
             "min": 55
           }
-        ]
+        ],
+        "heliDistanceKm": 93.2,
+        "heliFlightReg": 29,
+        "heliFlightN": 11,
+        "heliFlightIqr": [
+          29,
+          32
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1712,7 +2075,7 @@
         "rp": "新冠支署",
         "lat": 42.361998454310076,
         "lng": 142.31214685446164,
-        "heliFlightMin": 32,
+        "heliFlightMin": 25,
         "heliHelipadMin": 6,
         "rpCount": 4,
         "groundToBaseMin": 110,
@@ -1726,7 +2089,14 @@
             "min": 70
           }
         ],
-        "heliDistanceKm": 121
+        "heliDistanceKm": 120.4,
+        "heliFlightReg": 36,
+        "heliFlightN": 4,
+        "heliFlightIqr": [
+          17,
+          35
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1744,7 +2114,7 @@
         "rp": "静内川右岸イベント広場",
         "lat": 42.338245422981814,
         "lng": 142.3771156893487,
-        "heliFlightMin": 33,
+        "heliFlightMin": 36,
         "heliHelipadMin": 6,
         "rpCount": 46,
         "groundToBaseMin": 130,
@@ -1762,7 +2132,14 @@
             "min": 85
           }
         ],
-        "heliDistanceKm": 125
+        "heliDistanceKm": 126.1,
+        "heliFlightReg": 37,
+        "heliFlightN": 42,
+        "heliFlightIqr": [
+          28,
+          40
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   },
@@ -1780,7 +2157,7 @@
         "rp": "浦河野球場",
         "lat": 42.16482501795506,
         "lng": 142.77725766185083,
-        "heliFlightMin": 41,
+        "heliFlightMin": 50,
         "heliHelipadMin": 6,
         "rpCount": 12,
         "groundToBaseMin": 170,
@@ -1798,7 +2175,14 @@
             "min": 140
           }
         ],
-        "heliDistanceKm": 163
+        "heliDistanceKm": 163.5,
+        "heliFlightReg": 47,
+        "heliFlightN": 12,
+        "heliFlightIqr": [
+          47,
+          54
+        ],
+        "heliFlightSource": "実績中央値"
       }
     ]
   }
