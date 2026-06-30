@@ -75,7 +75,7 @@
           }
         ],
         "heliDistanceKm": 30.1,
-        "heliFlightReg": 12,
+        "heliFlightReg": 13,
         "heliFlightN": 15,
         "heliFlightIqr": [
           10,
@@ -97,8 +97,8 @@
     "points": [
       {
         "rp": "陸上自衛隊北恵庭駐屯地",
-        "lat": 42.8299,
-        "lng": 141.628083,
+        "lat": 42.89324685007819,
+        "lng": 141.5614652115365,
         "heliFlightMin": 12,
         "heliHelipadMin": 6,
         "rpCount": 16,
@@ -117,8 +117,8 @@
             "min": 55
           }
         ],
-        "heliDistanceKm": 44.0,
-        "heliFlightReg": 16,
+        "heliDistanceKm": 35.2,
+        "heliFlightReg": 14,
         "heliFlightN": 15,
         "heliFlightIqr": [
           12,
@@ -808,7 +808,7 @@
           }
         ],
         "heliDistanceKm": 60.5,
-        "heliFlightReg": 20,
+        "heliFlightReg": 21,
         "heliFlightN": 36,
         "heliFlightIqr": [
           19,
@@ -1379,11 +1379,11 @@
         "heliFlightReg": 20,
         "heliFlightN": 3,
         "heliFlightSource": "回帰推定",
-        "heliFlightObsMed": 46,
         "heliFlightIqr": [
           30,
           48
-        ]
+        ],
+        "heliFlightObsMed": 46
       }
     ]
   },
@@ -1896,7 +1896,7 @@
           }
         ],
         "heliDistanceKm": 37.6,
-        "heliFlightReg": 14,
+        "heliFlightReg": 15,
         "heliFlightN": 4,
         "heliFlightIqr": [
           13,
@@ -2205,7 +2205,7 @@
           }
         ],
         "heliDistanceKm": 163.5,
-        "heliFlightReg": 47,
+        "heliFlightReg": 48,
         "heliFlightN": 12,
         "heliFlightIqr": [
           47,
