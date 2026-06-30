@@ -185,7 +185,7 @@
         "rp": "石狩湾新港支署",
         "lat": 43.1713,
         "lng": 141.3155,
-        "heliFlightMin": 17,
+        "heliFlightMin": 7,
         "heliHelipadMin": 6,
         "rpCount": 6,
         "groundToBaseMin": 35,
@@ -202,7 +202,8 @@
           16,
           18
         ],
-        "heliFlightSource": "実績中央値"
+        "heliFlightSource": "回帰推定",
+        "heliFlightObsMed": 17
       },
       {
         "rp": "浜益コミュニティーセンターきらり",
@@ -862,7 +863,7 @@
         "rp": "神恵内村総合グラウンド",
         "lat": 43.145409898445656,
         "lng": 140.42436446758913,
-        "heliFlightMin": 32,
+        "heliFlightMin": 22,
         "heliHelipadMin": 6,
         "rpCount": 2,
         "groundToBaseMin": 110,
@@ -887,7 +888,8 @@
           28,
           36
         ],
-        "heliFlightSource": "実績中央値"
+        "heliFlightSource": "回帰推定",
+        "heliFlightObsMed": 32
       }
     ]
   },
@@ -1291,7 +1293,7 @@
         "rp": "大滝総合運動公園",
         "lat": 42.64839251987832,
         "lng": 141.06255838240082,
-        "heliFlightMin": 27,
+        "heliFlightMin": 18,
         "heliHelipadMin": 6,
         "rpCount": 3,
         "groundToBaseMin": 110,
@@ -1316,7 +1318,8 @@
           22,
           32
         ],
-        "heliFlightSource": "実績中央値"
+        "heliFlightSource": "回帰推定",
+        "heliFlightObsMed": 27
       }
     ]
   },
@@ -2075,7 +2078,7 @@
         "rp": "新冠支署",
         "lat": 42.361998454310076,
         "lng": 142.31214685446164,
-        "heliFlightMin": 25,
+        "heliFlightMin": 36,
         "heliHelipadMin": 6,
         "rpCount": 4,
         "groundToBaseMin": 110,
@@ -2096,7 +2099,8 @@
           17,
           35
         ],
-        "heliFlightSource": "実績中央値"
+        "heliFlightSource": "回帰推定",
+        "heliFlightObsMed": 25
       }
     ]
   },

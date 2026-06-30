@@ -1,5 +1,5 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v13';
+const CACHE = 'doo-heli-v14';
 const CORE = [
   './','./index.html','./manifest.json',
   './css/style.css','./js/app.js','./js/map.js','./js/modes.js',
@@ -42,6 +42,4 @@ self.addEventListener('fetch', e => {
     e.respondWith(fetch(req).then(res => {
       if (res && (res.ok || res.type === 'opaque')) { const cp = res.clone(); caches.open(CACHE).then(c => c.put(req, cp)); }
       return res;
-    }).catch(() => caches.match(req)));
-  }
-});
+    
