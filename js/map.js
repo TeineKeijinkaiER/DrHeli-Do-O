@@ -75,10 +75,10 @@ const MapMode = (() => {
         <div class="tx__card tx__card--heli"><div class="tx__lbl">🚁 ヘリ搬送（手稲渓仁会）</div><div class="tx__val">${heli??'—'}<small>分</small></div>
           ${flight!=null?`<div class="tx__bd">現場滞在 ${scene} ＋ 飛行 ${flight} ＋ 病院 ${helipad}</div>`:''}
           ${flight!=null?`<div class="tx__src">${p.heliFlightSource==='実績中央値'
-              ? `飛行は実績中央値（n=${p.heliFlightN}${p.heliFlightIqr?`, レンジ ${p.heliFlightIqr[0]}–${p.heliFlightIqr[1]}分`:''}）／回帰参考 ${p.heliFlightReg}分`
+              ? `採用＝<b>実績中央値 ${flight}分</b>（n=${p.heliFlightN}${p.heliFlightIqr?`, IQR ${p.heliFlightIqr[0]}–${p.heliFlightIqr[1]}分`:''}）｜回帰参考 ${p.heliFlightReg}分`
               : (p.heliFlightN>0
-                  ? `飛行は回帰推定（実績 n=${p.heliFlightN}, 中央値 ${p.heliFlightObsMed}分は少数/外れのため参考）`
-                  : `飛行は回帰推定（参考・実績なし）`)}</div>`:''}</div>
+                  ? `採用＝<b>回帰推定 ${p.heliFlightReg}分</b>｜実績中央値（参考）${p.heliFlightObsMed}分（n=${p.heliFlightN}・少数/外れ）`
+                  : `採用＝<b>回帰推定 ${p.heliFlightReg}分</b>（実績なし）`)}</div>`:''}</div>
         <div class="tx__card tx__card--ground"><div class="tx__lbl">🚑 救急車（手稲渓仁会）</div><div class="tx__val">${ground??'—'}<small>分</small></div>
           ${ground==null?'<div class="tx__bd">admin入力待ち</div>':''}</div>
       </div>
