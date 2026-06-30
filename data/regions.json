@@ -102,15 +102,15 @@
         "heliFlightMin": 12,
         "heliHelipadMin": 6,
         "rpCount": 16,
-        "groundToBaseMin": 55,
+        "groundToBaseMin": 45,
         "hospitalTimes": [
           {
             "name": "札幌東徳洲会病院",
-            "min": 45
+            "min": 35
           },
           {
             "name": "札幌徳洲会病院",
-            "min": 35
+            "min": 24
           },
           {
             "name": "北海道大学病院",
