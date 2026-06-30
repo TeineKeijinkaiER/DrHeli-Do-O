@@ -103,7 +103,9 @@ const Modes = (() => {
       if(!bagMap.has(bag)) bagMap.set(bag,new Map());
       const sm=bagMap.get(bag);
       if(!sm.has(sec)) sm.set(sec,[]);
-      sm.get(sec).push({n:name,y:yomi});
+      const items=sm.get(sec);
+      if(items.some(it=>it.n===name)) continue; // 同一バッグ・セクション内の重複行はスキップ（重複列によるOK上書きを防止）
+      items.push({n:name,y:yomi});
     }
     const bags=[];
     for(const [bag,sm] of bagMap){ const sections=[]; for(const [sname,items] of sm) sections.push({s:sname,items}); bags.push({bag,sections}); }
@@ -113,7 +115,8 @@ const Modes = (() => {
   async function refreshMaster_(d){
     const url=masterUrl_(d); if(!url) return false;
     try{
-      const t=await fetch(url,{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.text();});
+      const bust=url+(url.includes('?')?'&':'?')+'_ts='+Date.now(); // Google側CDNキャッシュ回避
+      const t=await fetch(bust,{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text();});
       const bags=csvToBags_(t);
       if(bags&&bags.length){
         const changed=JSON.stringify(d.bags||[])!==JSON.stringify(bags);
