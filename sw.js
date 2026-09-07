@@ -1,10 +1,11 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v19';
+const CACHE = 'doo-heli-v20';
 const TILES = 'doo-heli-tiles-v1';      /* 地図タイル専用キャッシュ(件数上限つき) */
 const TILE_LIMIT = 800;
 const KEEP = [CACHE, TILES];
 /* タイル配信元。ここに無い別オリジンは従来どおりネット優先。 */
 const TILE_HOSTS = ['cyberjapandata.gsi.go.jp', 'tile.openstreetmap.org'];
+const NAV_TIMEOUT_MS = 2500;            /* 電波が弱い現場で待たされないための上限 */
 const CORE = [
   './','./index.html','./manifest.json',
   './css/style.css','./js/app.js','./js/map.js','./js/modes.js',
@@ -19,6 +20,39 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k=>!KEEP.includes(k)).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
+
+/* ログイン画面を本来のファイルとして取り込まないためのガード。
+   Cloudflare Access の認証切れや、病院/公衆無線LANのキャプティブポータルでは、
+   data/regions.json へのリクエストにログインHTMLが 200 で返る。res.ok だけで
+   判定すると JSON の代わりに HTML をキャッシュしてアプリが壊れるため、
+   リダイレクトの有無と Content-Type も併せて確認する。 */
+function unusable(req, res) {
+  if (!res || !res.ok) return true;
+  if (res.redirected) return true;
+  const ct = res.headers.get('content-type') || '';
+  if (/\.json$/i.test(new URL(req.url).pathname) && !/json/i.test(ct)) return true;
+  return false;
+}
+function putIfUsable(req, res) {
+  if (unusable(req, res)) return false;
+  const cp = res.clone();
+  caches.open(CACHE).then(c => c.put(req, cp));
+  return true;
+}
+
+/* 画面遷移: ネット優先。認証切れのとき Cloudflare Access のログイン画面へ
+   到達できるようにするため。ただし電波が弱いと待たされるので、キャッシュが
+   あれば NAV_TIMEOUT_MS で打ち切ってキャッシュを返す。 */
+async function navigation(req) {
+  const netP = fetch(req).catch(() => null);
+  const cached = await caches.match('./index.html');
+  const res = await Promise.race([netP, new Promise(r => setTimeout(() => r(null), cached ? NAV_TIMEOUT_MS : 15000))]);
+  if (res) {
+    if (!unusable(req, res)) { const cp = res.clone(); caches.open(CACHE).then(c => c.put('./index.html', cp)); }
+    return res;
+  }
+  return cached || (await netP) || Response.error();
+}
 
 /* タイルを保存し、上限を超えた分を古い順に捨てる */
 async function putTile(req, res) {
@@ -45,12 +79,13 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin === location.origin) {
+    if (req.mode === 'navigate') { e.respondWith(navigation(req)); return; }
     const isData = /\/data\/.*\.json$/.test(url.pathname);
     if (isData) {
       /* データJSON: ネットワーク優先(オンライン時は常に最新)・失敗時のみキャッシュ */
       e.respondWith(
         fetch(req).then(res => {
-          if (res && res.ok) { const cp = res.clone(); caches.open(CACHE).then(c => c.put(req, cp)); }
+          if (!putIfUsable(req, res)) return caches.match(req).then(hit => hit || res);
           return res;
         }).catch(() => caches.match(req))
       );
@@ -58,7 +93,7 @@ self.addEventListener('fetch', e => {
       /* アプリ本体(html/js/css/画像/vendor): キャッシュ優先＋背景更新 */
       e.respondWith(caches.match(req).then(hit => {
         const net = fetch(req).then(res => {
-          if (res && res.ok) { const cp = res.clone(); caches.open(CACHE).then(c => c.put(req, cp)); }
+          if (!putIfUsable(req, res)) return hit || res;
           return res;
         }).catch(() => hit);
         return hit || net;
