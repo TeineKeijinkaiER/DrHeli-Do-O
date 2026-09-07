@@ -1,5 +1,5 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v20';
+const CACHE = 'doo-heli-v21';
 const TILES = 'doo-heli-tiles-v1';      /* 地図タイル専用キャッシュ(件数上限つき) */
 const TILE_LIMIT = 800;
 const KEEP = [CACHE, TILES];
@@ -29,6 +29,10 @@ self.addEventListener('activate', e => {
 function unusable(req, res) {
   if (!res || !res.ok) return true;
   if (res.redirected) return true;
+  /* 自前認証(functions/_middleware.js)は未認証時にこのヘッダを必ず付ける。
+     ログイン画面はリダイレクトを伴わない 200 HTML で返るため、これが無いと
+     index.html として保存されてしまう。 */
+  if (res.headers.get('x-auth-required')) return true;
   const ct = res.headers.get('content-type') || '';
   if (/\.json$/i.test(new URL(req.url).pathname) && !/json/i.test(ct)) return true;
   return false;

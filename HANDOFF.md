@@ -49,7 +49,9 @@ DO-O/
     combined_2020_2025/    ← 運航DB(2020-2025) ※後述の注意
     RP搬送時間入力.csv       ← 【正本】RP正確座標 + 救急車時間 + 近隣病院時間(管理者手入力)
   knowledge/analysis/      ← 分析資料(搬送時間の算出方法.md ほか)
-  scripts/check-sw.sh      ← sw.js の健全性チェック(編集したら必ず実行)
+  functions/_middleware.js ← 機密版の合言葉ログイン(Cloudflare Pages Functions)
+                             ※リポジトリ直下。pwa/ の中ではない(Pages はルートで探すため)
+  scripts/check.sh         ← sw.js と functions/ の健全性チェック(編集したら必ず実行)
   Cloudflare移行手順.md     ← Cloudflare Pages + Access 移行手順(非公開リポジトリのみ)
   DrHeli-Do-O/             ← 公開安全版(別 .git)
 ```
@@ -121,11 +123,11 @@ DO-O/
 ---
 
 ## 5. PWA / Service Worker
-- `sw.js`: CACHE名は版数管理(現在 **doo-heli-v20**)。**データJSON(/data/*.json)はネットワーク優先**、アプリ本体(html/js/css/img/vendor)はキャッシュ優先+背景更新。activateで `KEEP` 以外の旧キャッシュ削除。
+- `sw.js`: CACHE名は版数管理(現在 **doo-heli-v21**)。**データJSON(/data/*.json)はネットワーク優先**、アプリ本体(html/js/css/img/vendor)はキャッシュ優先+背景更新。activateで `KEEP` 以外の旧キャッシュ削除。
 - **地図タイルは専用キャッシュ `doo-heli-tiles-v1`**（キャッシュ優先・上限800件・超過分は古い順に削除）。タイル配信元は `TILE_HOSTS` で判定。
-- **ログイン画面の取り込み防止(`unusable()`)**: Cloudflare Access の認証切れや病院/公衆無線LANのキャプティブポータルでは、`data/regions.json` へのリクエストに**ログインHTMLが 200 で返る**。`res.ok` だけで判定すると JSON の代わりに HTML をキャッシュしてアプリが壊れるため、`res.redirected` と Content-Type も検査してからキャッシュする。**この判定を外さないこと。**
+- **ログイン画面の取り込み防止(`unusable()`)**: Cloudflare Access の認証切れや病院/公衆無線LANのキャプティブポータルでは、`data/regions.json` へのリクエストに**ログインHTMLが 200 で返る**。`res.ok` だけで判定すると JSON の代わりに HTML をキャッシュしてアプリが壊れるため、`res.redirected`・Content-Type・**`x-auth-required` ヘッダ**も検査してからキャッシュする。**この判定を外さないこと。** `x-auth-required` は `functions/_middleware.js` が未認証応答に必ず付ける目印。
 - **画面遷移(`req.mode==='navigate'`)はネット優先**。認証切れ時にログイン画面へ到達できるようにするため。ただしキャッシュがあれば 2.5秒で打ち切ってキャッシュを返す(電波が弱い現場対策)。
-- ⚠**過去に sw.js がファイル途中切れでコミットされ、構文エラーで公開版のSWが一切登録できていなかった**(2026-09-07に修復)。**sw.js を書き換えたら必ず `bash scripts/check-sw.sh` を通すこと**(構文チェック＋ルーティング5経路＋ログイン画面ガード6項目を検証)。
+- ⚠**過去に sw.js がファイル途中切れでコミットされ、構文エラーで公開版のSWが一切登録できていなかった**(2026-09-07に修復)。**sw.js または functions/ を書き換えたら必ず `bash scripts/check.sh` を通すこと**(SW構文＋ルーティング5経路＋ログイン画面ガード8項目＋認証ミドルウェア14項目を検証)。
 - データ/コード変更時は **CACHE版を必ず上げる**(v18→v19…)。反映は Ctrl+F5 もしくはPWA再起動。
 
 ---
@@ -145,16 +147,19 @@ DO-O/
 - [ ] 登別市街は全DBで実績なし(回帰採用)。リフレッシュパーク等はDB市町村タグ誤りを名称照合で吸収済み。
 - [ ] 公開URL/QR(`qr-drheli.png`)の確認。
 - [ ] **Phase 2(未着手)**: 公開版の手作業フォークを廃止し、`pwa/` を唯一の正本として `scripts/build-public.mjs` で公開版ツリーを自動生成する。データJSONは allowlist 方式＋禁止ファイル混入でCIを落とすガードを付ける。
-- [ ] **Phase 3(準備完了・ユーザー作業待ち)**: **`Cloudflare移行手順.md` の手順を実施**。①機密版(DO-O/pwa・全6モード)を Cloudflare Pages + Access で保護、②公開版(DrHeli-Do-O・4モード)も Cloudflare Pages へ移し、**GitHub Pages は両方とも停止**する。GitHubリポジトリはソース保管として残す。Access は無料枠50ユーザー・One-time PIN。Session Duration は 1 month 推奨(現場でログイン画面を出さないため)。
+- [ ] **Phase 3(準備完了・ユーザー作業待ち)**: **`Cloudflare移行手順.md` の手順を実施**。①機密版(DO-O/pwa・全6モード)を Cloudflare Pages へ。認証は `functions/_middleware.js` の**合言葉ログイン**(環境変数 `DOO_PASSWORD` / `DOO_AUTH_SECRET` を Secret で登録し再デプロイ)。②公開版(DrHeli-Do-O・4モード)も Cloudflare Pages へ移し、**GitHub Pages は両方とも停止**する。
+  - **Cloudflare Access(Zero Trust)は採用しない**。無料プランでもクレジットカード登録が必須で、ユーザーが「いつの間にか課金される」ことを懸念したため。Pages/Workers 無料枠はカード不要・10万req/日・超過時は課金ではなくエラー。
+  - 引き換えに監査ログとセルフサービスのパスワード再発行は無い。失効は合言葉変更＋周知、全端末強制ログアウトは `DOO_AUTH_SECRET` 変更。
 - [x] 2026-09-07: 地図タイルをCARTO(APIキー必須化・透かし)から地理院タイルへ変更。Leaflet を自前ホスト化。
 - [x] 2026-09-07: 公開版 sw.js のファイル途中切れ(構文エラーでSW登録不能)を修復。SW v19。
 - [x] 2026-09-07: `inventory.json` の両リポジトリ乖離を解消（masterCsvUrl と オフライン用 bags を両方保持）。
 - [x] 2026-09-07: SW にログイン画面ガードを追加(SW v20)。`scripts/check-sw.sh` で自動検証。
 - [x] 2026-09-07: Cloudflare Pages 用の `_headers` を追加(sw.js/index.html/data は no-cache)。
+- [x] 2026-09-07: `functions/_middleware.js`(合言葉ログイン)を実装。SW v21 で `x-auth-required` を検査。
 
 ## 8. 主要定数
 - 基地病院 手稲渓仁会: 43.1123, 141.2494。
 - ヘリ飛行回帰: 4.66 + 0.262 × 距離km (R²0.722, 57RP/727例)。病院内固定 6分。現場滞在既定 20分。
 - 安全策しきい値: n<8 かつ |中央値−回帰|>7分 → 回帰採用。
-- regions.json: 52市町村 / 58RP（実績中央値52・回帰6）。SW: doo-heli-v20 / タイル: doo-heli-tiles-v1。
+- regions.json: 52市町村 / 58RP（実績中央値52・回帰6）。SW: doo-heli-v21 / タイル: doo-heli-tiles-v1。
 - ベースマップ: 地理院タイル淡色 → 失敗時 OSM。Leaflet 1.9.4 は `vendor/leaflet/` に自前ホスト。
