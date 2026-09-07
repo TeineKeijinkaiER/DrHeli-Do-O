@@ -7,7 +7,7 @@ const MapMode = (() => {
     hidaka:{label:'日高',color:'#d63a52'}, rumoi:{label:'留萌',color:'#2f7fe0'},
   };
   const SCENES=[10,15,20,25]; let scene=20;
-  let map, regions=[], lessons=[], ready=false, curR=null, curP=null;
+  let map, regions=[], ready=false, curR=null, curP=null;
   /* ベースマップ: 地理院タイル淡色を既定、取得不能時は OSM 標準へ自動フォールバック。
      いずれも API キー不要（CARTO は 2025 年にキー必須化し、タイルに透かしが入るため使用しない）。 */
   const BASEMAPS=[
@@ -36,7 +36,6 @@ const MapMode = (() => {
     if(ready){ setTimeout(()=>map.invalidateSize(),120); return; }
     ready=true;
     regions=await fetch('data/regions.json',{cache:'no-cache'}).then(r=>r.json());
-    lessons=await fetch('data/case-lessons.json').then(r=>r.ok?r.json():[]).catch(()=>[]);
     initMap(); renderLegend();
   }
   function initMap(){
@@ -71,7 +70,6 @@ const MapMode = (() => {
   function openDetail(r,p){ curR=r; curP=p; scene=20; renderDetail();
     sheet.classList.add('is-open'); sheet.setAttribute('aria-hidden','false');
     if(map&&p.lat!=null) map.flyTo([p.lat,p.lng],Math.max(map.getZoom(),10),{duration:.6}); }
-  function fmtYM(ym){const m=/^(\d{4})-(\d{1,2})$/.exec(ym||'');return m?`${m[1]}年${Number(m[2])}月`:'';}
 
   function renderDetail(){
     const r=curR,p=curP; if(!r) return; const reg=regionOf(r);
@@ -81,7 +79,6 @@ const MapMode = (() => {
     const save=(heli!=null&&ground!=null)?ground-heli:null;
     const hosp=(p.hospitalTimes||[]).filter(h=>h&&h.name);
     const hidden=new Set(Array.isArray(r.hiddenSections)?r.hiddenSections:[]);
-    const rel=lessons.filter(l=>(l.relatedMunicipality===r.municipality||l.relatedMunicipality===reg.label)&&!hidden.has('lessons'));
 
     let html=`<div class="det__head"><div>
         <div class="det__name">${esc(r.municipality)}</div>
@@ -111,8 +108,6 @@ const MapMode = (() => {
       <div class="hosp">${r.nearbyHospitals.map(h=>`<span class="hosp__item">${esc(h)}</span>`).join('')}</div></div>`;
     if(r.bestPractice&&!hidden.has('bestPractice')) html+=`<div class="sec"><div class="note note--best"><span class="note__k">ベスト判断</span>${esc(r.bestPractice)}</div></div>`;
     if(r.notes&&!hidden.has('notes')) html+=`<div class="sec"><div class="note note--warn"><span class="note__k">注意</span>${esc(r.notes)}</div></div>`;
-    if(rel.length) html+=`<div class="sec"><h3 class="sec__t">過去の反省・事例 <span style="opacity:.6;font-weight:600">(${rel.length})</span></h3>
-      ${rel.map(l=>`<div class="lesson">${l.date?`<div class="lesson__date">${esc(fmtYM(l.date))}</div>`:''}<div class="lesson__t">${esc(l.title)}</div><div class="lesson__s">${esc(l.summary)}</div>${l.sourceUrl?`<a class="src" href="${l.sourceUrl}" target="_blank" rel="noopener">出典 ›</a>`:''}</div>`).join('')}</div>`;
 
     sheetBody.innerHTML=html;
     document.getElementById('detClose').addEventListener('click',closeSheet);
