@@ -17,25 +17,12 @@ const Modes = (() => {
   const banner = txt => `<div class="proto-note">${txt}</div>`;
 
   /* 各モードの編集対象データファイル */
-  const FILES = { beginner:'beginner', expert:'expert', inventory:'inventory', quiz:'quiz', stats:'stats' };
+  const FILES = { beginner:'beginner', inventory:'inventory', quiz:'quiz', stats:'stats' };
   const DATA = {};
   async function load(id){
     const targets = id ? [FILES[id]].filter(Boolean) : Object.values(FILES).filter((f,i,a)=>a.indexOf(f)===i);
     const need = targets.filter(f=>!DATA[f]); // 失敗(null/未設定)は次回再試行
     await Promise.all(need.map(f=>fetch('data/'+f+'.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.json();}).then(j=>DATA[f]=j).catch(()=>{})));
-  }
-
-  /* ---------- エキスパート ---------- */
-  function rExpert(){
-    const d=DATA.expert||{themes:[]};
-    root('expert').innerHTML = `<div class="mode-hd"><h2>エキスパート</h2><p>議事録由来・地域によらない注意事項（テーマ別）</p></div>
-      ${banner('編集: data/expert.json')}
-      <div class="acc">${d.themes.map((e,i)=>`
-        <div class="acc__item"><button class="acc__h" data-i="${i}">${esc(e.t)}<span>＋</span></button>
-        <div class="acc__b" id="exb${i}">${(e.items||[]).map(x=>{const t=(x&&x.text)||x;const r=(x&&x.ref)?`<span class="ref">${esc(x.ref)}</span>`:'';return `<div class="li">${r}${esc(t)}</div>`;}).join('')}</div></div>`).join('')}</div>`;
-    root('expert').querySelectorAll('.acc__h').forEach(b=>b.addEventListener('click',()=>{
-      const el=document.getElementById('exb'+b.dataset.i); el.classList.toggle('open');
-      b.querySelector('span').textContent=el.classList.contains('open')?'−':'＋';}));
   }
 
   /* ---------- クイズ ---------- */
@@ -311,7 +298,7 @@ const Modes = (() => {
   async function open(id){
     if(!root(id)) return;
     await load(id);
-    ({beginner:rBeginner,expert:rExpert,inventory:rInventory,quiz:rQuiz,stats:rStats}[id]||(()=>{}))();
+    ({beginner:rBeginner,inventory:rInventory,quiz:rQuiz,stats:rStats}[id]||(()=>{}))();
   }
   return { open };
 })();
