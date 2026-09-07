@@ -28,7 +28,7 @@ const Modes = (() => {
   /* ---------- エキスパート ---------- */
   function rExpert(){
     const d=DATA.expert||{themes:[]};
-    root('expert').innerHTML = `<div class="mode-hd"><h2>エクスパート</h2><p>議事録由来・地域によらない注意事項（テーマ別）</p></div>
+    root('expert').innerHTML = `<div class="mode-hd"><h2>エキスパート</h2><p>議事録由来・地域によらない注意事項（テーマ別）</p></div>
       ${banner('編集: data/expert.json')}
       <div class="acc">${d.themes.map((e,i)=>`
         <div class="acc__item"><button class="acc__h" data-i="${i}">${esc(e.t)}<span>＋</span></button>

@@ -41,7 +41,7 @@ const App = (() => {
     });
   }
 
-  const TITLES={map:'地図モード',beginner:'ビギナーモード',expert:'エクスパートモード',inventory:'インベントリーモード',quiz:'クイズモード',stats:'統計モード'};
+  const TITLES={map:'地図モード',beginner:'ビギナーモード',expert:'エキスパートモード',inventory:'インベントリーモード',quiz:'クイズモード',stats:'統計モード'};
   function open(id){
     appbarSub.textContent=TITLES[id]||'';
     show(id);
