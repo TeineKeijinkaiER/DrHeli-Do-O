@@ -98,7 +98,20 @@ const App = (() => {
     tt=setTimeout(()=>el.style.opacity='0',1800);
   }
 
-  function init(){ renderModes(); loadOpStatus(); }
+  /* 合言葉ログインがある版でだけログアウトを出す。
+     doo_session は functions/_middleware.js がログイン時に付ける目印で、権限は持たない。
+     公開版にはこの Cookie が存在しないため、同じ app.js でもボタンは出ない。 */
+  function renderLogout(){
+    if(!/(?:^|;\s*)doo_session=1(?:\s*;|$)/.test(document.cookie)) return;
+    const foot=document.querySelector('.home__foot'); if(!foot) return;
+    const a=document.createElement('a');
+    a.className='home__logout'; a.href='/__logout';
+    a.textContent='ログアウト（この端末の保存データも消去）';
+    foot.appendChild(document.createElement('br'));
+    foot.appendChild(a);
+  }
+
+  function init(){ renderModes(); loadOpStatus(); renderLogout(); }
   document.addEventListener('DOMContentLoaded',init);
 
   return { show, open, toast };

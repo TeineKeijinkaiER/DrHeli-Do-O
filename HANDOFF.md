@@ -123,7 +123,7 @@ DO-O/
 ---
 
 ## 5. PWA / Service Worker
-- `sw.js`: CACHE名は版数管理(現在 **doo-heli-v21**)。**データJSON(/data/*.json)はネットワーク優先**、アプリ本体(html/js/css/img/vendor)はキャッシュ優先+背景更新。activateで `KEEP` 以外の旧キャッシュ削除。
+- `sw.js`: CACHE名は版数管理(現在 **doo-heli-v22**)。**データJSON(/data/*.json)はネットワーク優先**、アプリ本体(html/js/css/img/vendor)はキャッシュ優先+背景更新。activateで `KEEP` 以外の旧キャッシュ削除。
 - **地図タイルは専用キャッシュ `doo-heli-tiles-v1`**（キャッシュ優先・上限800件・超過分は古い順に削除）。タイル配信元は `TILE_HOSTS` で判定。
 - **ログイン画面の取り込み防止(`unusable()`)**: Cloudflare Access の認証切れや病院/公衆無線LANのキャプティブポータルでは、`data/regions.json` へのリクエストに**ログインHTMLが 200 で返る**。`res.ok` だけで判定すると JSON の代わりに HTML をキャッシュしてアプリが壊れるため、`res.redirected`・Content-Type・**`x-auth-required` ヘッダ**も検査してからキャッシュする。**この判定を外さないこと。** `x-auth-required` は `functions/_middleware.js` が未認証応答に必ず付ける目印。
 - **画面遷移(`req.mode==='navigate'`)はネット優先**。認証切れ時にログイン画面へ到達できるようにするため。ただしキャッシュがあれば 2.5秒で打ち切ってキャッシュを返す(電波が弱い現場対策)。
@@ -156,10 +156,11 @@ DO-O/
 - [x] 2026-09-07: SW にログイン画面ガードを追加(SW v20→v21)。`scripts/check.sh` で自動検証。
 - [x] 2026-09-07: Cloudflare Pages 用の `_headers` を追加(sw.js/index.html/data は no-cache)。
 - [x] 2026-09-07: `functions/_middleware.js`(合言葉ログイン)を実装。SW v21 で `x-auth-required` を検査。
+- [x] 2026-09-07: ホーム画面にログアウトボタンを追加。ログイン時に権限を持たない目印 Cookie `doo_session`(HttpOnlyでない)を付け、`app.js` の `renderLogout()` がそれを見て出し分ける。公開版にはこの Cookie が無いのでボタンも出ない。
 
 ## 8. 主要定数
 - 基地病院 手稲渓仁会: 43.1123, 141.2494。
 - ヘリ飛行回帰: 4.66 + 0.262 × 距離km (R²0.722, 57RP/727例)。病院内固定 6分。現場滞在既定 20分。
 - 安全策しきい値: n<8 かつ |中央値−回帰|>7分 → 回帰採用。
-- regions.json: 52市町村 / 58RP（実績中央値52・回帰6）。SW: doo-heli-v21 / タイル: doo-heli-tiles-v1。
+- regions.json: 52市町村 / 58RP（実績中央値52・回帰6）。SW: doo-heli-v22 / タイル: doo-heli-tiles-v1。
 - ベースマップ: 地理院タイル淡色 → 失敗時 OSM。Leaflet 1.9.4 は `vendor/leaflet/` に自前ホスト。
