@@ -145,6 +145,20 @@ knowledge/lessons/*.md を編集
 第186〜246回の運営部会議事録から抽出したもの。地域あり43件（うち圏域のみ3件）・地域なし37件。
 今後の議事録は `knowledge/minutes/` に置き、そこから `knowledge/lessons/` に起こす。
 
+### 4.6 admin での精査・編集
+- Chrome / Edge で `pwa/admin.html` を開き、「反省・注意事項」→「事例フォルダを開く」から
+  `knowledge/lessons/` を選ぶ（File System Access API を使うため、Firefox / Safari は非対応）。
+- 題名・本文・ジャンル・圏域・市町村・病院・公開可否を編集し、個別または一括保存する。
+- `publish:true` でジャンルが空、未知のジャンル、個人名の疑いがある場合は保存を拒否する。
+- 保存後は `node scripts/build-expert-data.mjs` → `pwa/sw.js` の CACHE 版上げ → `scripts/check.sh`。
+
+### 4.7 統計モード（エキスパートとは独立）
+- `pwa/js/stats.js`。生成データは `pwa/data/stats.json`、正本は保護対象のフライトDB。
+- `node scripts/build-stats-data.mjs` で missions 3,164件／実患者1,545件を非識別化して生成する。
+- ID・氏名・自由記述・座標・日／時刻は出力しない。許可列は固定し、`scripts/check-stats.mjs` で漏出を検査する。
+- missions（要請・応需・中止）と patients（患者・重症度・時間）は別々に絞り込み、分母を混ぜない。各指標に n と欠損数を表示する。
+- RP名の表記揺れにより未突合342種が残る。市町村はDB補正列で補完し、圏域は未突合時「不明」。今後正規化辞書を育てる。
+
 ---
 
 ## 5. インベントリーモード（旧ロジスティック）
@@ -195,9 +209,8 @@ knowledge/lessons/*.md を編集
 - [ ] 公開URL/QR(`qr-drheli.png`)の確認。
 - [x] 2026-09-07: 地図から反省事例を削除し、議事録由来80件をエキスパートモードへ集約(SW v23)。
       正本は `knowledge/lessons/*.md`。Notion リンク全廃。設計書 `docs/superpowers/specs/2026-09-07-expert-mode-design.md`。
-- [ ] **エキスパート 段階C(未着手)**: `admin.html` に事例タブ(精査・追記・個人名ハイライト・MD直接保存)。
-      それまでは `knowledge/lessons/*.md` をテキストエディタで直接編集する。
-- [ ] **エキスパート 段階E(未着手)**: 運航統計。レジストリから非識別化テーブルを生成しアプリ内で自由集計。
+- [x] **エキスパート 段階C(2026-09-07完了)**: `admin.html` に事例タブ（精査・個人名ハイライト・MD直接保存）。
+- [x] **統計モード 段階E(2026-09-07完了)**: レジストリから非識別化テーブルを生成し、独立した統計モード内で集計（エキスパートには載せない）。
       計画 `docs/superpowers/plans/2026-09-07-expert-lessons.md` の末尾を参照。
 - [ ] **Phase 2(未着手)**: 公開版の手作業フォークを廃止し、`pwa/` を唯一の正本として `scripts/build-public.mjs` で公開版ツリーを自動生成する。データJSONは allowlist 方式＋禁止ファイル混入でCIを落とすガードを付ける。
 - [ ] **Phase 3(準備完了・ユーザー作業待ち)**: **`Cloudflare移行手順.md` の手順を実施**。①機密版(DO-O/pwa・全6モード)を Cloudflare Pages へ。認証は `functions/_middleware.js` の**合言葉ログイン**(環境変数 `DOO_PASSWORD` / `DOO_AUTH_SECRET` を Secret で登録し再デプロイ)。②公開版(DrHeli-Do-O・4モード)も Cloudflare Pages へ移し、**GitHub Pages は両方とも停止**する。
