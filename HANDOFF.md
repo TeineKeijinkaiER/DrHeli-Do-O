@@ -1,6 +1,6 @@
 # 道央ドクターヘリ 判断支援アプリ — 引き継ぎ書（AI/人 共通）
 
-最終更新: 2026-06-30 / 対象: 次セッションの作業者（どのAIでも可）
+最終更新: 2026-09-07 / 対象: 次セッションの作業者（どのAIでも可）
 
 ---
 
@@ -17,7 +17,8 @@
    git add <files>; git commit -m "..."
    ```
    破損時は `rm -f .git/index .git/index.lock; git reset --mixed <good-commit>` で復旧。
-5. **bashマウントとファイルツール(Read/Write/Edit)で内容がずれる/反映が遅延することがある**。データ/コードの確定編集は **bash(python heredoc)** で行うと mount と git が一致して安全。
+5. **DO-O の GitHub Pages 自動デプロイは無効化してある**(`.github/workflows/deploy.yml` は `workflow_dispatch` のみ)。DO-O の `pwa/` には expert/stats/case-lessons/admin が入っているため、**Pages を有効化すると機密が全世界公開になる**。戻さないこと。
+6. **bashマウントとファイルツール(Read/Write/Edit)で内容がずれる/反映が遅延することがある**。データ/コードの確定編集は **bash(python heredoc)** で行うと mount と git が一致して安全。
 
 ---
 
@@ -37,6 +38,7 @@ map(地図) / beginner(ビギナー) / expert(エクスパート・**公開版�
 DO-O/
   pwa/                     ← アプリ本体(正本)
     index.html  js/{app,map,modes}.js  css/style.css  sw.js  manifest.json
+    vendor/leaflet/            ← Leaflet 1.9.4 自前ホスト(CDN依存を排除・オフライン用)
     admin.html  js/admin.js            ← コンテンツ編集ツール(非公開)
     data/{regions,inventory,beginner,quiz,expert,stats,case-lessons,operating-hours}.json
     物品マスター_テンプレート.csv         ← インベントリーをスプレッドシート化する雛形(91品目)
@@ -52,6 +54,13 @@ DO-O/
 ---
 
 ## 3. 地図モード（最重要機能）
+
+### 3.0 ベースマップ（2026-09-07 変更）
+- **地理院タイル淡色** `https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png` を既定。出典表記「国土地理院」必須。
+- タイル取得失敗が4回続くと **OSM標準へ自動フォールバック**（`BASEMAPS` 配列＋`setBaseLayer()`。`map.js` 冒頭）。
+- **CARTO は使用しない**。2025年にAPIキー必須化され、キー無しだとタイル画像に「API KEY REQUIRED」の透かしが焼き込まれて返るため。
+- **Leaflet は `vendor/leaflet/` に自前ホスト**。unpkg CDN 依存を排除済み（オフライン最優先の方針）。CDNに戻さないこと。
+
 `pwa/js/map.js`。`data/regions.json` を読む(SWは**ネットワーク優先**=オンラインなら常に最新)。
 - ピン=市町村名、タップで詳細(RP名・搬送時間・近隣病院・反省事例)。
 - **現場滞在**は 10/15/20/25分から選択、**既定20分**。地域を切替えるたび20分に戻る(`openDetail`で`scene=20`)。
@@ -109,7 +118,9 @@ DO-O/
 ---
 
 ## 5. PWA / Service Worker
-- `sw.js`: CACHE名は版数管理(現在 **doo-heli-v18**)。**データJSON(/data/*.json)はネットワーク優先**、アプリ本体(html/js/css/img)はキャッシュ優先+背景更新。activateで旧キャッシュ削除。
+- `sw.js`: CACHE名は版数管理(現在 **doo-heli-v19**)。**データJSON(/data/*.json)はネットワーク優先**、アプリ本体(html/js/css/img/vendor)はキャッシュ優先+背景更新。activateで `KEEP` 以外の旧キャッシュ削除。
+- **地図タイルは専用キャッシュ `doo-heli-tiles-v1`**（キャッシュ優先・上限800件・超過分は古い順に削除）。タイル配信元は `TILE_HOSTS` で判定。
+- ⚠**過去に sw.js がファイル途中切れでコミットされ、構文エラーで公開版のSWが一切登録できていなかった**(2026-09-07に修復)。sw.js を書き換えたら必ず `node --check sw.js` を通すこと。
 - データ/コード変更時は **CACHE版を必ず上げる**(v18→v19…)。反映は Ctrl+F5 もしくはPWA再起動。
 
 ---
@@ -128,9 +139,15 @@ DO-O/
 - [ ] 物品マスターのGoogleスプレッドシート作成→公開→📋URL設定、点検ログ Apps Script デプロイ（ユーザー作業、手順書あり）。
 - [ ] 登別市街は全DBで実績なし(回帰採用)。リフレッシュパーク等はDB市町村タグ誤りを名称照合で吸収済み。
 - [ ] 公開URL/QR(`qr-drheli.png`)の確認。
+- [ ] **Phase 2(未着手)**: 公開版の手作業フォークを廃止し、`pwa/` を唯一の正本として `scripts/build-public.mjs` で公開版ツリーを自動生成する。データJSONは allowlist 方式＋禁止ファイル混入でCIを落とすガードを付ける。
+- [ ] **Phase 3(未着手)**: 機密版(全6モード+admin)を Cloudflare Pages にデプロイし **Cloudflare Access** で ID/PW 保護。公開版(4モード)は GitHub Pages に残す二層構成。無料枠50ユーザー。
+- [x] 2026-09-07: 地図タイルをCARTO(APIキー必須化・透かし)から地理院タイルへ変更。Leaflet を自前ホスト化。
+- [x] 2026-09-07: 公開版 sw.js のファイル途中切れ(構文エラーでSW登録不能)を修復。SW v19。
+- [x] 2026-09-07: `inventory.json` の両リポジトリ乖離を解消（masterCsvUrl と オフライン用 bags を両方保持）。
 
 ## 8. 主要定数
 - 基地病院 手稲渓仁会: 43.1123, 141.2494。
 - ヘリ飛行回帰: 4.66 + 0.262 × 距離km (R²0.722, 57RP/727例)。病院内固定 6分。現場滞在既定 20分。
 - 安全策しきい値: n<8 かつ |中央値−回帰|>7分 → 回帰採用。
-- regions.json: 52市町村 / 58RP（実績中央値52・回帰6）。SW: doo-heli-v18。
+- regions.json: 52市町村 / 58RP（実績中央値52・回帰6）。SW: doo-heli-v19 / タイル: doo-heli-tiles-v1。
+- ベースマップ: 地理院タイル淡色 → 失敗時 OSM。Leaflet 1.9.4 は `vendor/leaflet/` に自前ホスト。

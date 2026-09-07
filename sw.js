@@ -1,18 +1,45 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v18';
+const CACHE = 'doo-heli-v19';
+const TILES = 'doo-heli-tiles-v1';      /* 地図タイル専用キャッシュ(件数上限つき) */
+const TILE_LIMIT = 800;
+const KEEP = [CACHE, TILES];
+/* タイル配信元。ここに無い別オリジンは従来どおりネット優先。 */
+const TILE_HOSTS = ['cyberjapandata.gsi.go.jp', 'tile.openstreetmap.org'];
 const CORE = [
   './','./index.html','./manifest.json',
   './css/style.css','./js/app.js','./js/map.js','./js/modes.js',
+  './vendor/leaflet/leaflet.js','./vendor/leaflet/leaflet.css',
   './data/regions.json','./data/operating-hours.json',
-  './data/expert.json','./data/quiz.json','./data/inventory.json','./data/beginner.json','./data/stats.json','./data/case-lessons.json',
+  './data/quiz.json','./data/inventory.json','./data/beginner.json',
   './image/Heli.png','./image/Heriteinu.png','./image/icon-192.png','./image/icon-512.png','./image/apple-touch-icon.png'
 ];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k=>!KEEP.includes(k)).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
+
+/* タイルを保存し、上限を超えた分を古い順に捨てる */
+async function putTile(req, res) {
+  const c = await caches.open(TILES);
+  await c.put(req, res);
+  const ks = await c.keys();
+  if (ks.length > TILE_LIMIT) await Promise.all(ks.slice(0, ks.length - TILE_LIMIT).map(k => c.delete(k)));
+}
+/* タイルはキャッシュ優先(内容が変わらないため)。未取得のみネットへ。 */
+async function tileFirst(req) {
+  const hit = await caches.match(req, { cacheName: TILES });
+  if (hit) return hit;
+  try {
+    const res = await fetch(req);
+    if (res && (res.ok || res.type === 'opaque')) putTile(req, res.clone());
+    return res;
+  } catch (err) {
+    return Response.error();
+  }
+}
+
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
@@ -28,7 +55,7 @@ self.addEventListener('fetch', e => {
         }).catch(() => caches.match(req))
       );
     } else {
-      /* アプリ本体(html/js/css/画像): キャッシュ優先＋背景更新 */
+      /* アプリ本体(html/js/css/画像/vendor): キャッシュ優先＋背景更新 */
       e.respondWith(caches.match(req).then(hit => {
         const net = fetch(req).then(res => {
           if (res && res.ok) { const cp = res.clone(); caches.open(CACHE).then(c => c.put(req, cp)); }
@@ -37,9 +64,14 @@ self.addEventListener('fetch', e => {
         return hit || net;
       }));
     }
+  } else if (TILE_HOSTS.includes(url.hostname)) {
+    /* 地図タイル: 専用キャッシュにキャッシュ優先 */
+    e.respondWith(tileFirst(req));
   } else {
-    /* 別オリジン(地図タイル等): ネット優先・失敗時キャッシュ */
+    /* その他の別オリジン: ネット優先・失敗時キャッシュ */
     e.respondWith(fetch(req).then(res => {
       if (res && (res.ok || res.type === 'opaque')) { const cp = res.clone(); caches.open(CACHE).then(c => c.put(req, cp)); }
       return res;
-    
+    }).catch(() => caches.match(req)));
+  }
+});

@@ -8,6 +8,27 @@ const MapMode = (() => {
   };
   const SCENES=[10,15,20,25]; let scene=20;
   let map, regions=[], lessons=[], ready=false, curR=null, curP=null;
+  /* ベースマップ: 地理院タイル淡色を既定、取得不能時は OSM 標準へ自動フォールバック。
+     いずれも API キー不要（CARTO は 2025 年にキー必須化し、タイルに透かしが入るため使用しない）。 */
+  const BASEMAPS=[
+    { url:'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
+      opts:{minZoom:5,maxZoom:18},
+      attr:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">国土地理院</a>' },
+    { url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      opts:{minZoom:3,maxZoom:19},
+      attr:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors' },
+  ];
+  let baseLayer=null, baseIdx=0, tileErrors=0, attrib=null;
+  function setBaseLayer(i){
+    if(i>=BASEMAPS.length) return;
+    const b=BASEMAPS[i];
+    if(baseLayer){ map.removeLayer(baseLayer); attrib.removeAttribution(BASEMAPS[baseIdx].attr); }
+    baseIdx=i; tileErrors=0;
+    baseLayer=L.tileLayer(b.url,b.opts).addTo(map);
+    baseLayer.on('tileerror',()=>{ if(++tileErrors>=4 && baseIdx===i) setBaseLayer(i+1); });
+    attrib.addAttribution(b.attr);
+    baseLayer.bringToBack();
+  }
   const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   const regionOf=r=>REGIONS[r.subpref]||REGIONS[(r.id||'').split('-')[1]]||{label:'—',color:'#5a6b86'};
 
@@ -20,8 +41,8 @@ const MapMode = (() => {
   }
   function initMap(){
     map=L.map('map',{zoomControl:true,attributionControl:false}).setView([43.0,141.4],8);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:18,subdomains:'abcd'}).addTo(map);
-    L.control.attribution({prefix:false}).addAttribution('© OpenStreetMap, © CARTO').addTo(map);
+    attrib=L.control.attribution({prefix:false}).addTo(map);
+    setBaseLayer(0);
     L.marker([BASE.lat,BASE.lng],{zIndexOffset:1000,icon:L.divIcon({className:'',iconSize:[0,0],
       html:`<div class="pin pin--base"><div class="base-ring"><div class="pin__dot" style="background:#0d9488"></div></div><div class="pin__label">基地病院</div></div>`})})
       .addTo(map).on('click',()=>map.flyTo([BASE.lat,BASE.lng],9));
