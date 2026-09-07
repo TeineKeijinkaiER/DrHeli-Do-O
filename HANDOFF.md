@@ -153,7 +153,7 @@ DO-O/
 - [x] 2026-09-07: 地図タイルをCARTO(APIキー必須化・透かし)から地理院タイルへ変更。Leaflet を自前ホスト化。
 - [x] 2026-09-07: 公開版 sw.js のファイル途中切れ(構文エラーでSW登録不能)を修復。SW v19。
 - [x] 2026-09-07: `inventory.json` の両リポジトリ乖離を解消（masterCsvUrl と オフライン用 bags を両方保持）。
-- [x] 2026-09-07: SW にログイン画面ガードを追加(SW v20)。`scripts/check-sw.sh` で自動検証。
+- [x] 2026-09-07: SW にログイン画面ガードを追加(SW v20→v21)。`scripts/check.sh` で自動検証。
 - [x] 2026-09-07: Cloudflare Pages 用の `_headers` を追加(sw.js/index.html/data は no-cache)。
 - [x] 2026-09-07: `functions/_middleware.js`(合言葉ログイン)を実装。SW v21 で `x-auth-required` を検査。
 
