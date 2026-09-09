@@ -1,0 +1,18 @@
+# Cloudflare Pages 用のレスポンスヘッダ設定（GitHub Pages では無視される）。
+
+# Service Worker とデータは毎回サーバに確認させる。
+# ここをキャッシュさせると、SW の版を上げても利用者の端末に届かない。
+/sw.js
+  Cache-Control: no-cache
+
+/index.html
+  Cache-Control: no-cache
+
+/data/*
+  Cache-Control: no-cache
+
+# Content-Type と違う解釈をさせない。認証切れ時にログインHTMLを
+# JSON として読み込んでしまう事故に対する二重の防御。
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
