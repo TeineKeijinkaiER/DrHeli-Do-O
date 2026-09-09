@@ -1,5 +1,6 @@
 /* ===== 道央ドクターヘリ 判断支援アプリ : メイン ===== */
 const App = (() => {
+  const IS_PUBLIC_BUILD = true;
   const screens = { home: document.getElementById('screen-home'), map: document.getElementById('screen-map') };
   const btnBack = document.getElementById('btnBack');
   const appbarSub = document.getElementById('appbarSub');
@@ -9,7 +10,7 @@ const App = (() => {
   const I = {
     map:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>`,
     beginner:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h10a2 2 0 0 1 2 2v15l-3-2-3 2-3-2-3 2V5a2 2 0 0 1 2-2Z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>`,
-    expert:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.6 3 7.6 7 9 4-1.4 7-4.4 7-9V6l-7-3Z"/><path d="M8.3 12h2l1-2 1.6 4 1-2h1.8"/></svg>`,
+    reflection:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.6 3 7.6 7 9 4-1.4 7-4.4 7-9V6l-7-3Z"/><path d="M8.3 12h2l1-2 1.6 4 1-2h1.8"/></svg>`,
     inventory:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 12.5v3.5M10.25 14.25h3.5"/></svg>`,
     quiz:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.3a2.8 2.8 0 0 1 5.3 1c0 1.8-2.6 2.3-2.6 4"/><path d="M12 17.5h.01"/></svg>`,
     stats:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>`,
@@ -17,11 +18,13 @@ const App = (() => {
 
   /* --- モード定義 --- */
   const MODES = [
-    { id:'map',      name:'地図モード',         tag:'市町村別の注意事項',   icon:I.map,      accent:'accent-blue',   primary:true },
-    { id:'beginner', name:'ビギナーモード',     tag:'OJT医療スタッフの覚書', icon:I.beginner, accent:'accent-green' },
-    { id:'inventory', name:'インベントリーモード', tag:'バッグ物品管理',      icon:I.inventory, accent:'accent-amber' },
-    { id:'quiz',     name:'クイズモード',       tag:'',                     icon:I.quiz,     accent:'accent-cyan',    },
-  ];
+    { id:'map',      name:'地図モード',         tag:'市町村別の注意事項',   icon:I.map,      accent:'accent-blue',   primary:true, public:true },
+    { id:'beginner', name:'ビギナーモード',     tag:'OJT医療スタッフの覚書', icon:I.beginner, accent:'accent-green', public:true },
+    { id:'reflection', name:'リフレクションモード', tag:'議事録由来の反省・注意事項', icon:I.reflection, accent:'accent-red', public:false },
+    { id:'inventory', name:'インベントリーモード', tag:'バッグ物品管理',      icon:I.inventory, accent:'accent-amber', public:true },
+    { id:'quiz',     name:'クイズモード',       tag:'',                     icon:I.quiz,     accent:'accent-cyan', public:true },
+    { id:'stats',    name:'統計モード',         tag:'',                     icon:I.stats,    accent:'accent-purple', public:false },
+  ].filter(m=>!IS_PUBLIC_BUILD||m.public);
 
   function renderModes(){
     const grid = document.getElementById('modeGrid');
@@ -41,11 +44,14 @@ const App = (() => {
     });
   }
 
-  const TITLES={map:'地図モード',beginner:'ビギナーモード',expert:'エクスパートモード',inventory:'インベントリーモード',quiz:'クイズモード',stats:'統計モード'};
+  const TITLES={map:'地図モード',beginner:'ビギナーモード',reflection:'リフレクションモード',inventory:'インベントリーモード',quiz:'クイズモード',stats:'統計モード'};
   function open(id){
     appbarSub.textContent=TITLES[id]||'';
     show(id);
+    if(typeof Usage!=='undefined') Usage.log('mode',{mode:id});
     if(id==='map'){ if(typeof MapMode!=='undefined') MapMode.ensure(); return; }
+    if(id==='reflection'){ if(typeof ReflectionMode!=='undefined') ReflectionMode.open(); return; }
+    if(id==='stats'){ if(typeof StatsMode!=='undefined') StatsMode.open(); return; }
     if(typeof Modes!=='undefined') Modes.open(id);
   }
 
@@ -98,7 +104,44 @@ const App = (() => {
     tt=setTimeout(()=>el.style.opacity='0',1800);
   }
 
-  function init(){ renderModes(); loadOpStatus(); }
+  function readCookie(name){
+    const m=document.cookie.match(new RegExp('(?:^|;\\s*)'+name+'=([^;]*)'));
+    if(!m) return null;
+    try{ return decodeURIComponent(m[1]); }catch(e){ return null; }
+  }
+
+  /* 合言葉ログインがある版でだけログアウトと職種を出す。
+     doo_session / doo_role_label は functions/_middleware.js が付ける表示用の目印で、
+     権限は持たない（書き換えても記録される職種は変わらない）。
+     公開版にはこの Cookie が存在しないため、同じ app.js でも何も出ない。 */
+  function renderFoot(){
+    if(!/(?:^|;\s*)doo_session=1(?:\s*;|$)/.test(document.cookie)) return;
+    const foot=document.querySelector('.home__foot'); if(!foot) return;
+
+    /* 押し間違えたその日のうちに直せるようにする。1日1回の手軽さは保つ。 */
+    const role=readCookie('doo_role_label');
+    if(role){
+      const p=document.createElement('span');
+      p.className='home__role';
+      p.textContent='現在：'+role+'　';
+      const change=document.createElement('a');
+      change.href='/__role'; change.textContent='変更';
+      p.appendChild(change);
+      foot.appendChild(document.createElement('br'));
+      foot.appendChild(p);
+    }
+
+    const a=document.createElement('a');
+    a.className='home__logout'; a.href='/__logout';
+    a.textContent='ログアウト（この端末の保存データも消去）';
+    foot.appendChild(document.createElement('br'));
+    foot.appendChild(a);
+  }
+
+  function init(){
+    renderModes(); loadOpStatus(); renderFoot();
+    if(typeof Usage!=='undefined') Usage.session();
+  }
   document.addEventListener('DOMContentLoaded',init);
 
   return { show, open, toast };

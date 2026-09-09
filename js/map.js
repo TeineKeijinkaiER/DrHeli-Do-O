@@ -7,38 +7,71 @@ const MapMode = (() => {
     hidaka:{label:'日高',color:'#d63a52'}, rumoi:{label:'留萌',color:'#2f7fe0'},
   };
   const SCENES=[10,15,20,25]; let scene=20;
-  let map, regions=[], lessons=[], ready=false, curR=null, curP=null;
+  let map, regions=[], ready=false, curR=null, curP=null;
+  /* ベースマップ: 地理院タイル淡色を既定、取得不能時は OSM 標準へ自動フォールバック。
+     いずれも API キー不要（CARTO は 2025 年にキー必須化し、タイルに透かしが入るため使用しない）。 */
+  const BASEMAPS=[
+    { url:'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
+      opts:{minZoom:5,maxZoom:18},
+      attr:'<a href="https://maps.gsi.go.jp/development/ichiran.html" target="_blank" rel="noopener">国土地理院</a>' },
+    { url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      opts:{minZoom:3,maxZoom:19},
+      attr:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors' },
+  ];
+  let baseLayer=null, baseIdx=0, tileErrors=0, attrib=null, resizeTimer=null;
+  const pointIcon=html=>L.divIcon({
+    className:'map-pin-icon', iconSize:[18,24], iconAnchor:[9,24],
+    html:`<div class="pin">${html}</div>`
+  });
+  const baseIcon=()=>L.divIcon({
+    className:'map-pin-icon map-pin-icon--base', iconSize:[30,30], iconAnchor:[15,15],
+    html:'<div class="pin pin--base"><div class="base-ring"><div class="pin__dot" style="background:#0d9488"></div></div><div class="pin__label">基地病院</div></div>'
+  });
+  function setBaseLayer(i){
+    if(i>=BASEMAPS.length) return;
+    const b=BASEMAPS[i];
+    if(baseLayer){ map.removeLayer(baseLayer); attrib.removeAttribution(BASEMAPS[baseIdx].attr); }
+    baseIdx=i; tileErrors=0;
+    baseLayer=L.tileLayer(b.url,b.opts).addTo(map);
+    baseLayer.on('tileerror',()=>{ if(++tileErrors>=4 && baseIdx===i) setBaseLayer(i+1); });
+    attrib.addAttribution(b.attr);
+    baseLayer.bringToBack();
+  }
   const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   const regionOf=r=>REGIONS[r.subpref]||REGIONS[(r.id||'').split('-')[1]]||{label:'—',color:'#5a6b86'};
 
+  function refreshSize(){
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(()=>{ if(map) map.invalidateSize({pan:false}); },120);
+  }
   async function ensure(){
-    if(ready){ setTimeout(()=>map.invalidateSize(),120); return; }
+    if(ready){ refreshSize(); return; }
     ready=true;
-    regions=await fetch('data/regions.json').then(r=>r.json());
-    lessons=await fetch('data/case-lessons.json').then(r=>r.ok?r.json():[]).catch(()=>[]);
+    regions=await fetch('data/regions.json',{cache:'no-cache'}).then(r=>r.json());
     initMap(); renderLegend();
   }
   function initMap(){
-    map=L.map('map',{zoomControl:true,attributionControl:false}).setView([43.0,141.4],8);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:18,subdomains:'abcd'}).addTo(map);
-    L.control.attribution({prefix:false}).addAttribution('© OpenStreetMap, © CARTO').addTo(map);
-    L.marker([BASE.lat,BASE.lng],{zIndexOffset:1000,icon:L.divIcon({className:'',iconSize:[0,0],
-      html:`<div class="pin pin--base"><div class="base-ring"><div class="pin__dot" style="background:#0d9488"></div></div><div class="pin__label">基地病院</div></div>`})})
-      .addTo(map).on('click',()=>map.flyTo([BASE.lat,BASE.lng],9));
+    map=L.map('map',{
+      zoomControl:true, attributionControl:false, preferCanvas:true,
+      zoomAnimation:false, fadeAnimation:false, markerZoomAnimation:false
+    }).setView([43.0,141.4],8);
+    attrib=L.control.attribution({prefix:false}).addTo(map);
+    setBaseLayer(0);
+    L.marker([BASE.lat,BASE.lng],{zIndexOffset:1000,icon:baseIcon()})
+      .addTo(map).on('click',()=>map.setView([BASE.lat,BASE.lng],9,{animate:false}));
     L.circle([BASE.lat,BASE.lng],{radius:100000,color:'#2f6df6',weight:1.2,opacity:.5,fillColor:'#2f6df6',fillOpacity:.05,dashArray:'4 6'}).addTo(map);
     const pts=[[BASE.lat,BASE.lng]];
     regions.forEach(r=>{
       const reg=regionOf(r);
       (r.points||[]).forEach(p=>{
         if(p.lat==null||p.lng==null) return;
-        const icon=L.divIcon({className:'',iconSize:[0,0],html:
-          `<div class="pin"><div class="pin__dot" style="background:${reg.color}"></div><div class="pin__label">${esc(r.municipality)}</div></div>`});
+        const icon=pointIcon(`<div class="pin__dot" style="background:${reg.color}"></div><div class="pin__label">${esc(r.municipality)}</div>`);
         L.marker([p.lat,p.lng],{icon}).addTo(map).on('click',()=>openDetail(r,p));
         pts.push([p.lat,p.lng]);
       });
     });
     map.fitBounds(pts,{padding:[50,50]});
-    setTimeout(()=>map.invalidateSize(),200);
+    refreshSize();
   }
   function renderLegend(){
     document.getElementById('mapLegend').innerHTML=
@@ -49,8 +82,7 @@ const MapMode = (() => {
   function setScene(v){ scene=v; renderDetail(); }
   function openDetail(r,p){ curR=r; curP=p; scene=20; renderDetail();
     sheet.classList.add('is-open'); sheet.setAttribute('aria-hidden','false');
-    if(map&&p.lat!=null) map.flyTo([p.lat,p.lng],Math.max(map.getZoom(),10),{duration:.6}); }
-  function fmtYM(ym){const m=/^(\d{4})-(\d{1,2})$/.exec(ym||'');return m?`${m[1]}年${Number(m[2])}月`:'';}
+    if(map&&p.lat!=null) map.setView([p.lat,p.lng],Math.max(map.getZoom(),10),{animate:false}); }
 
   function renderDetail(){
     const r=curR,p=curP; if(!r) return; const reg=regionOf(r);
@@ -60,7 +92,6 @@ const MapMode = (() => {
     const save=(heli!=null&&ground!=null)?ground-heli:null;
     const hosp=(p.hospitalTimes||[]).filter(h=>h&&h.name);
     const hidden=new Set(Array.isArray(r.hiddenSections)?r.hiddenSections:[]);
-    const rel=lessons.filter(l=>(l.relatedMunicipality===r.municipality||l.relatedMunicipality===reg.label)&&!hidden.has('lessons'));
 
     let html=`<div class="det__head"><div>
         <div class="det__name">${esc(r.municipality)}</div>
@@ -73,7 +104,12 @@ const MapMode = (() => {
         <div class="scene__b">${SCENES.map(s=>`<button data-s="${s}" class="${s===scene?'on':''}">${s}分</button>`).join('')}</div></div>
       <div class="tx">
         <div class="tx__card tx__card--heli"><div class="tx__lbl">🚁 ヘリ搬送（手稲渓仁会）</div><div class="tx__val">${heli??'—'}<small>分</small></div>
-          ${flight!=null?`<div class="tx__bd">現場滞在 ${scene} ＋ 飛行 ${flight} ＋ 病院 ${helipad}</div>`:''}</div>
+          ${flight!=null?`<div class="tx__bd">現場滞在 ${scene} ＋ 飛行 ${flight} ＋ 病院 ${helipad}</div>`:''}
+          ${flight!=null?`<div class="tx__src">${p.heliFlightSource==='実績中央値'
+              ? `採用＝<b>実績中央値 ${flight}分</b>（n=${p.heliFlightN}${p.heliFlightIqr?`, IQR ${p.heliFlightIqr[0]}–${p.heliFlightIqr[1]}分`:''}）｜回帰参考 ${p.heliFlightReg}分`
+              : (p.heliFlightN>0
+                  ? `採用＝<b>回帰推定 ${p.heliFlightReg}分</b>｜実績中央値（参考）${p.heliFlightObsMed}分（n=${p.heliFlightN}・少数/外れ）`
+                  : `採用＝<b>回帰推定 ${p.heliFlightReg}分</b>（実績なし）`)}</div>`:''}</div>
         <div class="tx__card tx__card--ground"><div class="tx__lbl">🚑 救急車（手稲渓仁会）</div><div class="tx__val">${ground??'—'}<small>分</small></div>
           ${ground==null?'<div class="tx__bd">admin入力待ち</div>':''}</div>
       </div>
@@ -85,8 +121,6 @@ const MapMode = (() => {
       <div class="hosp">${r.nearbyHospitals.map(h=>`<span class="hosp__item">${esc(h)}</span>`).join('')}</div></div>`;
     if(r.bestPractice&&!hidden.has('bestPractice')) html+=`<div class="sec"><div class="note note--best"><span class="note__k">ベスト判断</span>${esc(r.bestPractice)}</div></div>`;
     if(r.notes&&!hidden.has('notes')) html+=`<div class="sec"><div class="note note--warn"><span class="note__k">注意</span>${esc(r.notes)}</div></div>`;
-    if(rel.length) html+=`<div class="sec"><h3 class="sec__t">過去の反省・事例 <span style="opacity:.6;font-weight:600">(${rel.length})</span></h3>
-      ${rel.map(l=>`<div class="lesson">${l.date?`<div class="lesson__date">${esc(fmtYM(l.date))}</div>`:''}<div class="lesson__t">${esc(l.title)}</div><div class="lesson__s">${esc(l.summary)}</div>${l.sourceUrl?`<a class="src" href="${l.sourceUrl}" target="_blank" rel="noopener">出典 ›</a>`:''}</div>`).join('')}</div>`;
 
     sheetBody.innerHTML=html;
     document.getElementById('detClose').addEventListener('click',closeSheet);

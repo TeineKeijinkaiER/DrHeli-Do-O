@@ -17,25 +17,12 @@ const Modes = (() => {
   const banner = txt => `<div class="proto-note">${txt}</div>`;
 
   /* 各モードの編集対象データファイル */
-  const FILES = { beginner:'beginner', expert:'expert', inventory:'inventory', quiz:'quiz', stats:'stats' };
+  const FILES = { beginner:'beginner', inventory:'inventory', quiz:'quiz' };
   const DATA = {};
   async function load(id){
     const targets = id ? [FILES[id]].filter(Boolean) : Object.values(FILES).filter((f,i,a)=>a.indexOf(f)===i);
     const need = targets.filter(f=>!DATA[f]); // 失敗(null/未設定)は次回再試行
     await Promise.all(need.map(f=>fetch('data/'+f+'.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.json();}).then(j=>DATA[f]=j).catch(()=>{})));
-  }
-
-  /* ---------- エキスパート ---------- */
-  function rExpert(){
-    const d=DATA.expert||{themes:[]};
-    root('expert').innerHTML = `<div class="mode-hd"><h2>エクスパート</h2><p>議事録由来・地域によらない注意事項（テーマ別）</p></div>
-      ${banner('編集: data/expert.json')}
-      <div class="acc">${d.themes.map((e,i)=>`
-        <div class="acc__item"><button class="acc__h" data-i="${i}">${esc(e.t)}<span>＋</span></button>
-        <div class="acc__b" id="exb${i}">${(e.items||[]).map(x=>{const t=(x&&x.text)||x;const r=(x&&x.ref)?`<span class="ref">${esc(x.ref)}</span>`:'';return `<div class="li">${r}${esc(t)}</div>`;}).join('')}</div></div>`).join('')}</div>`;
-    root('expert').querySelectorAll('.acc__h').forEach(b=>b.addEventListener('click',()=>{
-      const el=document.getElementById('exb'+b.dataset.i); el.classList.toggle('open');
-      b.querySelector('span').textContent=el.classList.contains('open')?'−':'＋';}));
   }
 
   /* ---------- クイズ ---------- */
@@ -59,11 +46,16 @@ const Modes = (() => {
     const d=DATA.quiz; let pool=d.questions.filter(x=>x.lv===lv && (th==='rand'||x.th===+th));
     if(!pool.length) pool=d.questions.filter(x=>x.lv===lv);
     pool=pool.slice().sort(()=>Math.random()-0.5);
-    qstate={pool,i:0,score:0,pass:d.passRate||0.8}; renderQ();
+    qstate={pool,i:0,score:0,pass:d.passRate||0.8,
+      level:(d.levels||[])[lv]||String(lv),
+      theme:th==='rand'?'ランダム':((d.themes||[])[th]||String(th))}; renderQ();
   }
   function renderQ(){
     const {pool,i}=qstate; const run=root('quiz').querySelector('#qrun');
     if(i>=pool.length){ const ok=pool.length&&qstate.score/pool.length>=qstate.pass;
+      if(typeof Usage!=='undefined' && pool.length) Usage.log('quiz',{mode:'quiz',
+        level:qstate.level, theme:qstate.theme,
+        score:qstate.score, total:pool.length, passed:!!ok});
       run.innerHTML=`<div class="qcard"><div class="qresult ${ok?'pass':'fail'}">${qstate.score} / ${pool.length} 正解</div>
         <div class="qjudge">${ok?'合格（検定クリア）':'再挑戦してください（合格'+Math.round(qstate.pass*100)+'%）'}</div>
         <button class="bigbtn" id="qre">もう一度</button></div>`;
@@ -103,9 +95,7 @@ const Modes = (() => {
       if(!bagMap.has(bag)) bagMap.set(bag,new Map());
       const sm=bagMap.get(bag);
       if(!sm.has(sec)) sm.set(sec,[]);
-      const items=sm.get(sec);
-      if(items.some(it=>it.n===name)) continue; // 同一バッグ・セクション内の重複行はスキップ（重複列によるOK上書きを防止）
-      items.push({n:name,y:yomi});
+      sm.get(sec).push({n:name,y:yomi});
     }
     const bags=[];
     for(const [bag,sm] of bagMap){ const sections=[]; for(const [sname,items] of sm) sections.push({s:sname,items}); bags.push({bag,sections}); }
@@ -115,8 +105,7 @@ const Modes = (() => {
   async function refreshMaster_(d){
     const url=masterUrl_(d); if(!url) return false;
     try{
-      const bust=url+(url.includes('?')?'&':'?')+'_ts='+Date.now(); // Google側CDNキャッシュ回避
-      const t=await fetch(bust,{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text();});
+      const t=await fetch(url,{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.text();});
       const bags=csvToBags_(t);
       if(bags&&bags.length){
         const changed=JSON.stringify(d.bags||[])!==JSON.stringify(bags);
@@ -300,18 +289,10 @@ const Modes = (() => {
       b.querySelector('span').textContent=el.classList.contains('open')?'−':'＋';}));
   }
 
-  /* ---------- 統計 ---------- */
-  function rStats(){
-    const d=DATA.stats||{cards:[],note:''};
-    root('stats').innerHTML=`<div class="mode-hd"><h2>統計</h2><p>運航データベースの統計</p></div>
-      ${banner('編集: data/stats.json ／ '+esc(d.note||''))}
-      <div class="statgrid">${d.cards.map(c=>`<div class="statc"><div class="statc__v">${esc(c.v)}</div><div class="statc__k">${esc(c.k)}</div></div>`).join('')}</div>`;
-  }
-
   async function open(id){
     if(!root(id)) return;
     await load(id);
-    ({beginner:rBeginner,expert:rExpert,inventory:rInventory,quiz:rQuiz,stats:rStats}[id]||(()=>{}))();
+    ({beginner:rBeginner,inventory:rInventory,quiz:rQuiz}[id]||(()=>{}))();
   }
   return { open };
 })();

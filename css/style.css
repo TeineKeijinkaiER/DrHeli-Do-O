@@ -110,6 +110,11 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .accent-amber{color:var(--warn)} .accent-green{color:var(--ok)}
 
 .home__foot{text-align:center;color:var(--dim);font-size:11.5px;padding:14px 16px calc(env(safe-area-inset-bottom) + 26px);letter-spacing:.03em}
+.home__role{display:inline-block;margin-top:10px;color:var(--muted);font-size:11.5px}
+.home__role a{color:var(--muted);text-decoration:underline;text-underline-offset:2px}
+.home__role a:hover,.home__role a:focus-visible{color:var(--text)}
+.home__logout{display:inline-block;margin-top:12px;padding:7px 14px;color:var(--muted);font-size:11.5px;text-decoration:none;border:1px solid var(--line);border-radius:999px}
+.home__logout:hover,.home__logout:focus-visible{color:var(--text);border-color:var(--muted)}
 
 /* ===== Map screen ===== */
 .screen--map{
@@ -131,13 +136,16 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .legend__item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:600}
 .legend__dot{width:10px;height:10px;border-radius:50%}
 
-/* marker pin */
-.pin{position:relative;transform:translate(-50%,-100%)}
-.pin__dot{width:18px;height:18px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
+/* marker pin: Leaflet の iconAnchor を座標基準にする（ズーム時の位置ずれ防止） */
+.map-pin-icon{background:none;border:0}
+.pin{position:relative;width:18px;height:24px}
+.pin__dot{position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
   border:2px solid #fff;box-shadow:0 4px 12px rgba(28,46,72,.34)}
-.pin--base .pin__dot{width:14px;height:14px;border-radius:50%;background:#fff}
+.pin--base{width:30px;height:30px}
+.pin--base .pin__dot{position:static;width:14px;height:14px;border-radius:50%;background:#fff;transform:none}
 .pin__label{position:absolute;left:50%;top:20px;transform:translateX(-50%);white-space:nowrap;
   font-size:10.5px;font-weight:800;color:#18304d;text-shadow:0 1px 0 #fff,0 0 4px #fff;pointer-events:none}
+.pin--base .pin__label{top:32px}
 .base-ring{width:30px;height:30px;border-radius:50%;border:2px solid var(--cyan);
   display:grid;place-items:center;box-shadow:0 0 0 4px rgba(55,224,216,.18)}
 
@@ -312,9 +320,12 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .flow__d{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:3px}
 /* stats */
 .statgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
-.statc{border:1px solid var(--line);border-radius:16px;padding:16px;background:linear-gradient(160deg,var(--surface2),var(--surface))}
-.statc__v{font-size:26px;font-weight:900}
-.statc__k{font-size:12px;color:var(--muted);margin-top:4px}
+.statc{border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:16px;background:#111e36;box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.statc__v{font-size:29px;font-weight:900;line-height:1.05;color:#fff;text-shadow:0 0 20px currentColor}
+.statc__k{font-size:12.5px;color:#d9e5ff;margin-top:7px;font-weight:800}
+.statc__sub{font-size:11px;color:#aebfe1;margin-top:7px;font-weight:650}
+.statfilters{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:7px;margin-bottom:16px}
+#stats-root>.mode-hd p{color:#c8d6f3}
 
 /* エキスパートの会議日バッジ・ビギナー10項目 */
 .li .ref{display:inline-block;font-size:10.5px;font-weight:800;color:var(--sky);background:rgba(86,177,255,.13);border:1px solid rgba(86,177,255,.3);border-radius:999px;padding:1px 8px;margin-right:8px;vertical-align:1px}
@@ -372,3 +383,49 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 
 /* インベントリー: セクション一括チェック */
 .sectall{font-size:11.5px;font-weight:800;color:var(--ok);background:rgba(47,208,122,.12);border:1px solid rgba(47,208,122,.34);border-radius:999px;padding:5px 11px;white-space:nowrap}
+
+/* 地図詳細: 飛行時間の出典(実績中央値/回帰参考) */
+.tx__src{margin-top:6px;font-size:10.5px;line-height:1.5;color:var(--muted);opacity:.95}
+
+/* ===== エキスパートモード ===== */
+.exbar{display:flex;align-items:center;gap:10px;margin:12px 0 4px}
+.exbar input{flex:1;min-width:0;padding:10px 12px;font-size:15px;background:var(--surface);
+  color:var(--text);border:1px solid var(--line);border-radius:10px}
+.exbar__n{font-size:12px;color:var(--muted);white-space:nowrap}
+.exf{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
+.exf__k{flex:0 0 4.5em;font-size:11.5px;color:var(--dim);padding-top:5px}
+.exf__v{display:flex;flex-wrap:wrap;gap:5px}
+.chip--f{cursor:pointer;background:var(--surface);border:1px solid var(--line);
+  color:var(--muted);font-size:11.5px;border-radius:999px;padding:4px 10px;font-family:inherit}
+.chip--f span{margin-left:5px;opacity:.6}
+.chip--f.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.chip--f.on span{opacity:.85}
+.exglobal{display:flex;align-items:center;gap:7px;margin:10px 0 14px;
+  font-size:12px;color:var(--muted)}
+.exlist{display:flex;flex-direction:column;gap:9px}
+.exempty{color:var(--dim);font-size:13px;text-align:center;padding:28px 0}
+
+/* --- 統計・リフレクション共通の折りたたみフィルタ --- */
+.statbar{display:flex;align-items:flex-start;gap:10px;margin:10px 0 12px}
+.statnote{flex:1;margin:0;font-size:11.5px;line-height:1.7;color:var(--muted)}
+.statnote b{color:var(--warn)}
+.statbar>button{flex:0 0 auto;padding:6px 12px;font-size:11.5px;font-weight:800;
+  border:1px solid var(--line);border-radius:999px;background:var(--surface);
+  color:var(--muted);font-family:inherit;cursor:pointer}
+.statbar>button:hover{color:var(--text);border-color:var(--muted)}
+.statf{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.statf.is-on{border-color:var(--blue);background:rgba(47,109,246,.12)}
+.statf>summary{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;
+  list-style:none;font-size:12px}
+.statf>summary::-webkit-details-marker{display:none}
+.statf>summary::after{content:'▾';margin-left:auto;opacity:.5;font-size:10px}
+.statf[open]>summary::after{content:'▴'}
+.statf__k{color:var(--dim);font-weight:800;white-space:nowrap}
+.statf__v{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.statf.is-on .statf__v{color:var(--sky);font-weight:800}
+.statf__opts{display:flex;flex-wrap:wrap;gap:5px;padding:2px 12px 12px}
+.statopt{cursor:pointer;background:var(--surface2);border:1px solid var(--line);
+  color:var(--muted);font-size:11.5px;border-radius:999px;padding:4px 10px;font-family:inherit}
+.statopt span{margin-left:5px;opacity:.6}
+.statopt.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.statopt.on span{opacity:.85}
