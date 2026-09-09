@@ -1,5 +1,5 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v32';
+const CACHE = 'doo-heli-v33';
 const TILES = 'doo-heli-tiles-v1';      /* 地図タイル専用キャッシュ(件数上限つき) */
 const TILE_LIMIT = 800;
 const KEEP = [CACHE, TILES];
@@ -9,6 +9,7 @@ const NAV_TIMEOUT_MS = 2500;            /* 電波が弱い現場で待たされ�
 const CORE = [
   './','./index.html','./manifest.json',
   './css/style.css','./js/app.js','./js/map.js','./js/modes.js',
+
   './vendor/leaflet/leaflet.js','./vendor/leaflet/leaflet.css',
   './data/regions.json','./data/operating-hours.json',
   './data/quiz.json','./data/inventory.json','./data/beginner.json',

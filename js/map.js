@@ -1,6 +1,7 @@
 /* ===== 地図モード（市町村別RP・現場滞在可変・搬送時間比較） ===== */
 const MapMode = (() => {
-  const BASE = { name:'手稲渓仁会病院', lat:43.1123, lng:141.2494 };
+  /* 北海道「災害拠点病院付近のヘリコプター離着陸場」の屋上ヘリポート座標。 */
+  const BASE = { name:'手稲渓仁会病院', lat:43.121944, lng:141.243611 };
   const REGIONS = {
     ishikari:{label:'石狩',color:'#1f9e54'}, shiribeshi:{label:'後志',color:'#7b54e0'},
     sorachi:{label:'空知',color:'#d39200'}, iburi:{label:'胆振',color:'#e2622a'},

@@ -31,8 +31,8 @@
             "min": 30
           }
         ],
-        "heliDistanceKm": 22.1,
-        "heliFlightReg": 10,
+        "heliDistanceKm": 22.7,
+        "heliFlightReg": 11,
         "heliFlightN": 28,
         "heliFlightIqr": [
           8,
@@ -74,7 +74,7 @@
             "min": 45
           }
         ],
-        "heliDistanceKm": 30.1,
+        "heliDistanceKm": 31,
         "heliFlightReg": 13,
         "heliFlightN": 15,
         "heliFlightIqr": [
@@ -117,7 +117,7 @@
             "min": 55
           }
         ],
-        "heliDistanceKm": 35.2,
+        "heliDistanceKm": 36.3,
         "heliFlightReg": 14,
         "heliFlightN": 15,
         "heliFlightIqr": [
@@ -160,7 +160,7 @@
             "min": 55
           }
         ],
-        "heliDistanceKm": 43.6,
+        "heliDistanceKm": 44.7,
         "heliFlightReg": 16,
         "heliFlightN": 15,
         "heliFlightIqr": [
@@ -176,16 +176,16 @@
     "municipality": "石狩市",
     "subpref": "ishikari",
     "fireDepartment": "石狩市消防本部",
-    "lat": 43.1713,
-    "lng": 141.3155,
+    "lat": 43.215393,
+    "lng": 141.335425,
     "withinRequestArea": true,
     "nearbyHospitals": [],
     "points": [
       {
         "rp": "石狩湾新港支署",
-        "lat": 43.1713,
-        "lng": 141.3155,
-        "heliFlightMin": 7,
+        "lat": 43.215393,
+        "lng": 141.335425,
+        "heliFlightMin": 8,
         "heliHelipadMin": 6,
         "rpCount": 6,
         "groundToBaseMin": 35,
@@ -195,8 +195,8 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 8.5,
-        "heliFlightReg": 7,
+        "heliDistanceKm": 12.8,
+        "heliFlightReg": 8,
         "heliFlightN": 5,
         "heliFlightIqr": [
           16,
@@ -214,7 +214,7 @@
         "rpCount": 8,
         "groundToBaseMin": 85,
         "hospitalTimes": [],
-        "heliDistanceKm": 55.4,
+        "heliDistanceKm": 54.5,
         "heliFlightReg": 19,
         "heliFlightN": 7,
         "heliFlightIqr": [
@@ -232,8 +232,8 @@
         "rpCount": 12,
         "groundToBaseMin": 45,
         "hospitalTimes": [],
-        "heliDistanceKm": 26.6,
-        "heliFlightReg": 12,
+        "heliDistanceKm": 26,
+        "heliFlightReg": 11,
         "heliFlightN": 12,
         "heliFlightSource": "実績中央値",
         "heliFlightIqr": [
@@ -250,7 +250,7 @@
         "rpCount": 3,
         "groundToBaseMin": 55,
         "hospitalTimes": [],
-        "heliDistanceKm": 35.5,
+        "heliDistanceKm": 34.7,
         "heliFlightReg": 14,
         "heliFlightN": 3,
         "heliFlightIqr": [
@@ -293,7 +293,7 @@
             "min": 50
           }
         ],
-        "heliDistanceKm": 24.2,
+        "heliDistanceKm": 24.1,
         "heliFlightReg": 11,
         "heliFlightN": 25,
         "heliFlightIqr": [
@@ -328,7 +328,7 @@
             "min": 45
           }
         ],
-        "heliDistanceKm": 34.7,
+        "heliDistanceKm": 34.8,
         "heliFlightReg": 14,
         "heliFlightN": 4,
         "heliFlightIqr": [
@@ -363,7 +363,7 @@
             "min": 0
           }
         ],
-        "heliDistanceKm": 21.3,
+        "heliDistanceKm": 20.4,
         "heliFlightReg": 10,
         "heliFlightN": 4,
         "heliFlightIqr": [
@@ -386,7 +386,7 @@
             "min": 14
           }
         ],
-        "heliDistanceKm": 17.6,
+        "heliDistanceKm": 16.9,
         "heliFlightReg": 9,
         "heliFlightN": 2,
         "heliFlightIqr": [
@@ -425,7 +425,7 @@
             "min": 6
           }
         ],
-        "heliDistanceKm": 36.5,
+        "heliDistanceKm": 35.8,
         "heliFlightReg": 14,
         "heliFlightN": 8,
         "heliFlightIqr": [
@@ -464,7 +464,7 @@
             "min": 12
           }
         ],
-        "heliDistanceKm": 39.7,
+        "heliDistanceKm": 39.1,
         "heliFlightReg": 15,
         "heliFlightN": 46,
         "heliFlightIqr": [
@@ -503,7 +503,7 @@
             "min": 18
           }
         ],
-        "heliDistanceKm": 35.5,
+        "heliDistanceKm": 35.2,
         "heliFlightReg": 14,
         "heliFlightN": 7,
         "heliFlightIqr": [
@@ -526,7 +526,7 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 21.7,
+        "heliDistanceKm": 21.5,
         "heliFlightReg": 10,
         "heliFlightN": 9,
         "heliFlightSource": "実績中央値",
@@ -565,7 +565,7 @@
             "min": 26
           }
         ],
-        "heliDistanceKm": 52.1,
+        "heliDistanceKm": 51.3,
         "heliFlightReg": 18,
         "heliFlightN": 16,
         "heliFlightIqr": [
@@ -604,8 +604,8 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 56.8,
-        "heliFlightReg": 20,
+        "heliDistanceKm": 55.9,
+        "heliFlightReg": 19,
         "heliFlightN": 9,
         "heliFlightIqr": [
           17,
@@ -643,7 +643,7 @@
             "min": 4
           }
         ],
-        "heliDistanceKm": 46.3,
+        "heliDistanceKm": 46.5,
         "heliFlightReg": 17,
         "heliFlightN": 76,
         "heliFlightIqr": [
@@ -682,7 +682,7 @@
             "min": 24
           }
         ],
-        "heliDistanceKm": 56.4,
+        "heliDistanceKm": 56.6,
         "heliFlightReg": 19,
         "heliFlightN": 9,
         "heliFlightIqr": [
@@ -721,7 +721,7 @@
             "min": 40
           }
         ],
-        "heliDistanceKm": 67.9,
+        "heliDistanceKm": 68,
         "heliFlightReg": 22,
         "heliFlightN": 16,
         "heliFlightSource": "実績中央値",
@@ -764,7 +764,7 @@
             "min": 14
           }
         ],
-        "heliDistanceKm": 53.7,
+        "heliDistanceKm": 53.6,
         "heliFlightReg": 19,
         "heliFlightN": 15,
         "heliFlightIqr": [
@@ -807,8 +807,8 @@
             "min": 7
           }
         ],
-        "heliDistanceKm": 60.5,
-        "heliFlightReg": 21,
+        "heliDistanceKm": 60.3,
+        "heliFlightReg": 20,
         "heliFlightN": 36,
         "heliFlightIqr": [
           19,
@@ -850,7 +850,7 @@
             "min": 18
           }
         ],
-        "heliDistanceKm": 61.3,
+        "heliDistanceKm": 60.9,
         "heliFlightReg": 21,
         "heliFlightN": 14,
         "heliFlightIqr": [
@@ -893,7 +893,7 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 67.1,
+        "heliDistanceKm": 66.5,
         "heliFlightReg": 22,
         "heliFlightN": 2,
         "heliFlightIqr": [
@@ -980,7 +980,7 @@
             "min": 50
           }
         ],
-        "heliDistanceKm": 90.7,
+        "heliDistanceKm": 90.9,
         "heliFlightReg": 28,
         "heliFlightN": 3,
         "heliFlightIqr": [
@@ -1023,7 +1023,7 @@
             "min": 80
           }
         ],
-        "heliDistanceKm": 111.3,
+        "heliDistanceKm": 111.4,
         "heliFlightReg": 34,
         "heliFlightN": 2,
         "heliFlightIqr": [
@@ -1062,8 +1062,8 @@
             "min": 22
           }
         ],
-        "heliDistanceKm": 41.3,
-        "heliFlightReg": 15,
+        "heliDistanceKm": 41.7,
+        "heliFlightReg": 16,
         "heliFlightN": 9,
         "heliFlightSource": "実績中央値",
         "heliFlightIqr": [
@@ -1105,7 +1105,7 @@
             "min": 50
           }
         ],
-        "heliDistanceKm": 31.0,
+        "heliDistanceKm": 31.8,
         "heliFlightReg": 13,
         "heliFlightN": 12,
         "heliFlightSource": "実績中央値",
@@ -1144,7 +1144,7 @@
             "min": 40
           }
         ],
-        "heliDistanceKm": 49.2,
+        "heliDistanceKm": 49.8,
         "heliFlightReg": 18,
         "heliFlightN": 4,
         "heliFlightIqr": [
@@ -1183,7 +1183,7 @@
             "min": 28
           }
         ],
-        "heliDistanceKm": 53.9,
+        "heliDistanceKm": 54.3,
         "heliFlightReg": 19,
         "heliFlightN": 11,
         "heliFlightIqr": [
@@ -1222,8 +1222,8 @@
             "min": 14
           }
         ],
-        "heliDistanceKm": 86.3,
-        "heliFlightReg": 27,
+        "heliDistanceKm": 87.3,
+        "heliFlightReg": 28,
         "heliFlightN": 3,
         "heliFlightIqr": [
           26,
@@ -1247,7 +1247,7 @@
         "rp": "登別市街",
         "lat": 42.41250359230969,
         "lng": 141.10680001513256,
-        "heliFlightMin": 25,
+        "heliFlightMin": 26,
         "heliHelipadMin": 6,
         "rpCount": null,
         "groundToBaseMin": 100,
@@ -1261,8 +1261,8 @@
             "min": 26
           }
         ],
-        "heliDistanceKm": 78.7,
-        "heliFlightReg": 25,
+        "heliDistanceKm": 79.7,
+        "heliFlightReg": 26,
         "heliFlightN": 0,
         "heliFlightSource": "回帰推定"
       }
@@ -1300,7 +1300,7 @@
             "min": 8
           }
         ],
-        "heliDistanceKm": 74.2,
+        "heliDistanceKm": 74.9,
         "heliFlightReg": 24,
         "heliFlightN": 2,
         "heliFlightIqr": [
@@ -1331,7 +1331,7 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 53.8,
+        "heliDistanceKm": 54.7,
         "heliFlightReg": 19,
         "heliFlightN": 2,
         "heliFlightIqr": [
@@ -1357,7 +1357,7 @@
         "rp": "望羊台広場",
         "lat": 42.666048353646474,
         "lng": 140.83681003961667,
-        "heliFlightMin": 20,
+        "heliFlightMin": 21,
         "heliHelipadMin": 6,
         "rpCount": 3,
         "groundToBaseMin": 130,
@@ -1375,8 +1375,8 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 59.9,
-        "heliFlightReg": 20,
+        "heliDistanceKm": 60.6,
+        "heliFlightReg": 21,
         "heliFlightN": 3,
         "heliFlightSource": "回帰推定",
         "heliFlightIqr": [
@@ -1419,7 +1419,7 @@
             "min": 16
           }
         ],
-        "heliDistanceKm": 68.7,
+        "heliDistanceKm": 69.4,
         "heliFlightReg": 23,
         "heliFlightN": 2,
         "heliFlightIqr": [
@@ -1462,7 +1462,7 @@
             "min": 50
           }
         ],
-        "heliDistanceKm": 65.4,
+        "heliDistanceKm": 66.5,
         "heliFlightReg": 22,
         "heliFlightN": 5,
         "heliFlightIqr": [
@@ -1501,7 +1501,7 @@
             "min": 16
           }
         ],
-        "heliDistanceKm": 59.2,
+        "heliDistanceKm": 60.3,
         "heliFlightReg": 20,
         "heliFlightN": 23,
         "heliFlightIqr": [
@@ -1540,8 +1540,8 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 60.4,
-        "heliFlightReg": 20,
+        "heliDistanceKm": 61.4,
+        "heliFlightReg": 21,
         "heliFlightN": 7,
         "heliFlightIqr": [
           19,
@@ -1579,7 +1579,7 @@
             "min": 35
           }
         ],
-        "heliDistanceKm": 72.5,
+        "heliDistanceKm": 73.7,
         "heliFlightReg": 24,
         "heliFlightN": 10,
         "heliFlightIqr": [
@@ -1618,8 +1618,8 @@
             "min": 80
           }
         ],
-        "heliDistanceKm": 82.4,
-        "heliFlightReg": 26,
+        "heliDistanceKm": 83.4,
+        "heliFlightReg": 27,
         "heliFlightN": 7,
         "heliFlightIqr": [
           26,
@@ -1661,7 +1661,7 @@
             "min": 30
           }
         ],
-        "heliDistanceKm": 73.5,
+        "heliDistanceKm": 74.1,
         "heliFlightReg": 24,
         "heliFlightN": 1,
         "heliFlightIqr": [
@@ -1704,7 +1704,7 @@
             "min": 40
           }
         ],
-        "heliDistanceKm": 46.1,
+        "heliDistanceKm": 46.5,
         "heliFlightReg": 17,
         "heliFlightN": 1,
         "heliFlightIqr": [
@@ -1786,7 +1786,7 @@
             "min": 16
           }
         ],
-        "heliDistanceKm": 61.3,
+        "heliDistanceKm": 61.5,
         "heliFlightReg": 21,
         "heliFlightN": 13,
         "heliFlightIqr": [
@@ -1825,7 +1825,7 @@
             "min": 10
           }
         ],
-        "heliDistanceKm": 63.1,
+        "heliDistanceKm": 63.8,
         "heliFlightReg": 21,
         "heliFlightN": 34,
         "heliFlightIqr": [
@@ -1860,8 +1860,8 @@
             "min": 14
           }
         ],
-        "heliDistanceKm": 33.3,
-        "heliFlightReg": 13,
+        "heliDistanceKm": 33.9,
+        "heliFlightReg": 14,
         "heliFlightN": 18,
         "heliFlightIqr": [
           11,
@@ -1895,7 +1895,7 @@
             "min": 3
           }
         ],
-        "heliDistanceKm": 37.6,
+        "heliDistanceKm": 38.4,
         "heliFlightReg": 15,
         "heliFlightN": 4,
         "heliFlightIqr": [
@@ -1930,7 +1930,7 @@
             "min": 16
           }
         ],
-        "heliDistanceKm": 45.7,
+        "heliDistanceKm": 46.4,
         "heliFlightReg": 17,
         "heliFlightN": 8,
         "heliFlightIqr": [
@@ -1965,7 +1965,7 @@
             "min": 18
           }
         ],
-        "heliDistanceKm": 43.6,
+        "heliDistanceKm": 44.2,
         "heliFlightReg": 16,
         "heliFlightN": 3,
         "heliFlightIqr": [
@@ -2000,7 +2000,7 @@
             "min": 30
           }
         ],
-        "heliDistanceKm": 42.1,
+        "heliDistanceKm": 41.9,
         "heliFlightReg": 16,
         "heliFlightN": 7,
         "heliFlightIqr": [
@@ -2039,8 +2039,8 @@
             "min": 50
           }
         ],
-        "heliDistanceKm": 94.7,
-        "heliFlightReg": 29,
+        "heliDistanceKm": 95.8,
+        "heliFlightReg": 30,
         "heliFlightN": 15,
         "heliFlightIqr": [
           28,
@@ -2078,7 +2078,7 @@
             "min": 55
           }
         ],
-        "heliDistanceKm": 93.2,
+        "heliDistanceKm": 94.2,
         "heliFlightReg": 29,
         "heliFlightN": 11,
         "heliFlightIqr": [
@@ -2117,7 +2117,7 @@
             "min": 70
           }
         ],
-        "heliDistanceKm": 120.4,
+        "heliDistanceKm": 121.5,
         "heliFlightReg": 36,
         "heliFlightN": 4,
         "heliFlightIqr": [
@@ -2161,7 +2161,7 @@
             "min": 85
           }
         ],
-        "heliDistanceKm": 126.1,
+        "heliDistanceKm": 127.1,
         "heliFlightReg": 38,
         "heliFlightN": 42,
         "heliFlightIqr": [
@@ -2204,7 +2204,7 @@
             "min": 140
           }
         ],
-        "heliDistanceKm": 163.5,
+        "heliDistanceKm": 164.5,
         "heliFlightReg": 48,
         "heliFlightN": 12,
         "heliFlightIqr": [
