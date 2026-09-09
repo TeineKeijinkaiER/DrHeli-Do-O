@@ -7,7 +7,7 @@
 ## 0. 最重要・先に読むこと
 1. **2つのリポジトリがある。両方を必ず同期する。**
    - `DO-O`（**非公開・正本**）: 全モード・全データ・分析資料・運航DBを含む。機密(患者/運航)情報あり。
-   - `DrHeli-Do-O`（**公開・GitHub Pages**, https://github.com/TeineKeijinkaiER/DrHeli-Do-O）: 機密を含まない安全版。**地図(時間のみ)/ビギナー/インベントリー/クイズ の4モードのみ**。**エキスパート/統計/admin は含めない**（`data/expert-lessons.json` も置かない）。`DO-O/DrHeli-Do-O/` 配下にサブ作業ツリーとして存在（別 .git）。
+   - `DrHeli-Do-O`（**公開・GitHub Pages**, https://github.com/TeineKeijinkaiER/DrHeli-Do-O）: 機密を含まない安全版。**地図(時間のみ)/ビギナー/インベントリー/クイズ の4モードのみ**。**リフレクション/統計/admin は含めない**（`data/reflection-lessons.json` / `stats.json` も置かない）。`DO-O/DrHeli-Do-O/` 配下にサブ作業ツリーとして存在（別 .git）。
 2. **公開反映には GitHub への `git push` が必要**（このセッション群はローカルコミットのみ。push はユーザーが実施）。コミットしたら「push が必要」と必ず伝える。
 3. **複数AIを同一リポジトリで同時に走らせない**（過去にファイル途中切れ・git index 破損が多発）。
 4. **DrHeli-Do-O の git は index 破損が起きやすい**。コミットは必ず次の方式で：
@@ -17,7 +17,7 @@
    git add <files>; git commit -m "..."
    ```
    破損時は `rm -f .git/index .git/index.lock; git reset --mixed <good-commit>` で復旧。
-5. **DO-O の GitHub Pages 自動デプロイは無効化してある**(`.github/workflows/deploy.yml` は `workflow_dispatch` のみ)。DO-O の `pwa/` には `expert-lessons.json` / `stats.json` / `admin.html` が入っているため、**Pages を有効化すると機密が全世界公開になる**。戻さないこと。
+5. **DO-O の GitHub Pages 自動デプロイは無効化してある**(`.github/workflows/deploy.yml` は `workflow_dispatch` のみ)。DO-O の `pwa/` には `reflection-lessons.json` / `stats.json` / `admin.html` が入っているため、**Pages を有効化すると機密が全世界公開になる**。戻さないこと。
 6. **bashマウントとファイルツール(Read/Write/Edit)で内容がずれる/反映が遅延することがある**。データ/コードの確定編集は **bash(python heredoc)** で行うと mount と git が一致して安全。
 
 ---
@@ -28,8 +28,9 @@
 - Service Worker でキャッシュ。`起動.cmd`(http://127.0.0.1:8080) でローカル起動。スマホは GitHub Pages + QR。
 
 ### モード構成（`pwa/js/app.js` の MODES）
-map(地図) / beginner(ビギナー) / expert(**エキスパート**・**公開版なし**) / inventory(インベントリー) / quiz(クイズ) / stats(統計・**公開版なし**)。
-エキスパートは `pwa/js/expert.js` が担当（`modes.js` から独立）。データは `data/expert-lessons.json`。
+map(地図) / beginner(ビギナー) / reflection(**リフレクション**・**公開版なし**) / inventory(インベントリー) / quiz(クイズ) / stats(統計・**公開版なし**)。
+リフレクションは `pwa/js/reflection.js` が担当（`modes.js` から独立）。データは `data/reflection-lessons.json`。
+※2026-09-09 に「エキスパート」から改名。ファイル名・識別子もすべて reflection に揃えた。
 ※「試作」バッジは撤去済み。
 
 ---
@@ -39,7 +40,8 @@ map(地図) / beginner(ビギナー) / expert(**エキスパート**・**公開�
 DO-O/
   pwa/                     ← アプリ本体(正本)
     index.html  js/{app,map,modes}.js  css/style.css  sw.js  manifest.json
-    js/expert.js               ← エキスパートモード(議事録由来の反省・注意事項)
+    js/reflection.js           ← リフレクションモード(議事録由来の反省・注意事項)
+    js/stats.js                ← 統計モード(レジストリ集計)
     vendor/leaflet/            ← Leaflet 1.9.4 自前ホスト(CDN依存を排除・オフライン用)
     _headers                   ← Cloudflare Pages 用ヘッダ(GitHub Pages では無視される)
     admin.html  js/admin.js            ← コンテンツ編集ツール(非公開)
@@ -54,7 +56,8 @@ DO-O/
   knowledge/analysis/      ← 分析資料(搬送時間の算出方法.md ほか)
   functions/_middleware.js ← 機密版の合言葉ログイン(Cloudflare Pages Functions)
                              ※リポジトリ直下。pwa/ の中ではない(Pages はルートで探すため)
-  scripts/build-expert-data.mjs ← knowledge/lessons/*.md → pwa/data/expert-lessons.json
+  scripts/build-reflection-data.mjs ← knowledge/lessons/*.md → pwa/data/reflection-lessons.json
+  scripts/build-stats-data.mjs      ← フライトDB → pwa/data/stats.json(非識別化)
   scripts/lessons-lib.mjs       ← frontmatter 解析・個人名検出(純関数)
   scripts/migrate-lessons.mjs   ← 旧JSON→MD の移行記録(再実行不可)
   scripts/check.sh         ← sw.js / functions/ / lessons の健全性チェック(編集したら必ず実行)
@@ -107,8 +110,8 @@ DO-O/
 
 ---
 
-## 4. エキスパートモード（議事録由来の反省・注意事項）
-`pwa/js/expert.js`。データ `data/expert-lessons.json`（80件）。**公開版には無い。**
+## 4. リフレクションモード（議事録由来の反省・注意事項）
+`pwa/js/reflection.js`。データ `data/reflection-lessons.json`（80件）。**公開版には無い。**
 
 ### 4.1 正本は MD ファイル
 - **`knowledge/lessons/<会議回>-<連番>_<短い題>.md` が正本**。1件1ファイル。
@@ -127,7 +130,7 @@ DO-O/
 ### 4.3 更新手順
 ```
 knowledge/lessons/*.md を編集
-  → node scripts/build-expert-data.mjs
+  → node scripts/build-reflection-data.mjs
   → pwa/sw.js の CACHE 版を上げる
   → bash scripts/check.sh
 ```
@@ -150,17 +153,28 @@ knowledge/lessons/*.md を編集
   `knowledge/lessons/` を選ぶ（File System Access API を使うため、Firefox / Safari は非対応）。
 - 題名・本文・ジャンル・圏域・市町村・病院・公開可否を編集し、個別または一括保存する。
 - `publish:true` でジャンルが空、未知のジャンル、個人名の疑いがある場合は保存を拒否する。
-- 保存後は `node scripts/build-expert-data.mjs` → `pwa/sw.js` の CACHE 版上げ → `scripts/check.sh`。
+- 保存後は `node scripts/build-reflection-data.mjs` → `pwa/sw.js` の CACHE 版上げ → `scripts/check.sh`。
 
-### 4.7 統計モード（エキスパートとは独立）
+### 4.7 統計モード（リフレクションとは独立）
 - `pwa/js/stats.js`。生成データは `pwa/data/stats.json`、正本は保護対象のフライトDB。
 - `node scripts/build-stats-data.mjs` で missions 3,164件／実患者1,545件を非識別化して生成する。
-- ID・氏名・自由記述・座標・日／時刻は出力しない。許可列は固定し、`scripts/check-stats.mjs` で漏出を検査する。
-- missions（要請・応需・中止）と patients（患者・重症度・時間）は別々に絞り込み、分母を混ぜない。各指標に n と欠損数を表示する。
-- 絞り込みは同じ欄の複数選択が OR、欄をまたぐと AND。ミッション／患者それぞれに条件クリアがある。
-- RP名の表記揺れによりマスター未突合342表記が残るが、DB補正市町村から圏域を補完する。圏域未解決は137患者・66 RP。今後正規化辞書を育てる。
-
----
+- **列は許可リスト方式**（`MISSION_KEYS` / `PATIENT_KEYS`）。氏名列が実在するため、
+  除外リストではなく「許可した列だけ通す」。新しい列を出したいときは両方に足す。
+- **1画面に統合**（2026-09-09）。ミッション統計と患者統計のセクション分けは廃止。
+  不応需理由・中止区分の内訳も廃止（生成JSONからも落とした）。
+- 表示する指標は7つ: 要請件数 / 応需率 / 出動数 / 対応患者数 / 挿管 /
+  覚知→接触の中央値 / 現場滞在時間の中央値。
+- **絞り込みは14軸**。年度・年月・要請消防・搬送種別はミッションにも患者にも効く。
+  それ以外（圏域・市町村・RP・受入病院・疾患大中小・処置・年齢層・性別）は
+  **患者にしか無いのでミッション側の3指標には効かない**。その条件が入っているときは
+  画面に注意書きを出す。ミッションに圏域を持たせるには消防本部→圏域の対応表が要るが、
+  行政区分の判断が必要なため未実装。
+- 連動: 年度→年月、圏域→市町村→RP、疾患の大→中→小。親を変えると子の選択は自動で外れる。
+- **挿管の定義**: 経口気管挿管(`rinttyp2`)＋経鼻(`rinttyp6`) = 157件。
+  `prcdr_g_7`(22件) は接触前の救急隊処置なので採らない。
+- **現場滞在時間**: 現場着陸(`timldgrz`)→傷病者搬送開始(`timtkfrz`)。中央値22分で、
+  地図モードの既定20分と整合する。0〜180分の範囲外は捨てる。
+- 転帰(`pldisc` 28%/`los` 14%)・ISS(1%)・NACA・PCTAS は使わない。入力率が低く誤解を招くため。
 
 ## 5. インベントリーモード（旧ロジスティック）
 `pwa/js/modes.js` の `rInventory`、データ `data/inventory.json`(bags→sections→items{n:品名, y:よみがな})。
@@ -185,7 +199,7 @@ knowledge/lessons/*.md を編集
 ---
 
 ## 6. PWA / Service Worker
-- `sw.js`: CACHE名は版数管理(現在 **doo-heli-v23**)。**データJSON(/data/*.json)はネットワーク優先**、アプリ本体(html/js/css/img/vendor)はキャッシュ優先+背景更新。activateで `KEEP` 以外の旧キャッシュ削除。
+- `sw.js`: CACHE名は版数管理(現在 **doo-heli-v28**)。**データJSON(/data/*.json)はネットワーク優先**、アプリ本体(html/js/css/img/vendor)はキャッシュ優先+背景更新。activateで `KEEP` 以外の旧キャッシュ削除。
 - **地図タイルは専用キャッシュ `doo-heli-tiles-v1`**（キャッシュ優先・上限800件・超過分は古い順に削除）。タイル配信元は `TILE_HOSTS` で判定。
 - **ログイン画面の取り込み防止(`unusable()`)**: Cloudflare Access の認証切れや病院/公衆無線LANのキャプティブポータルでは、`data/regions.json` へのリクエストに**ログインHTMLが 200 で返る**。`res.ok` だけで判定すると JSON の代わりに HTML をキャッシュしてアプリが壊れるため、`res.redirected`・Content-Type・**`x-auth-required` ヘッダ**も検査してからキャッシュする。**この判定を外さないこと。** `x-auth-required` は `functions/_middleware.js` が未認証応答に必ず付ける目印。
 - **画面遷移(`req.mode==='navigate'`)はネット優先**。認証切れ時にログイン画面へ到達できるようにするため。ただしキャッシュがあれば 2.5秒で打ち切ってキャッシュを返す(電波が弱い現場対策)。
@@ -198,7 +212,7 @@ knowledge/lessons/*.md を編集
 - `git config user.name "Shinsuke"` / `user.email "shin0428@gmail.com"`。
 - `.git/index.lock` 残存時は `rm -f .git/index.lock`。
 - DO-O: 通常の `git add/commit`。DrHeli-Do-O: §0-4 の `GIT_INDEX_FILE=/tmp/...` 方式必須。
-- 変更は**必ず両リポジトリ**へ（公開版に存在するファイルのみ同期: js/{app,map,modes}.js, css/style.css, index.html, sw.js, data/{regions,inventory,beginner,quiz}.json 等。**`js/expert.js` / `data/expert-lessons.json` / `stats.json` / `admin.*` は同期しない**）。
+- 変更は**必ず両リポジトリ**へ（公開版に存在するファイルのみ同期: js/{app,map,modes}.js, css/style.css, index.html, sw.js, data/{regions,inventory,beginner,quiz}.json 等。**`js/reflection.js` / `js/stats.js` / `data/reflection-lessons.json` / `stats.json` / `admin.*` は同期しない**）。
 
 ---
 
@@ -211,7 +225,11 @@ knowledge/lessons/*.md を編集
 - [x] 2026-09-07: 地図から反省事例を削除し、議事録由来80件をエキスパートモードへ集約(SW v23)。
       正本は `knowledge/lessons/*.md`。Notion リンク全廃。設計書 `docs/superpowers/specs/2026-09-07-expert-mode-design.md`。
 - [x] **エキスパート 段階C(2026-09-07完了)**: `admin.html` に事例タブ（精査・個人名ハイライト・MD直接保存）。
+- [x] 2026-09-09: エキスパート→**リフレクション**に改名(ファイル名・識別子も含む)。フィルタを折りたたみ式に統一。
+      統計モードを1画面に統合し、指標を7つに整理。疾患群(大中小)・処置の軸と、挿管・現場滞在時間を追加。
+      不応需理由・中止区分は廃止。SW v28。
 - [x] **統計モード 段階E(2026-09-07完了)**: レジストリから非識別化テーブルを生成し、独立した統計モード内で集計（エキスパートには載せない）。
+      患者統計は年度→年月、圏域→市町村→RPを階層連動し、親条件と矛盾する子条件を自動解除する。NACA・PCTASは画面・生成JSONとも不採用。
       計画 `docs/superpowers/plans/2026-09-07-expert-lessons.md` の末尾を参照。
 - [ ] **Phase 2(未着手)**: 公開版の手作業フォークを廃止し、`pwa/` を唯一の正本として `scripts/build-public.mjs` で公開版ツリーを自動生成する。データJSONは allowlist 方式＋禁止ファイル混入でCIを落とすガードを付ける。
 - [ ] **Phase 3(準備完了・ユーザー作業待ち)**: **`Cloudflare移行手順.md` の手順を実施**。①機密版(DO-O/pwa・全6モード)を Cloudflare Pages へ。認証は `functions/_middleware.js` の**合言葉ログイン**(環境変数 `DOO_PASSWORD` / `DOO_AUTH_SECRET` を Secret で登録し再デプロイ)。②公開版(DrHeli-Do-O・4モード)も Cloudflare Pages へ移し、**GitHub Pages は両方とも停止**する。
@@ -229,5 +247,5 @@ knowledge/lessons/*.md を編集
 - 基地病院 手稲渓仁会: 43.1123, 141.2494。
 - ヘリ飛行回帰: 4.66 + 0.262 × 距離km (R²0.722, 57RP/727例)。病院内固定 6分。現場滞在既定 20分。
 - 安全策しきい値: n<8 かつ |中央値−回帰|>7分 → 回帰採用。
-- regions.json: 52市町村 / 58RP（実績中央値52・回帰6）。SW: doo-heli-v23 / タイル: doo-heli-tiles-v1。
+- regions.json: 52市町村 / 58RP（実績中央値52・回帰6）。SW: doo-heli-v28 / タイル: doo-heli-tiles-v1。
 - ベースマップ: 地理院タイル淡色 → 失敗時 OSM。Leaflet 1.9.4 は `vendor/leaflet/` に自前ホスト。
