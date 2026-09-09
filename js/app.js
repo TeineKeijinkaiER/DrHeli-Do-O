@@ -14,7 +14,6 @@ const App = (() => {
     inventory:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 12.5v3.5M10.25 14.25h3.5"/></svg>`,
     quiz:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.3a2.8 2.8 0 0 1 5.3 1c0 1.8-2.6 2.3-2.6 4"/><path d="M12 17.5h.01"/></svg>`,
     stats:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>`,
-    admin:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/><path d="M17 10.5h4M19 8.5v4"/></svg>`,
   };
 
   /* --- モード定義 --- */
@@ -25,7 +24,6 @@ const App = (() => {
     { id:'inventory', name:'インベントリーモード', tag:'バッグ物品管理',      icon:I.inventory, accent:'accent-amber', public:true },
     { id:'quiz',     name:'クイズモード',       tag:'',                     icon:I.quiz,     accent:'accent-cyan', public:true },
     { id:'stats',    name:'統計モード',         tag:'',                     icon:I.stats,    accent:'accent-purple', public:false },
-    { id:'admin',    name:'管理モード',         tag:'利用履歴・クイズ成績・コンテンツ管理', icon:I.admin, accent:'accent-cyan', public:false },
   ].filter(m=>!IS_PUBLIC_BUILD||m.public);
 
   function renderModes(){
@@ -48,7 +46,6 @@ const App = (() => {
 
   const TITLES={map:'地図モード',beginner:'ビギナーモード',reflection:'リフレクションモード',inventory:'インベントリーモード',quiz:'クイズモード',stats:'統計モード'};
   function open(id){
-    if(id==='admin'){ window.location.href='admin.html#usage'; return; }
     appbarSub.textContent=TITLES[id]||'';
     show(id);
     if(typeof Usage!=='undefined') Usage.log('mode',{mode:id});
@@ -141,8 +138,16 @@ const App = (() => {
     foot.appendChild(a);
   }
 
+  function renderUsageLink(){
+    if(IS_PUBLIC_BUILD) return;
+    const links=document.getElementById('privateLinks'); if(!links) return;
+    const a=document.createElement('a');
+    a.className='home__usage'; a.href='admin.html'; a.textContent='使用履歴';
+    links.appendChild(a);
+  }
+
   function init(){
-    renderModes(); loadOpStatus(); renderFoot();
+    renderModes(); loadOpStatus(); renderUsageLink(); renderFoot();
     if(typeof Usage!=='undefined') Usage.session();
   }
   document.addEventListener('DOMContentLoaded',init);
