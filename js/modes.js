@@ -29,8 +29,8 @@ const Modes = (() => {
   let qstate=null;
   function rQuiz(){
     const d=DATA.quiz||{levels:[],themes:[],questions:[],passRate:0.8};
-    root('quiz').innerHTML=`<div class="mode-hd"><h2>クイズ</h2><p>レベル・テーマを選んで検定。ランダムも可</p></div>
-      ${banner('編集: data/quiz.json ／ TKH-ER-QUIZの仕組みを流用予定')}
+    root('quiz').innerHTML=`<div class="mode-hd"><h2>クイズ</h2><p>勤務知識から歴史・難読地名まで</p></div>
+      ${banner(`${(d.questions||[]).length}問収録 ／ 正解後に解説と出典を表示`)}
       <div class="seg"><label>レベル</label><div class="seg__b" id="qlv">${d.levels.map((l,i)=>`<button data-v="${i}" class="${i===0?'on':''}">${esc(l)}</button>`).join('')}</div></div>
       <div class="seg"><label>テーマ</label><div class="seg__b" id="qth">
         ${d.themes.map((t,i)=>`<button data-v="${i}">${esc(t)}</button>`).join('')}<button data-v="rand" class="on">ランダム</button></div></div>
@@ -44,7 +44,7 @@ const Modes = (() => {
   }
   function startQuiz(lv,th){
     const d=DATA.quiz; let pool=d.questions.filter(x=>x.lv===lv && (th==='rand'||x.th===+th));
-    if(!pool.length) pool=d.questions.filter(x=>x.lv===lv);
+    if(!pool.length){ root('quiz').querySelector('#qrun').innerHTML='<div class="basic-empty">このレベルとテーマの組み合わせには、まだ問題がありません。</div>'; return; }
     pool=pool.slice().sort(()=>Math.random()-0.5);
     qstate={pool,i:0,score:0,pass:d.passRate||0.8,
       level:(d.levels||[])[lv]||String(lv),
@@ -68,7 +68,10 @@ const Modes = (() => {
       const ci=+b.dataset.ci; const good=ci===it.a;
       run.querySelectorAll('.qopt').forEach((x,xi)=>{x.disabled=true; if(xi===it.a)x.classList.add('ok'); if(xi===ci&&!good)x.classList.add('ng');});
       if(good)qstate.score++;
-      setTimeout(()=>{qstate.i++;renderQ();},850);
+      const feedback=document.createElement('div'); feedback.className=`qfeedback ${good?'ok':'ng'}`;
+      feedback.innerHTML=`<strong>${good?'正解':'不正解'}</strong>${it.x?`<p>${esc(it.x)}</p>`:''}${it.src?`<small>出典：${esc(it.src)}</small>`:''}<button type="button" class="bigbtn qnext">${i+1>=pool.length?'結果を見る':'次の問題'}</button>`;
+      run.querySelector('.qcard').appendChild(feedback);
+      feedback.querySelector('.qnext').addEventListener('click',()=>{qstate.i++;renderQ();});
     }));
   }
 
@@ -274,19 +277,60 @@ const Modes = (() => {
     }
   }
 
-  /* ---------- ビギナー ---------- */
+  /* ---------- ベーシック（内部IDは利用履歴互換のため beginner を維持） ---------- */
   function rBeginner(){
-    const d=DATA.beginner||{sections:[],top10:[]};
-    root('beginner').innerHTML=`<div class="mode-hd"><h2>ビギナー</h2><p>OJT医療スタッフ向け 運用マニュアル</p></div>
-      ${banner('編集: data/beginner.json ／ 出典: '+esc(d.source||''))}
-      ${d.intro?`<div class="li">${esc(d.intro)}</div>`:''}
-      ${(d.top10&&d.top10.length)?`<div class="top10"><div class="top10__h">最初に覚える10項目</div><ol>${d.top10.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>`:''}
-      <div class="acc">${(d.sections||[]).map((e,i)=>`
-        <div class="acc__item"><button class="acc__h" data-i="${i}">${esc(e.t)}<span>＋</span></button>
-        <div class="acc__b" id="bgb${i}">${(e.items||[]).map(x=>`<div class="li">${esc(x)}</div>`).join('')}</div></div>`).join('')}</div>`;
-    root('beginner').querySelectorAll('.acc__h').forEach(b=>b.addEventListener('click',()=>{
-      const el=document.getElementById('bgb'+b.dataset.i); el.classList.toggle('open');
-      b.querySelector('span').textContent=el.classList.contains('open')?'−':'＋';}));
+    const d=DATA.beginner||{categories:[],quick:[]};
+    const R=root('beginner');
+    let activeCategory='all', query='';
+    const situations=()=> (d.categories||[]).flatMap(c=>(c.situations||[]).map(s=>({...s,categoryId:c.id,categoryTitle:c.title})));
+    const searchable=s=>[s.title,s.when,s.summary,...(s.checks||[]).map(x=>x.text),...(s.avoid||[]),...(s.ifTrouble||[]),...(s.details||[]),...(s.examples||[])].join(' ').toLocaleLowerCase('ja');
+    const checkRow=x=>`<button class="basic-check${x.critical?' is-critical':''}" type="button" aria-pressed="false"><span class="basic-check__box" aria-hidden="true">✓</span><span class="basic-check__text">${esc(x.text)}</span></button>`;
+    const block=(title,items,kind='')=>(items&&items.length)?`<section class="basic-block ${kind}"><h4>${esc(title)}</h4>${items.map(x=>`<div class="basic-line">${esc(x)}</div>`).join('')}</section>`:'';
+    const card=s=>`<article class="basic-card" id="basic-${escAttr(s.id)}" data-search="${escAttr(searchable(s))}">
+      <button class="basic-card__head" type="button" aria-expanded="false" aria-controls="basic-body-${escAttr(s.id)}">
+        <span><span class="basic-card__when">${esc(s.when)}</span><strong>${esc(s.title)}</strong><small>${esc(s.summary)}</small></span><span class="basic-card__toggle">＋</span>
+      </button>
+      <div class="basic-card__body" id="basic-body-${escAttr(s.id)}">
+        <section class="basic-block basic-block--check"><h4>チェック</h4>${(s.checks||[]).map(checkRow).join('')}</section>
+        ${block('NG',s.avoid,'basic-block--avoid')}
+        ${block('迷ったとき・異常時',s.ifTrouble,'basic-block--trouble')}
+        ${block('無線チェック例',s.examples,'basic-block--example')}
+        ${block('選択肢・補足',s.details,'basic-block--detail')}
+      </div>
+    </article>`;
+    const renderList=(openId='')=>{
+      const q=query.trim().toLocaleLowerCase('ja');
+      const html=(d.categories||[]).map(c=>{
+        const items=(c.situations||[]).filter(s=>(activeCategory==='all'||c.id===activeCategory)&&(!q||searchable(s).includes(q)));
+        return items.length?`<section class="basic-group"><h3>${esc(c.title)}</h3>${items.map(card).join('')}</section>`:'';
+      }).join('');
+      const list=R.querySelector('#basicList');
+      list.innerHTML=html||`<div class="basic-empty">該当する場面がありません。検索語または分類を変更してください。</div>`;
+      list.querySelectorAll('.basic-card__head').forEach(b=>b.addEventListener('click',()=>{
+        const body=b.nextElementSibling, open=body.classList.toggle('open');
+        b.setAttribute('aria-expanded',String(open)); b.querySelector('.basic-card__toggle').textContent=open?'−':'＋';
+      }));
+      list.querySelectorAll('.basic-check').forEach(b=>b.addEventListener('click',()=>{
+        const on=b.getAttribute('aria-pressed')!=='true'; b.setAttribute('aria-pressed',String(on)); b.classList.toggle('is-done',on);
+      }));
+      if(openId){
+        const target=R.querySelector('#basic-'+CSS.escape(openId));
+        if(target){ const h=target.querySelector('.basic-card__head'); h.click(); requestAnimationFrame(()=>target.scrollIntoView({behavior:'smooth',block:'start'})); }
+      }
+    };
+    R.innerHTML=`<div class="mode-hd basic-hd"><h2>${esc(d.title||'ベーシックモード')}</h2><p>${esc(d.subtitle||'勤務中マニュアル')}</p></div>
+      <nav class="basic-quick" aria-label="場面クイック参照">${(d.quick||[]).map(x=>`<button type="button" data-jump="${escAttr(x.id)}" class="tone-${escAttr(x.tone||'normal')}"><strong>${esc(x.label)}</strong><span>${esc(x.hint||'')}</span></button>`).join('')}</nav>
+      <div class="basic-tools"><label class="basic-search"><span>場面を検索</span><input id="basicSearch" type="search" placeholder="例：無線、搭載、記録" autocomplete="off"></label>
+        <div class="basic-cats" id="basicCats"><button type="button" data-cat="all" class="on">すべて</button>${(d.categories||[]).map(c=>`<button type="button" data-cat="${escAttr(c.id)}">${esc(c.title)}</button>`).join('')}</div></div>
+      <div id="basicList"></div>`;
+    R.querySelector('#basicSearch').addEventListener('input',e=>{query=e.target.value;renderList();});
+    R.querySelectorAll('#basicCats button').forEach(b=>b.addEventListener('click',()=>{
+      activeCategory=b.dataset.cat; R.querySelectorAll('#basicCats button').forEach(x=>x.classList.toggle('on',x===b)); renderList();
+    }));
+    R.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>{
+      activeCategory='all';query='';R.querySelector('#basicSearch').value='';R.querySelectorAll('#basicCats button').forEach(x=>x.classList.toggle('on',x.dataset.cat==='all'));renderList(b.dataset.jump);
+    }));
+    renderList();
   }
 
   async function open(id){
