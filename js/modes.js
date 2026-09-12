@@ -279,11 +279,11 @@ const Modes = (() => {
 
   /* ---------- ベーシック（内部IDは利用履歴互換のため beginner を維持） ---------- */
   function rBeginner(){
-    const d=DATA.beginner||{categories:[],quick:[]};
+    const d=DATA.beginner||{categories:[]};
     const R=root('beginner');
     let activeCategory='all', query='';
     const situations=()=> (d.categories||[]).flatMap(c=>(c.situations||[]).map(s=>({...s,categoryId:c.id,categoryTitle:c.title})));
-    const searchable=s=>[s.title,s.when,s.summary,...(s.checks||[]).map(x=>x.text),...(s.avoid||[]),...(s.ifTrouble||[]),...(s.details||[]),...(s.examples||[])].join(' ').toLocaleLowerCase('ja');
+    const searchable=s=>[s.title,s.when,s.summary,...(s.checks||[]).map(x=>x.text),...(s.avoid||[]),...(s.ifTrouble||[]),...(s.notes||[]),...(s.details?[s.details.title,...(s.details.items||[])]:[]),...(s.examples||[])].join(' ').toLocaleLowerCase('ja');
     const checkRow=x=>`<button class="basic-check${x.critical?' is-critical':''}" type="button" aria-pressed="false"><span class="basic-check__box" aria-hidden="true">✓</span><span class="basic-check__text">${esc(x.text)}</span></button>`;
     const block=(title,items,kind='')=>(items&&items.length)?`<section class="basic-block ${kind}"><h4>${esc(title)}</h4>${items.map(x=>`<div class="basic-line">${esc(x)}</div>`).join('')}</section>`:'';
     const card=s=>`<article class="basic-card" id="basic-${escAttr(s.id)}" data-search="${escAttr(searchable(s))}">
@@ -292,10 +292,11 @@ const Modes = (() => {
       </button>
       <div class="basic-card__body" id="basic-body-${escAttr(s.id)}">
         <section class="basic-block basic-block--check"><h4>チェック</h4>${(s.checks||[]).map(checkRow).join('')}</section>
+        ${block('注意事項',s.notes,'basic-block--note')}
         ${block('NG',s.avoid,'basic-block--avoid')}
         ${block('迷ったとき・異常時',s.ifTrouble,'basic-block--trouble')}
         ${block('無線チェック例',s.examples,'basic-block--example')}
-        ${block('選択肢・補足',s.details,'basic-block--detail')}
+        ${s.details?block(s.details.title,s.details.items,'basic-block--detail'):''}
       </div>
     </article>`;
     const renderList=(openId='')=>{
@@ -319,16 +320,12 @@ const Modes = (() => {
       }
     };
     R.innerHTML=`<div class="mode-hd basic-hd"><h2>${esc(d.title||'ベーシックモード')}</h2><p>${esc(d.subtitle||'勤務中マニュアル')}</p></div>
-      <nav class="basic-quick" aria-label="場面クイック参照">${(d.quick||[]).map(x=>`<button type="button" data-jump="${escAttr(x.id)}" class="tone-${escAttr(x.tone||'normal')}"><strong>${esc(x.label)}</strong><span>${esc(x.hint||'')}</span></button>`).join('')}</nav>
       <div class="basic-tools"><label class="basic-search"><span>場面を検索</span><input id="basicSearch" type="search" placeholder="例：無線、搭載、記録" autocomplete="off"></label>
         <div class="basic-cats" id="basicCats"><button type="button" data-cat="all" class="on">すべて</button>${(d.categories||[]).map(c=>`<button type="button" data-cat="${escAttr(c.id)}">${esc(c.title)}</button>`).join('')}</div></div>
       <div id="basicList"></div>`;
     R.querySelector('#basicSearch').addEventListener('input',e=>{query=e.target.value;renderList();});
     R.querySelectorAll('#basicCats button').forEach(b=>b.addEventListener('click',()=>{
       activeCategory=b.dataset.cat; R.querySelectorAll('#basicCats button').forEach(x=>x.classList.toggle('on',x===b)); renderList();
-    }));
-    R.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>{
-      activeCategory='all';query='';R.querySelector('#basicSearch').value='';R.querySelectorAll('#basicCats button').forEach(x=>x.classList.toggle('on',x.dataset.cat==='all'));renderList(b.dataset.jump);
     }));
     renderList();
   }
