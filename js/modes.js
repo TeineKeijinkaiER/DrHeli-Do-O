@@ -27,10 +27,11 @@ const Modes = (() => {
 
   /* ---------- クイズ ---------- */
   let qstate=null;
+  const QUIZ_PER_SESSION=10;
   function rQuiz(){
     const d=DATA.quiz||{levels:[],themes:[],questions:[],passRate:0.8};
-    root('quiz').innerHTML=`<div class="mode-hd"><h2>クイズ</h2><p>勤務知識から歴史・難読地名まで</p></div>
-      ${banner(`${(d.questions||[]).length}問収録 ／ 正解後に解説と出典を表示`)}
+    root('quiz').innerHTML=`<div class="mode-hd"><h2>クイズ</h2><p>ベーシック・アドバンスト・マスターの3段階</p></div>
+      ${banner(`${(d.questions||[]).length}問収録 ／ 1回の検定は${QUIZ_PER_SESSION}問 ／ 正解後に解説と出典を表示`)}
       <div class="seg"><label>レベル</label><div class="seg__b" id="qlv">${d.levels.map((l,i)=>`<button data-v="${i}" class="${i===0?'on':''}">${esc(l)}</button>`).join('')}</div></div>
       <div class="seg"><label>テーマ</label><div class="seg__b" id="qth">
         ${d.themes.map((t,i)=>`<button data-v="${i}">${esc(t)}</button>`).join('')}<button data-v="rand" class="on">ランダム</button></div></div>
@@ -39,13 +40,34 @@ const Modes = (() => {
     let lv=0, th='rand';
     const bind=(wrap,set)=>root('quiz').querySelector(wrap).querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
       root('quiz').querySelector(wrap).querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');set(b.dataset.v);}));
-    bind('#qlv',v=>lv=+v); bind('#qth',v=>th=v);
+    /* レベルによって出題のないテーマがあるため、選べないものは無効にする */
+    const syncThemes=()=>root('quiz').querySelectorAll('#qth button').forEach(b=>{
+      const v=b.dataset.v, n=v==='rand'?1:d.questions.filter(x=>x.lv===lv&&x.th===+v).length;
+      b.disabled=!n;
+      if(!n&&b.classList.contains('on')){ b.classList.remove('on'); th='rand';
+        root('quiz').querySelector('#qth button[data-v="rand"]').classList.add('on'); }
+    });
+    bind('#qlv',v=>{lv=+v;syncThemes();}); bind('#qth',v=>th=v);
+    syncThemes();
     root('quiz').querySelector('#qstart').addEventListener('click',()=>startQuiz(lv,th));
   }
+  function shuffle_(list){ const a=list.slice();
+    for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  /* ランダム出題では、収録数の多いテーマ（自動生成の地理問題）に偏らないよう順番に拾う */
+  function pickQuiz_(pool,n,balance){
+    if(!balance) return shuffle_(pool).slice(0,n);
+    const groups=new Map();
+    shuffle_(pool).forEach(q=>{ if(!groups.has(q.th)) groups.set(q.th,[]); groups.get(q.th).push(q); });
+    const themes=shuffle_([...groups.keys()]), out=[];
+    while(out.length<n){ const before=out.length;
+      themes.forEach(t=>{ const g=groups.get(t); if(g.length&&out.length<n) out.push(g.shift()); });
+      if(out.length===before) break; }
+    return shuffle_(out);
+  }
   function startQuiz(lv,th){
-    const d=DATA.quiz; let pool=d.questions.filter(x=>x.lv===lv && (th==='rand'||x.th===+th));
-    if(!pool.length){ root('quiz').querySelector('#qrun').innerHTML='<div class="basic-empty">このレベルとテーマの組み合わせには、まだ問題がありません。</div>'; return; }
-    pool=pool.slice().sort(()=>Math.random()-0.5);
+    const d=DATA.quiz; const all=d.questions.filter(x=>x.lv===lv && (th==='rand'||x.th===+th));
+    if(!all.length){ root('quiz').querySelector('#qrun').innerHTML='<div class="basic-empty">このレベルとテーマの組み合わせには、まだ問題がありません。</div>'; return; }
+    const pool=pickQuiz_(all,QUIZ_PER_SESSION,th==='rand');
     qstate={pool,i:0,score:0,pass:d.passRate||0.8,
       level:(d.levels||[])[lv]||String(lv),
       theme:th==='rand'?'ランダム':((d.themes||[])[th]||String(th))}; renderQ();

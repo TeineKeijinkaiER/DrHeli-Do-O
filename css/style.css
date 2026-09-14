@@ -296,6 +296,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .seg__b{display:flex;flex-wrap:wrap;gap:7px}
 .seg__b button{font-size:13px;font-weight:700;padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted)}
 .seg__b button.on{background:var(--primary,#2f6df6);color:#fff;border-color:transparent}
+.seg__b button:disabled{opacity:.35}
 .bigbtn{width:100%;margin-top:14px;padding:14px;border-radius:14px;background:linear-gradient(120deg,#2f6df6,#1f57d6);color:#fff;font-weight:800;font-size:15px}
 /* quiz */
 .qcard{margin-top:16px;border:1px solid var(--line);border-radius:18px;padding:18px;background:linear-gradient(160deg,var(--surface2),var(--surface))}
