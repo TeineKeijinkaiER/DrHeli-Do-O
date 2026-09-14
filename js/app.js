@@ -14,6 +14,7 @@ const App = (() => {
     inventory:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 12.5v3.5M10.25 14.25h3.5"/></svg>`,
     quiz:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.3a2.8 2.8 0 0 1 5.3 1c0 1.8-2.6 2.3-2.6 4"/><path d="M12 17.5h.01"/></svg>`,
     stats:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>`,
+    drugs:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v5l3.5 6.1A4.6 4.6 0 0 1 14.5 21h-5a4.6 4.6 0 0 1-4-6.9L9 8V3Z"/><path d="M8 13h8M10 6h4"/></svg>`,
   };
 
   /* --- モード定義 --- */
@@ -24,6 +25,7 @@ const App = (() => {
     { id:'inventory', name:'インベントリーモード', tag:'バッグ物品管理',      icon:I.inventory, accent:'accent-amber', public:true },
     { id:'quiz',     name:'クイズモード',       tag:'',                     icon:I.quiz,     accent:'accent-cyan', public:true },
     { id:'stats',    name:'統計モード',         tag:'',                     icon:I.stats,    accent:'accent-purple', public:false },
+    { id:'drugs',    name:'薬剤モード',         tag:'成人・小児の緊急使用ガイド', icon:I.drugs, accent:'accent-red', public:false },
   ].filter(m=>!IS_PUBLIC_BUILD||m.public);
 
   function renderModes(){
@@ -44,7 +46,7 @@ const App = (() => {
     });
   }
 
-  const TITLES={map:'地図モード',beginner:'ベーシックモード',reflection:'リフレクションモード',inventory:'インベントリーモード',quiz:'クイズモード',stats:'統計モード'};
+  const TITLES={map:'地図モード',beginner:'ベーシックモード',reflection:'リフレクションモード',inventory:'インベントリーモード',quiz:'クイズモード',stats:'統計モード',drugs:'薬剤モード'};
   function open(id){
     appbarSub.textContent=TITLES[id]||'';
     show(id);
@@ -52,6 +54,7 @@ const App = (() => {
     if(id==='map'){ if(typeof MapMode!=='undefined') MapMode.ensure(); return; }
     if(id==='reflection'){ if(typeof ReflectionMode!=='undefined') ReflectionMode.open(); return; }
     if(id==='stats'){ if(typeof StatsMode!=='undefined') StatsMode.open(); return; }
+    if(id==='drugs'){ if(typeof DrugsMode!=='undefined') DrugsMode.open(); return; }
     if(typeof Modes!=='undefined') Modes.open(id);
   }
 
