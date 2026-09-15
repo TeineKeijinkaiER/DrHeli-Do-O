@@ -1,5 +1,5 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v49';
+const CACHE = 'doo-heli-v50';
 const TILES = 'doo-heli-tiles-v1';      /* 地図タイル専用キャッシュ(件数上限つき) */
 const TILE_LIMIT = 800;
 const KEEP = [CACHE, TILES];
@@ -13,7 +13,7 @@ const CORE = [
   './vendor/leaflet/leaflet.js','./vendor/leaflet/leaflet.css',
   './data/regions.json','./data/operating-hours.json',
   './data/quiz.json','./data/inventory.json','./data/beginner.json','./data/drugs.json',
-  './image/Heli.png','./image/Heriteinu.png','./image/icon-192.png','./image/icon-512.png','./image/apple-touch-icon.png'
+  './image/Heli.png','./image/Heriteinu.png','./image/public-icon-192.png','./image/public-icon-512.png','./image/public-icon-180.png'
 ];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()));
