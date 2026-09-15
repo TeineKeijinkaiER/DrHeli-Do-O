@@ -97,7 +97,7 @@ const Modes = (() => {
     }));
   }
 
-  /* ---------- インベントリー ---------- */
+  /* ---------- 器材モード ---------- */
   /* 物品マスター(スプレッドシート公開CSV)→bags配列 */
   function parseCSV_(text){
     text=String(text||'').replace(/^\uFEFF/,'');
@@ -165,7 +165,7 @@ const Modes = (() => {
     const endpoint=()=>{const stored=localStorage.getItem(INVENTORY_EP);return stored!==null?stored:((d.config&&d.config.submitUrl)||'');};
     const R=root('inventory');
     R.innerHTML=`
-      <div class="mode-hd"><h2>インベントリー</h2><p>${esc(d.title||'')}</p></div>
+      <div class="mode-hd"><h2>器材</h2><p>${esc(d.title||'')}</p></div>
       <div class="lmetarow">${(d.meta||[]).map((m,i)=>{const dt=/日付|date/i.test(m);return `<label class="lmeta"><span>${esc(m)}</span><input type="${dt?'date':'text'}" data-meta="${i}" value="${escAttr(st.meta[i]||'')}"></label>`;}).join('')}</div>
       <div class="audiobar">
         <div class="scene"><span class="scene__lbl">読み上げ速度</span><div class="scene__b" id="invSpd">${speeds.map(([nm,r])=>`<button type="button" data-r="${r}" class="${r==spd?'on':''}">${esc(nm)}</button>`).join('')}</div></div>
