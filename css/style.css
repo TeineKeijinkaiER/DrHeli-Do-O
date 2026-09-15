@@ -377,6 +377,15 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 
 /* ===== ベーシックモード：勤務中の状況別マニュアル ===== */
 .basic-hd{margin-bottom:10px}
+.basic-hours{margin:0 0 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden}
+.basic-hours h3{margin:0;padding:11px 14px 9px;font-size:14px;color:var(--sky);border-bottom:1px solid var(--line)}
+.basic-hours__scroll{overflow-x:auto}
+.basic-hours table{width:100%;border-collapse:collapse;font-size:12.5px}
+.basic-hours th,.basic-hours td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+.basic-hours thead th{color:var(--dim);font-size:11px;font-weight:800;background:rgba(255,255,255,.025)}
+.basic-hours tbody th{color:var(--text);font-weight:700}
+.basic-hours tbody td{color:var(--muted);font-weight:700}
+.basic-hours tbody tr:last-child th,.basic-hours tbody tr:last-child td{border-bottom:0}
 .basic-tools{position:sticky;top:65px;z-index:8;margin:0 -4px 12px;padding:8px 4px;background:rgba(237,245,254,.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .basic-search span{display:block;font-size:12px;font-weight:800;color:var(--muted);margin:0 0 5px 3px}
 .basic-search input{width:100%;font:inherit;font-size:16px;color:var(--text);background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px;outline:none}

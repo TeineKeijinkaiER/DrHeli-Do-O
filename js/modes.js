@@ -23,6 +23,10 @@ const Modes = (() => {
     const targets = id ? [FILES[id]].filter(Boolean) : Object.values(FILES).filter((f,i,a)=>a.indexOf(f)===i);
     const need = targets.filter(f=>!DATA[f]); // 失敗(null/未設定)は次回再試行
     await Promise.all(need.map(f=>fetch('data/'+f+'.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.json();}).then(j=>DATA[f]=j).catch(()=>{})));
+    if(id==='beginner'&&!DATA.operatingHours){
+      await fetch('data/operating-hours.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.json();})
+        .then(j=>DATA.operatingHours=j).catch(()=>{});
+    }
   }
 
   /* ---------- クイズ ---------- */
@@ -307,6 +311,8 @@ const Modes = (() => {
     const situations=()=> (d.categories||[]).flatMap(c=>(c.situations||[]).map(s=>({...s,categoryId:c.id,categoryTitle:c.title})));
     const searchable=s=>[s.title,s.when,s.summary,...(s.checks||[]).map(x=>x.text),...(s.avoid||[]),...(s.ifTrouble||[]),...(s.notes||[]),...(s.details?[s.details.title,...(s.details.items||[])]:[]),...(s.examples||[])].join(' ').toLocaleLowerCase('ja');
     const checkRow=x=>`<button class="basic-check${x.critical?' is-critical':''}" type="button" aria-pressed="false"><span class="basic-check__box" aria-hidden="true">✓</span><span class="basic-check__text">${esc(x.text)}</span></button>`;
+    const hours=(DATA.operatingHours||[]).map(x=>`<tr><th scope="row">${esc(x.periodLabel.replace(/^\S+\s*/,''))}</th><td>${esc(x.startTime)}〜${esc(x.endTime)}</td></tr>`).join('');
+    const hoursTable=hours?`<section class="basic-hours" aria-labelledby="basicHoursTitle"><h3 id="basicHoursTitle">年間のヘリ運航時間</h3><div class="basic-hours__scroll"><table><thead><tr><th>期間</th><th>運航時間</th></tr></thead><tbody>${hours}</tbody></table></div></section>`:'';
     const block=(title,items,kind='')=>(items&&items.length)?`<section class="basic-block ${kind}"><h4>${esc(title)}</h4>${items.map(x=>`<div class="basic-line">${esc(x)}</div>`).join('')}</section>`:'';
     const card=s=>`<article class="basic-card" id="basic-${escAttr(s.id)}" data-search="${escAttr(searchable(s))}">
       <button class="basic-card__head" type="button" aria-expanded="false" aria-controls="basic-body-${escAttr(s.id)}">
@@ -342,6 +348,7 @@ const Modes = (() => {
       }
     };
     R.innerHTML=`<div class="mode-hd basic-hd"><h2>${esc(d.title||'ベーシックモード')}</h2><p>${esc(d.subtitle||'勤務中マニュアル')}</p></div>
+      ${hoursTable}
       <div class="basic-tools"><label class="basic-search"><span>場面を検索</span><input id="basicSearch" type="search" placeholder="例：無線、搭載、記録" autocomplete="off"></label>
         <div class="basic-cats" id="basicCats"><button type="button" data-cat="all" class="on">すべて</button>${(d.categories||[]).map(c=>`<button type="button" data-cat="${escAttr(c.id)}">${esc(c.title)}</button>`).join('')}</div></div>
       <div id="basicList"></div>`;
