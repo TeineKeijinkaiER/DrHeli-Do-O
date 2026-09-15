@@ -146,8 +146,16 @@ const App = (() => {
     links.appendChild(a);
   }
 
+  function renderAboutLink(){
+    const links=document.getElementById('privateLinks'); if(!links) return;
+    const a=document.createElement('a');
+    a.className='home__usage'; a.href='about.html'; a.textContent='このアプリについて・免責事項';
+    links.appendChild(a);
+    if(!IS_PUBLIC_BUILD) links.appendChild(document.createTextNode('　｜　'));
+  }
+
   function init(){
-    renderModes(); loadOpStatus(); renderUsageLink(); renderFoot();
+    renderModes(); loadOpStatus(); renderAboutLink(); renderUsageLink(); renderFoot();
     if(typeof Usage!=='undefined') Usage.session();
   }
   document.addEventListener('DOMContentLoaded',init);

@@ -1,5 +1,5 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v55';
+const CACHE = 'doo-heli-v56';
 const TILES = 'doo-heli-tiles-v1';      /* 地図タイル専用キャッシュ(件数上限つき) */
 const TILE_LIMIT = 800;
 const KEEP = [CACHE, TILES];
@@ -7,7 +7,7 @@ const KEEP = [CACHE, TILES];
 const TILE_HOSTS = ['cyberjapandata.gsi.go.jp', 'tile.openstreetmap.org'];
 const NAV_TIMEOUT_MS = 2500;            /* 電波が弱い現場で待たされないための上限 */
 const CORE = [
-  './','./index.html','./manifest.json',
+  './','./index.html','./about.html','./manifest.json',
   './css/style.css','./js/install-guide.js','./js/app.js','./js/map.js','./js/modes.js','./js/drug-calc.js','./js/drugs.js',
 
   './vendor/leaflet/leaflet.js','./vendor/leaflet/leaflet.css',
@@ -53,7 +53,7 @@ function putIfUsable(req, res) {
    あれば NAV_TIMEOUT_MS で打ち切ってキャッシュを返す。 */
 async function navigation(req) {
   const netP = fetch(req).catch(() => null);
-  const cached = await caches.match('./index.html');
+  const cached = (await caches.match(req)) || (await caches.match('./index.html'));
   const res = await Promise.race([netP, new Promise(r => setTimeout(() => r(null), cached ? NAV_TIMEOUT_MS : 15000))]);
   if (res) {
     if (!unusable(req, res)) { const cp = res.clone(); caches.open(CACHE).then(c => c.put('./index.html', cp)); }
