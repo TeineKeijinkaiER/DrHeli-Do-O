@@ -606,3 +606,10 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .drug-stop{margin:0 0 12px;padding:14px;border:2px solid #d8343d;border-radius:10px;background:#fff1f1;color:#a71922;font-size:15px;font-weight:900;line-height:1.6}
 .use-small{margin:12px 0 0;padding:10px 0 0 18px;border-top:1px solid #e0e6ee}.use-small li{color:#5f6f84;font-size:11.5px;line-height:1.65}.use-small li+li{margin-top:3px}
 @media(max-width:600px){.age-choices{grid-template-columns:repeat(3,1fr)}.drug-patient{top:56px}.drug-search{top:120px}.give-main strong{font-size:21px}}
+
+/* 薬剤モード: 重要な付記とTKH救急メモ（2026-09-16） */
+.drug-keynote{margin:10px 0 0;padding:11px 13px;border:2px solid #e08a00;border-radius:10px;background:#fff4dc;color:#5c3700;font-size:14px;font-weight:900;line-height:1.6}
+.drug-tkh{margin:10px 0 0;padding:11px 13px;border-left:5px solid #1969c5;border-radius:8px;background:#eaf3ff}
+.drug-tkh b{display:block;margin-bottom:3px;color:#12408a;font-size:12px;letter-spacing:.04em}
+.drug-tkh p{margin:0;color:#10213a;font-size:14px;font-weight:700;line-height:1.65}
+.rate-grid small{color:#40618a;font-size:12px;font-weight:800}
