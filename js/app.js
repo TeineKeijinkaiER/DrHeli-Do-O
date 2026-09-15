@@ -70,6 +70,8 @@ const App = (() => {
 
   btnBack.addEventListener('click',()=>{
     if(typeof MapMode!=='undefined' && MapMode.sheetOpen()){ MapMode.closeSheet(); return; }
+    /* 薬剤モードの中では1段階だけ戻す。誤ってホームへ戻り、体重を入れ直す事故を防ぐ。 */
+    if(current==='drugs' && typeof DrugsMode!=='undefined' && DrugsMode.back()) return;
     show('home');
   });
 
