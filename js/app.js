@@ -6,6 +6,18 @@ const App = (() => {
   const appbarSub = document.getElementById('appbarSub');
   let current = 'home';
 
+  /* --- アイコン (inline SVG) --- */
+  const svg = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const ICONS = {
+    map:svg('<path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.4"/>'),
+    beginner:svg('<path d="M6 3h10a2 2 0 0 1 2 2v15l-3-2-3 2-3-2-3 2V5a2 2 0 0 1 2-2Z"/><path d="M9 8h6M9 12h6M9 16h3"/>'),
+    reflection:svg('<path d="M12 3 5 6v5c0 4.6 3 7.6 7 9 4-1.4 7-4.4 7-9V6l-7-3Z"/><path d="M8.3 12h2l1-2 1.6 4 1-2h1.8"/>'),
+    inventory:svg('<path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 12.5v3.5M10.25 14.25h3.5"/>'),
+    drugs:svg('<path d="M9 3h6v5l3.5 6.1A4.6 4.6 0 0 1 14.5 21h-5a4.6 4.6 0 0 1-4-6.9L9 8V3Z"/><path d="M8 13h8M10 6h4"/>'),
+    stats:svg('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
+    quiz:svg('<circle cx="12" cy="12" r="9"/><path d="M9.2 9.3a2.8 2.8 0 0 1 5.3 1c0 1.8-2.6 2.3-2.6 4"/><path d="M12 17.5h.01"/>'),
+  };
+
   /* --- モード定義 --- */
   const MODES = [
     { id:'map',        name:'地図モード',           primary:true, public:true },
@@ -21,6 +33,7 @@ const App = (() => {
     const grid = document.getElementById('modeGrid');
     grid.innerHTML = MODES.map(m => `
       <button class="mode ${m.primary?'mode--primary':''} ${m.soon?'is-soon':''}" data-mode="${m.id}">
+        <span class="mode__ic">${ICONS[m.id]||''}</span>
         <span class="mode__name">${m.name}</span>
         <span class="mode__glow"></span>
       </button>`).join('');
@@ -47,6 +60,9 @@ const App = (() => {
     if(el) el.classList.add('is-active');
     current=name;
     btnBack.hidden = (name==='home');
+    /* ホームだけ明るいテーマ。各モード画面は従来の配色のまま */
+    document.body.classList.toggle('is-home', name==='home');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', name==='home' ? '#f4f8fe' : '#0a1224');
     if(name==='home'){ appbarSub.textContent='判断支援アプリ'; if(typeof MapMode!=='undefined') MapMode.closeSheet(); }
     window.scrollTo(0,0);
   }

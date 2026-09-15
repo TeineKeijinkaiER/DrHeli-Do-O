@@ -61,17 +61,42 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .screen.is-active{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
+/* ===== Home: 明るいスカイテーマ（機体の白×赤×青ラインを基調） ===== */
+body.is-home{
+  background:#f4f8fe;
+  background-image:
+    radial-gradient(560px 320px at 50% -60px, rgba(255,255,255,.95), transparent 70%),
+    linear-gradient(180deg,#b9dafe 0%,#d9eaff 26%,#edf5fe 55%,#f6f9fd 100%);
+}
+body.is-home::before{
+  opacity:.6;
+  background-image:linear-gradient(rgba(26,95,214,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(26,95,214,.06) 1px,transparent 1px);
+}
+body.is-home .appbar{background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.6));border-bottom-color:rgba(13,35,68,.08)}
+body.is-home .appbar__title{color:#0d2344}
+body.is-home .appbar__sub{color:#4f6585}
+body.is-home .appbar__logo{background:#fff;box-shadow:0 2px 8px rgba(13,35,68,.14)}
+body.is-home .appbar__status{color:#0d2344;background:#fff;border-color:rgba(13,35,68,.12)}
+body.is-home .appbar__status.is-open{color:#0b7a43;background:#e2f6eb;border-color:rgba(11,122,67,.3)}
+body.is-home .appbar__status.is-closed{color:#b3121d;background:#fdeaec;border-color:rgba(179,18,29,.28)}
+
 /* ===== Hero ===== */
-.hero{position:relative;padding:6px 20px 0;overflow:hidden;flex:none}
-.hero__glow{position:absolute;top:-40px;right:-60px;width:340px;height:340px;
-  background:radial-gradient(circle,rgba(47,109,246,.35),transparent 65%);filter:blur(6px);pointer-events:none}
+.hero{position:relative;padding:6px 20px 0;overflow:hidden;flex:none;text-align:center}
+.hero__glow{position:absolute;top:-80px;left:50%;width:380px;height:260px;translate:-50% 0;
+  background:radial-gradient(closest-side,rgba(255,255,255,.9),transparent);pointer-events:none}
 .hero__heli{
-  width:auto;height:clamp(58px,14dvh,118px);margin:0 auto -4px;filter:drop-shadow(0 14px 18px rgba(0,0,0,.5));
+  position:relative;width:auto;height:clamp(58px,14dvh,118px);margin:0 auto -2px;
+  filter:drop-shadow(0 16px 14px rgba(13,35,68,.22));
   animation:hover 5.5s ease-in-out infinite;
 }
 @keyframes hover{0%,100%{transform:translateY(0) rotate(-.4deg)}50%{transform:translateY(-12px) rotate(.4deg)}}
 .hero__text{position:relative;text-align:center;margin-top:2px}
-.hero__eyebrow{font-size:11px;letter-spacing:.28em;color:var(--sky);font-weight:700;margin:0}
+.hero__eyebrow{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;margin:0;padding-left:.3em;
+  font-size:12px;font-weight:900;letter-spacing:.3em;color:#0d2344}
+.hero__eyebrow::before,.hero__eyebrow::after{content:"";flex:none;width:30px;height:4px;border-radius:2px;
+  background:linear-gradient(90deg,#1a5fd6 0 55%,#e60012 55% 100%)}
+.hero__eyebrow::after{background:linear-gradient(90deg,#e60012 0 45%,#1a5fd6 45% 100%)}
 .hero__title{font-size:30px;line-height:1.18;font-weight:900;margin:0 0 12px;letter-spacing:.01em}
 .hero__lead{font-size:13.5px;line-height:1.7;color:var(--muted);max-width:30em;margin:0 auto}
 
@@ -79,29 +104,50 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .screen--home.is-active{height:calc(100dvh - 65px - env(safe-area-inset-top));display:flex;flex-direction:column;overflow:hidden}
 .modes{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,minmax(44px,1fr));gap:8px;padding:8px 16px;flex:1;min-height:0}
 .mode{
-  position:relative;text-align:center;border-radius:16px;padding:8px 10px;min-height:0;
-  background:linear-gradient(160deg,var(--surface2),var(--surface));
-  border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;
-  display:grid;place-items:center;transition:transform .18s ease,border-color .18s ease;
+  --ac:#1a5fd6; --ac-bg:#e5eefc;
+  position:relative;text-align:center;border-radius:16px;padding:8px 10px 8px 15px;min-height:0;
+  background:linear-gradient(180deg,#ffffff,#f6f9ff);color:#0d2344;
+  border:1px solid rgba(13,35,68,.08);
+  box-shadow:0 1px 2px rgba(13,35,68,.06),0 10px 22px -12px rgba(13,35,68,.38);overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(4px,1dvh,8px);
+  transition:transform .18s ease,box-shadow .18s ease;
 }
+.mode::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--ac)}
 .mode:active{transform:scale(.97)}
-.mode--primary{grid-column:1 / -1;min-height:0;
-  border-color:rgba(86,177,255,.35);
-  background:linear-gradient(120deg,rgba(47,109,246,.28),rgba(230,0,18,.14) 90%);}
-.mode__ic{
-  width:52px;height:52px;border-radius:15px;display:grid;place-items:center;flex:none;
-  background:rgba(255,255,255,.08);border:1px solid var(--line);
+.mode:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+@media(hover:hover){
+  .mode:hover{transform:translateY(-2px);box-shadow:0 1px 2px rgba(13,35,68,.06),0 16px 28px -12px rgba(13,35,68,.42)}
 }
-.mode__ic svg{width:28px;height:28px}
-.mode--primary .mode__ic{width:64px;height:64px}
-.mode--primary .mode__ic svg{width:36px;height:36px}
-.mode__name{position:relative;z-index:1;font-weight:800;font-size:15px;line-height:1.25;letter-spacing:.01em}
-.mode--primary .mode__name{font-size:17px}
+.mode[data-mode="beginner"]{--ac:#11915a;--ac-bg:#e0f4e9}
+.mode[data-mode="reflection"]{--ac:#d6313d;--ac-bg:#fde6e8}
+.mode[data-mode="inventory"]{--ac:#d97a00;--ac-bg:#fff0d9}
+.mode[data-mode="drugs"]{--ac:#c2327a;--ac-bg:#fbe5ef}
+.mode[data-mode="stats"]{--ac:#6b4fe0;--ac-bg:#ece7ff}
+.mode[data-mode="quiz"]{--ac:#0891a8;--ac-bg:#ddf3f7}
+.mode__ic{
+  width:clamp(28px,5dvh,40px);height:clamp(28px,5dvh,40px);border-radius:11px;display:grid;place-items:center;flex:none;
+  position:relative;z-index:1;background:var(--ac-bg);color:var(--ac);
+}
+.mode__ic svg{width:60%;height:60%}
+/* 名称は常に1行。最長の「ケースレビューモード」(10字)がカード幅に収まるよう、カード幅に比例させる（全カード同じ大きさ） */
+.mode{container-type:inline-size;padding:6px 6px 6px 11px}
+.mode__name{position:relative;z-index:1;font-weight:800;font-size:14px;font-size:min(16px,9.8cqi);line-height:1.25;letter-spacing:0;color:#0d2344;white-space:nowrap}
+/* 地図モード: 機体カラーの青地に赤白の斜めライン */
+.mode--primary{grid-column:1 / -1;min-height:0;flex-direction:row;gap:14px;border:0;color:#fff;
+  background:linear-gradient(115deg,#0c46b3 0%,#1a64e8 55%,#2f86ff 100%);
+  box-shadow:0 14px 28px -12px rgba(12,70,179,.75);}
+.mode--primary::before{left:auto;right:-8px;top:-20%;bottom:-20%;width:96px;transform:skewX(-24deg);
+  background:linear-gradient(90deg,rgba(255,255,255,.92) 0 7px,#e60012 7px 29px,rgba(255,255,255,.92) 29px 35px,transparent 35px 52px,rgba(255,255,255,.22) 52px 58px,transparent 58px)}
+.mode--primary:focus-visible{outline-color:#0c46b3}
+.mode--primary .mode__ic{width:clamp(34px,6dvh,48px);height:clamp(34px,6dvh,48px);border-radius:13px;background:rgba(255,255,255,.18);color:#fff}
+.mode--primary .mode__name{color:#fff;font-size:19px;text-shadow:0 1px 2px rgba(0,0,0,.18)}
 .mode__desc{font-size:12px;color:var(--muted);line-height:1.55}
 .mode__body{display:flex;flex-direction:column;gap:5px;min-width:0}
 .mode__arrow{margin-left:auto;color:var(--sky);font-size:24px;align-self:center}
-.mode__glow{position:absolute;right:-30px;bottom:-40px;width:150px;height:150px;
-  background:radial-gradient(circle,rgba(86,177,255,.22),transparent 70%);pointer-events:none}
+.mode__glow{display:none}
+.mode--primary .mode__glow{display:block;position:absolute;left:-40px;top:-70px;width:220px;height:170px;
+  background:radial-gradient(closest-side,rgba(255,255,255,.3),transparent);pointer-events:none}
+@media(prefers-reduced-motion:reduce){.hero__heli{animation:none}.mode{transition:none}}
 .mode.is-soon{opacity:.62}
 .mode.is-soon .mode__arrow{display:none}
 .badge-soon{position:absolute;top:12px;right:12px;font-size:10px;font-weight:700;letter-spacing:.06em;
@@ -110,16 +156,16 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .accent-red{color:var(--red-soft)} .accent-blue{color:var(--sky)} .accent-cyan{color:var(--cyan)}
 .accent-amber{color:var(--warn)} .accent-green{color:var(--ok)}
 
-.home__foot{margin:0;text-align:center;color:var(--dim);font-size:10px;padding:3px 12px 0;letter-spacing:.02em;line-height:1.25}
-.home__role{display:inline-block;margin-top:3px;color:var(--muted);font-size:10px}
-.home__role a{color:var(--muted);text-decoration:underline;text-underline-offset:2px}
-.home__role a:hover,.home__role a:focus-visible{color:var(--text)}
-.home__logout{display:inline-block;margin-top:3px;padding:3px 10px;color:var(--muted);font-size:10px;text-decoration:none;border:1px solid var(--line);border-radius:999px}
-.home__logout:hover,.home__logout:focus-visible{color:var(--text);border-color:var(--muted)}
+.home__foot{margin:0;text-align:center;color:#4f6585;font-size:10px;padding:3px 12px 0;letter-spacing:.02em;line-height:1.25}
+.home__role{display:inline-block;margin-top:3px;color:#4f6585;font-size:10px}
+.home__role a{color:#1a5fd6;text-decoration:underline;text-underline-offset:2px}
+.home__role a:hover,.home__role a:focus-visible{color:#0d2344}
+.home__logout{display:inline-block;margin-top:3px;padding:3px 10px;color:#4f6585;font-size:10px;text-decoration:none;background:rgba(255,255,255,.7);border:1px solid rgba(13,35,68,.16);border-radius:999px}
+.home__logout:hover,.home__logout:focus-visible{color:#0d2344;border-color:#4f6585}
 .home__private-links{margin:2px 0 calc(env(safe-area-inset-bottom) + 3px);text-align:center;line-height:1}
 .home__private-links:empty{display:none}
-.home__usage{color:var(--dim);font-size:10px;text-decoration:underline;text-underline-offset:2px}
-.home__usage:hover,.home__usage:focus-visible{color:var(--muted)}
+.home__usage{color:#4f6585;font-size:10px;text-decoration:underline;text-underline-offset:2px}
+.home__usage:hover,.home__usage:focus-visible{color:#0d2344}
 
 /* ===== Map screen ===== */
 .screen--map{
@@ -222,8 +268,6 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 }
 
 /* ===== 更新: ヒーロー簡素化・モード追加色 ===== */
-.hero{text-align:center}
-.hero__eyebrow{font-weight:800;color:#cfe0ff}
 .accent-purple{color:#a07bff}
 
 /* ===== 更新: 地図モードを明るく ===== */
