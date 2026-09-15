@@ -1,7 +1,10 @@
 /* ===== 地図モード（市町村別RP・現場滞在可変・搬送時間比較） ===== */
 const MapMode = (() => {
   /* 北海道「災害拠点病院付近のヘリコプター離着陸場」の屋上ヘリポート座標。 */
-  const BASE = { name:'手稲渓仁会病院', lat:43.121944, lng:141.243611 };
+  const BASE = { name:'手稲渓仁会病院', lat:43.121944, lng:141.243611,
+    /* 札幌市内の病院からの施設間搬送の実績を「当院発」とみなして載せる（scripts/build-heli-transfers.py の札幌市の行）。 */
+    transfers:[{ name:'北海道せき損センター', min:15.5, n:6 }] };
+  const TRANSFER_NOTE='※飛行時間のみ（離陸→受入病院着の実績中央値、2020–2025年度）。現場滞在・病院内の移動は含みません。';
   const REGIONS = {
     ishikari:{label:'石狩',color:'#1f9e54'}, shiribeshi:{label:'後志',color:'#7b54e0'},
     sorachi:{label:'空知',color:'#d39200'}, iburi:{label:'胆振',color:'#e2622a'},
@@ -26,7 +29,7 @@ const MapMode = (() => {
   });
   const baseIcon=()=>L.divIcon({
     className:'map-pin-icon map-pin-icon--base', iconSize:[30,30], iconAnchor:[15,15],
-    html:'<div class="pin pin--base"><div class="base-ring"><div class="pin__dot" style="background:#0d9488"></div></div><div class="pin__label">基地病院</div></div>'
+    html:'<div class="pin pin--base"><div class="base-ring">H</div><div class="pin__label">基地病院</div></div>'
   });
   function setBaseLayer(i){
     if(i>=BASEMAPS.length) return;
@@ -59,7 +62,7 @@ const MapMode = (() => {
     attrib=L.control.attribution({prefix:false}).addTo(map);
     setBaseLayer(0);
     L.marker([BASE.lat,BASE.lng],{zIndexOffset:1000,icon:baseIcon()})
-      .addTo(map).on('click',()=>map.setView([BASE.lat,BASE.lng],9,{animate:false}));
+      .addTo(map).on('click',openBase);
     L.circle([BASE.lat,BASE.lng],{radius:100000,color:'#2f6df6',weight:1.2,opacity:.5,fillColor:'#2f6df6',fillOpacity:.05,dashArray:'4 6'}).addTo(map);
     const pts=[[BASE.lat,BASE.lng]];
     regions.forEach(r=>{
@@ -77,13 +80,25 @@ const MapMode = (() => {
   function renderLegend(){
     document.getElementById('mapLegend').innerHTML=
       Object.values(REGIONS).map(r=>`<span class="legend__item"><span class="legend__dot" style="background:${r.color}"></span>${r.label}</span>`).join('')
-      +`<span class="legend__item"><span class="legend__dot" style="background:#0d9488"></span>基地病院</span>`;
+      +`<span class="legend__item"><span class="legend__dot legend__dot--base">H</span>基地病院</span>`;
   }
+  const transferSec=list=>(list&&list.length)?`<div class="sec"><h3 class="sec__t">他院へのヘリ搬送</h3>
+      ${list.map(t=>`<div class="hrow"><span>${esc(t.name)}<small class="hrow__n">n=${t.n}</small></span><b>${t.min}分</b></div>`).join('')}
+      <div class="tx__src">${TRANSFER_NOTE}</div></div>`:'';
   const sheet=document.getElementById('sheet'), sheetBody=document.getElementById('sheetBody');
   function setScene(v){ scene=v; renderDetail(); }
   function openDetail(r,p){ curR=r; curP=p; scene=20; renderDetail();
     sheet.classList.add('is-open'); sheet.setAttribute('aria-hidden','false');
     if(map&&p.lat!=null) map.setView([p.lat,p.lng],Math.max(map.getZoom(),10),{animate:false}); }
+  function openBase(){ curR=null; curP=null;
+    sheetBody.innerHTML=`<div class="det__head"><div>
+        <div class="det__name">${esc(BASE.name)}</div>
+        <div class="det__sub">基地病院（屋上ヘリポート）</div>
+      </div><button class="det__close" id="detClose" aria-label="閉じる">✕</button></div>
+      ${transferSec(BASE.transfers)}`;
+    document.getElementById('detClose').addEventListener('click',closeSheet);
+    sheet.classList.add('is-open'); sheet.setAttribute('aria-hidden','false');
+    if(map) map.setView([BASE.lat,BASE.lng],Math.max(map.getZoom(),9),{animate:false}); }
 
   function renderDetail(){
     const r=curR,p=curP; if(!r) return; const reg=regionOf(r);
@@ -118,6 +133,7 @@ const MapMode = (() => {
 
     if(hosp.length) html+=`<div class="sec"><h3 class="sec__t">近隣病院への救急車搬送</h3>
       ${hosp.map(h=>`<div class="hrow"><span>${esc(h.name)}</span><b>${h.min!=null?h.min+'分':'—'}</b></div>`).join('')}</div>`;
+    html+=transferSec(p.heliTransfers);
     if(r.nearbyHospitals&&r.nearbyHospitals.length) html+=`<div class="sec"><h3 class="sec__t">近隣医療機関</h3>
       <div class="hosp">${r.nearbyHospitals.map(h=>`<span class="hosp__item">${esc(h)}</span>`).join('')}</div></div>`;
     if(r.bestPractice&&!hidden.has('bestPractice')) html+=`<div class="sec"><div class="note note--best"><span class="note__k">ベスト判断</span>${esc(r.bestPractice)}</div></div>`;

@@ -471,7 +471,14 @@
           13,
           15
         ],
-        "heliFlightSource": "実績中央値"
+        "heliFlightSource": "実績中央値",
+        "heliTransfers": [
+          {
+            "name": "小樽市立病院",
+            "min": 8,
+            "n": 3
+          }
+        ]
       }
     ]
   },
@@ -572,7 +579,14 @@
           16,
           21
         ],
-        "heliFlightSource": "実績中央値"
+        "heliFlightSource": "実績中央値",
+        "heliTransfers": [
+          {
+            "name": "小樽市立病院",
+            "min": 12,
+            "n": 3
+          }
+        ]
       }
     ]
   },
@@ -650,7 +664,19 @@
           15,
           18
         ],
-        "heliFlightSource": "実績中央値"
+        "heliFlightSource": "実績中央値",
+        "heliTransfers": [
+          {
+            "name": "小樽市立病院",
+            "min": 13,
+            "n": 11
+          },
+          {
+            "name": "北海道せき損センター",
+            "min": 30.5,
+            "n": 4
+          }
+        ]
       }
     ]
   },
@@ -689,7 +715,14 @@
           18,
           21
         ],
-        "heliFlightSource": "実績中央値"
+        "heliFlightSource": "実績中央値",
+        "heliTransfers": [
+          {
+            "name": "小樽市立病院",
+            "min": 15,
+            "n": 3
+          }
+        ]
       }
     ]
   },
@@ -944,7 +977,14 @@
           25,
           29
         ],
-        "heliFlightSource": "実績中央値"
+        "heliFlightSource": "実績中央値",
+        "heliTransfers": [
+          {
+            "name": "小樽市立病院",
+            "min": 23.5,
+            "n": 6
+          }
+        ]
       }
     ]
   },
@@ -1508,7 +1548,14 @@
           12,
           19
         ],
-        "heliFlightSource": "実績中央値"
+        "heliFlightSource": "実績中央値",
+        "heliTransfers": [
+          {
+            "name": "北海道せき損センター",
+            "min": 23.5,
+            "n": 4
+          }
+        ]
       }
     ]
   },
@@ -2168,7 +2215,19 @@
           28,
           40
         ],
-        "heliFlightSource": "実績中央値"
+        "heliFlightSource": "実績中央値",
+        "heliTransfers": [
+          {
+            "name": "王子総合病院",
+            "min": 22,
+            "n": 7
+          },
+          {
+            "name": "苫小牧市立病院",
+            "min": 23.5,
+            "n": 4
+          }
+        ]
       }
     ]
   },

@@ -258,7 +258,10 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .legend__item{color:#33425e}
 .pin__dot{border-color:#fff}
 .pin__label{color:#0e1c33;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 4px #fff}
-.base-ring{border-color:#0d9488;box-shadow:0 0 0 4px rgba(13,148,136,.18)}
+/* 基地病院: 赤地に白の H（ヘリポート記号） */
+.base-ring{background:#c62828;border:2px solid #fff;color:#fff;font-weight:900;font-size:16px;line-height:1;font-family:system-ui,sans-serif;box-shadow:0 0 0 3px rgba(198,40,40,.35),0 4px 12px rgba(28,46,72,.34)}
+.legend__dot--base{width:14px;height:14px;background:#c62828;color:#fff;font-size:9px;font-weight:900;line-height:1;display:inline-grid;place-items:center}
+.hrow__n{margin-left:6px;font-size:11px;font-weight:600;color:#5a6b86}
 
 /* 詳細パネル: ライトテーマ */
 .sheet{background:linear-gradient(180deg,#ffffff,#eef3fb);border-color:rgba(12,32,64,.12);box-shadow:0 -16px 50px rgba(20,40,80,.28)}
