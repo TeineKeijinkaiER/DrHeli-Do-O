@@ -245,7 +245,7 @@
           {
             "scene": "心停止",
             "title": "心停止（VF／無脈性VT／PEA／心静止）",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 0.01,
@@ -263,7 +263,7 @@
                 "ml": 9
               }
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "repeat": "3〜5分ごと",
             "basis": "guideline",
             "source": "JRC蘇生ガイドライン2025／AHA PALS 2025"
@@ -425,7 +425,7 @@
           {
             "scene": "徐脈",
             "title": "迷走神経性徐脈・一次性房室ブロック",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 0.02,
@@ -440,7 +440,7 @@
               },
               "diluent": null
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "repeat": "1回だけ反復可",
             "basis": "guideline",
             "source": "PALS 2020／JRC蘇生ガイドライン2020",
@@ -449,7 +449,7 @@
           {
             "scene": "中毒",
             "title": "有機リン中毒",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 0.02,
@@ -464,7 +464,7 @@
               },
               "diluent": null
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "repeat": "アトロピン化（気道分泌の減少）まで反復",
             "basis": "offlabel",
             "source": "慣用"
@@ -613,7 +613,7 @@
           {
             "scene": "心停止",
             "title": "電気ショックが効かないVF／無脈性VT",
-            "route": "静注・骨髄内（ボーラス）",
+            "route": "静注（ボーラス）",
             "dosing": {
               "mode": "perKg",
               "perKg": 5,
@@ -631,7 +631,7 @@
                 "ml": 12
               }
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "repeat": "難治なら5mg/kgを最大2回まで追加（総量15mg/kg）",
             "basis": "guideline",
             "source": "AHA PALS 2025／JRC蘇生ガイドライン2025"
@@ -1191,8 +1191,8 @@
       ],
       "peds": {
         "status": "use",
-        "hidden": false,
-        "note": "",
+        "hidden": true,
+        "note": "小児薬剤モードには収載しない。",
         "cautions": [
           "【添付文書】小児の臨床試験は行われていない",
           "少量から開始し、反射性徐脈に注意する"
@@ -1201,7 +1201,7 @@
           {
             "scene": "低血圧・ショック",
             "title": "急性低血圧",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 5,
@@ -1220,7 +1220,7 @@
                 "ml": 9
               }
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "repeat": "10〜15分ごと",
             "basis": "offlabel",
             "source": "慣用"
@@ -1313,8 +1313,8 @@
       ],
       "peds": {
         "status": "use",
-        "hidden": false,
-        "note": "",
+        "hidden": true,
+        "note": "小児薬剤モードには収載しない。",
         "cautions": [
           "【添付文書】小児は観察を十分に行う（小児用量の記載はない）",
           "小児用は1mg/mLで調製する。成人用の4mg/mL液と濃度が違うので取り違えに注意",
@@ -1324,7 +1324,7 @@
           {
             "scene": "低血圧・ショック",
             "title": "鎮静・挿管後の血圧低下",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 0.1,
@@ -1343,7 +1343,7 @@
                 "ml": 39
               }
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "repeat": "5〜10分ごと",
             "basis": "offlabel",
             "source": "慣用（小児麻酔）"
@@ -1651,113 +1651,9 @@
         ],
         "uses": [
           {
-            "scene": "鎮静",
-            "title": "人工呼吸中の鎮静（導入）",
-            "route": "静注",
-            "dosing": {
-              "mode": "perKg",
-              "perKg": 0.05,
-              "unit": "mg",
-              "perKgHi": 0.2
-            },
-            "prep": {
-              "stock": {
-                "amount": 10,
-                "unit": "mg",
-                "ml": 2
-              },
-              "diluent": {
-                "name": "生食",
-                "ml": 8
-              }
-            },
-            "give": "静注",
-            "over": "2〜3分以上かけて",
-            "repeat": "2〜3分以上かけて（修正在胎45週以上）",
-            "basis": "insert",
-            "source": "添付文書（小児の用法）"
-          },
-          {
-            "scene": "鎮静",
-            "title": "人工呼吸中の鎮静（持続静注）",
-            "route": "持続静注",
-            "dosing": {
-              "mode": "infusion",
-              "unit": "mg",
-              "rateUnit": "mg/kg/時",
-              "perMinute": false,
-              "levels": [
-                0.06,
-                0.12
-              ]
-            },
-            "prep": {
-              "stock": {
-                "amount": 10,
-                "unit": "mg",
-                "ml": 2
-              },
-              "diluent": {
-                "name": "生食",
-                "ml": 8
-              }
-            },
-            "rule": "0.06〜0.12mg/kg/時で開始し、状態を見て調節",
-            "basis": "insert",
-            "source": "添付文書（小児の用法）"
-          },
-          {
-            "scene": "痙攣",
-            "title": "痙攣重積（静注）",
-            "route": "静注・骨髄内",
-            "dosing": {
-              "mode": "perKg",
-              "perKg": 0.15,
-              "unit": "mg"
-            },
-            "prep": {
-              "stock": {
-                "amount": 10,
-                "unit": "mg",
-                "ml": 2
-              },
-              "diluent": {
-                "name": "生食",
-                "ml": 8
-              }
-            },
-            "give": "静注・骨髄内",
-            "over": "1mg/分で",
-            "repeat": "1mg/分で。追加0.1〜0.3mg/kg（総量0.6mg/kgまで）",
-            "basis": "offlabel",
-            "source": "ミダフレッサ静注0.1%添付文書の小児用法（ミダゾラム注10mgでは適応外）"
-          },
-          {
-            "scene": "痙攣",
-            "title": "痙攣重積（静脈路がないとき：筋注）",
-            "route": "筋注",
-            "dosing": {
-              "mode": "perKg",
-              "perKg": 0.2,
-              "unit": "mg",
-              "max": 10
-            },
-            "prep": {
-              "stock": {
-                "amount": 10,
-                "unit": "mg",
-                "ml": 2
-              },
-              "diluent": null
-            },
-            "give": "筋注",
-            "basis": "offlabel",
-            "source": "慣用"
-          },
-          {
             "scene": "気道確保・RSI",
             "title": "気管挿管の導入",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 0.1,
@@ -1775,10 +1671,83 @@
                 "ml": 8
               }
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "basis": "offlabel",
             "source": "慣用",
             "notes": "循環が不安定ならケタミンを選ぶ"
+          },
+          {
+            "scene": "痙攣",
+            "title": "痙攣重積（静注）",
+            "route": "静注",
+            "dosing": {
+              "mode": "perKg",
+              "perKg": 0.1,
+              "perKgHi": 0.15,
+              "unit": "mg"
+            },
+            "prep": {
+              "stock": {
+                "amount": 10,
+                "unit": "mg",
+                "ml": 2
+              },
+              "diluent": {
+                "name": "生食",
+                "ml": 8
+              }
+            },
+            "give": "静注",
+            "over": "1mg/分を目安に緩徐に",
+            "rule": "0.1〜0.15mg/kgを静注（10kgなら1〜1.5mL）",
+            "repeat": "必要に応じて0.1〜0.3mg/kgを追加（初回と追加の総量0.6mg/kgまで）",
+            "insertNote": "ミダフレッサ静注0.1%の添付文書では初回0.15mg/kg。日本神経学会では小児0.1〜0.3mg/kg静注。",
+            "basis": "guideline",
+            "source": "日本神経学会 てんかん診療ガイドライン2018（追補版）／ミダフレッサ添付文書"
+          },
+          {
+            "scene": "痙攣",
+            "title": "痙攣重積（静脈路がないとき）",
+            "route": "口腔内頬粘膜・筋注",
+            "dosing": {
+              "mode": "text"
+            },
+            "prep": {
+              "stock": {
+                "amount": 10,
+                "unit": "mg",
+                "ml": 2
+              },
+              "diluent": null
+            },
+            "give": "筋注",
+            "rule": "頬粘膜投与：0.3mg/kg（原液0.06mL/kg；10kgなら0.6mL＝3mg）／筋注：0.2mg/kg（原液0.04mL/kg；10kgなら0.4mL＝2mg）",
+            "insertNote": "日本神経学会は静脈確保困難時の鼻腔・口腔内・筋注に、0.5%ミダゾラム注射液を小児0.3mg/kgで用いる方法を記載している（保険適用外）。",
+            "basis": "offlabel",
+            "source": "日本神経学会 てんかん診療ガイドライン2018（頬粘膜0.3mg/kg）／小児救急での慣用（筋注0.2mg/kg）"
+          },
+          {
+            "scene": "鎮静",
+            "title": "人工呼吸中の鎮静（持続静注）",
+            "route": "持続静注",
+            "dosing": {
+              "mode": "text"
+            },
+            "prep": {
+              "stock": {
+                "amount": 10,
+                "unit": "mg",
+                "ml": 2
+              },
+              "diluent": {
+                "name": "生食",
+                "ml": 8
+              }
+            },
+            "rule": "シリンジポンプで1mL/時",
+            "insertNote": "添付文書では0.06〜0.12mg/kg/時で開始し、状態を見て調節する。",
+            "basis": "offlabel",
+            "source": "TKH救急運用"
           }
         ]
       }
@@ -1891,7 +1860,7 @@
           {
             "scene": "痙攣",
             "title": "痙攣重積",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 0.3,
@@ -1908,7 +1877,7 @@
               "diluent": null,
               "note": "希釈しない"
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "over": "2分以上かけて",
             "repeat": "止まらなければ5〜10分後に1回反復可",
             "basis": "offlabel",
@@ -2115,7 +2084,7 @@
           {
             "scene": "気道確保・RSI",
             "title": "気管挿管の導入",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 1,
@@ -2130,7 +2099,7 @@
               },
               "diluent": null
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "over": "1分以上かけて",
             "repeat": "1分以上かけて",
             "basis": "offlabel",
@@ -2139,7 +2108,7 @@
           {
             "scene": "鎮静",
             "title": "処置時の鎮静",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 1,
@@ -2154,7 +2123,7 @@
               },
               "diluent": null
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "over": "1分以上かけて",
             "repeat": "1分以上かけて。必要なら0.5mg/kgを追加",
             "basis": "offlabel",
@@ -2300,7 +2269,7 @@
           {
             "scene": "鎮痛",
             "title": "激しい疼痛",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 1,
@@ -2319,7 +2288,7 @@
                 "ml": 8
               }
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "over": "緩徐に",
             "repeat": "効果を見て5〜10分ごとに反復可",
             "basis": "offlabel",
@@ -2328,7 +2297,7 @@
           {
             "scene": "気道確保・RSI",
             "title": "気管挿管時（麻酔導入）",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 1,
@@ -2346,7 +2315,7 @@
                 "ml": 8
               }
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "over": "緩徐に",
             "repeat": "緩徐に。循環が不安定なら低用量側",
             "basis": "insert",
@@ -2463,8 +2432,8 @@
       ],
       "peds": {
         "status": "use",
-        "hidden": false,
-        "note": "",
+        "hidden": true,
+        "note": "小児薬剤モードには収載しない。",
         "cautions": [
           "【添付文書】新生児・乳児は呼吸抑制の感受性が高い。低用量から始める",
           "BVMを準備し、SpO2と呼吸数を監視する"
@@ -2473,7 +2442,7 @@
           {
             "scene": "鎮痛",
             "title": "激しい疼痛",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 0.05,
@@ -2492,7 +2461,7 @@
                 "ml": 9
               }
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "over": "緩徐に",
             "repeat": "緩徐に。効果を見て15分以上あけて追加",
             "basis": "offlabel",
@@ -2592,8 +2561,8 @@
       ],
       "peds": {
         "status": "avoid",
-        "hidden": false,
-        "note": "添付文書：小児等には投与しないことが望ましい（小児の臨床試験は行われていない）。小児の鎮痛はフェンタニルかモルヒネを選ぶ",
+        "hidden": true,
+        "note": "小児薬剤モードには収載しない。",
         "cautions": [],
         "uses": []
       }
@@ -2744,7 +2713,7 @@
           {
             "scene": "気道確保・RSI",
             "title": "気管挿管",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 0.6,
@@ -2759,14 +2728,14 @@
               },
               "diluent": null
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "basis": "insert",
             "source": "添付文書（mg/kgは成人と同じ）"
           },
           {
             "scene": "気道確保・RSI",
             "title": "迅速導入（RSI）",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 1,
@@ -2781,7 +2750,7 @@
               },
               "diluent": null
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "basis": "offlabel",
             "source": "慣用"
           }
@@ -2886,7 +2855,7 @@
           {
             "scene": "筋弛緩拮抗",
             "title": "CICO時の即時拮抗",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 16,
@@ -2901,7 +2870,7 @@
               },
               "diluent": null
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "basis": "offlabel",
             "source": "成人の添付文書用量に準じる（小児では未確立）"
           }
@@ -3127,7 +3096,7 @@
           {
             "scene": "出血",
             "title": "外傷性出血（受傷から3時間以内）",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 15,
@@ -3142,7 +3111,7 @@
               },
               "diluent": null
             },
-            "give": "静注・骨髄内",
+            "give": "静注",
             "over": "生食で希釈し10分かけて",
             "repeat": "その後2mg/kg/時で8時間（病院で）",
             "basis": "offlabel",
@@ -3355,7 +3324,7 @@
           {
             "scene": "低血糖",
             "title": "低血糖",
-            "route": "静注・骨髄内",
+            "route": "静注",
             "dosing": {
               "mode": "perKg",
               "perKg": 0.5,
@@ -3386,7 +3355,7 @@
                 }
               }
             ],
-            "give": "静注・骨髄内",
+            "give": "静注",
             "repeat": "改善がなければ反復（総量1g/kgまでを目安）",
             "basis": "guideline",
             "source": "PALS 2020（0.5〜1g/kg）"
