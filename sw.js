@@ -1,5 +1,5 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v52';
+const CACHE = 'doo-heli-v53';
 const TILES = 'doo-heli-tiles-v1';      /* 地図タイル専用キャッシュ(件数上限つき) */
 const TILE_LIMIT = 800;
 const KEEP = [CACHE, TILES];
@@ -15,8 +15,11 @@ const CORE = [
   './data/quiz.json','./data/inventory.json','./data/beginner.json','./data/drugs.json',
   './image/Heli.png','./image/Heriteinu.png','./image/public-icon-192.png','./image/public-icon-512.png','./image/public-icon-180.png'
 ];
+/* 版を上げたときの取り込みはブラウザのHTTPキャッシュを通さない。
+   通すと古い js/css がそのまま新しい版のキャッシュに入り、画面が更新されない
+   （改名した見出しが旧名のまま残った実績あり）。 */
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u=>c.add(new Request(u, { cache: 'reload' })).catch(()=>{})))).then(()=>self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k=>!KEEP.includes(k)).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
@@ -111,7 +114,8 @@ self.addEventListener('fetch', e => {
     } else {
       /* アプリ本体(html/js/css/画像/vendor): キャッシュ優先＋背景更新 */
       e.respondWith(caches.match(req).then(hit => {
-        const net = fetch(req).then(res => {
+        /* 背景更新もHTTPキャッシュの古い版で上書きしないよう、サーバに確認させる */
+        const net = fetch(req, { cache: 'no-cache' }).then(res => {
           if (!putIfUsable(req, res)) return hit || res;
           return res;
         }).catch(() => hit);
