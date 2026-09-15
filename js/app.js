@@ -25,7 +25,7 @@ const App = (() => {
     { id:'inventory', name:'インベントリーモード', tag:'バッグ物品管理',      icon:I.inventory, accent:'accent-amber', public:true },
     { id:'quiz',     name:'クイズモード',       tag:'',                     icon:I.quiz,     accent:'accent-cyan', public:true },
     { id:'stats',    name:'統計モード',         tag:'',                     icon:I.stats,    accent:'accent-purple', public:false },
-    { id:'drugs',    name:'薬剤モード',         tag:'成人・小児の緊急使用ガイド', icon:I.drugs, accent:'accent-red', public:false },
+    { id:'drugs',    name:'薬剤モード',         tag:'成人・小児の緊急使用ガイド', icon:I.drugs, accent:'accent-red', public:true },
   ].filter(m=>!IS_PUBLIC_BUILD||m.public);
 
   function renderModes(){
