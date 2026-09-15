@@ -21,7 +21,7 @@ const App = (() => {
   const MODES = [
     { id:'map',      name:'地図モード',         tag:'市町村別の注意事項',   icon:I.map,      accent:'accent-blue',   primary:true, public:true },
     { id:'beginner', name:'ベーシックモード',   tag:'勤務中の状況別マニュアル', icon:I.beginner, accent:'accent-green', public:true },
-    { id:'reflection', name:'リフレクションモード', tag:'議事録由来の反省・注意事項', icon:I.reflection, accent:'accent-red', public:false },
+    { id:'reflection', name:'ケースレビューモード', tag:'議事録由来の反省・注意事項', icon:I.reflection, accent:'accent-red', public:false },
     { id:'inventory', name:'インベントリーモード', tag:'バッグ物品管理',      icon:I.inventory, accent:'accent-amber', public:true },
     { id:'quiz',     name:'クイズモード',       tag:'',                     icon:I.quiz,     accent:'accent-cyan', public:true },
     { id:'stats',    name:'統計モード',         tag:'',                     icon:I.stats,    accent:'accent-purple', public:false },
@@ -46,7 +46,7 @@ const App = (() => {
     });
   }
 
-  const TITLES={map:'地図モード',beginner:'ベーシックモード',reflection:'リフレクションモード',inventory:'インベントリーモード',quiz:'クイズモード',stats:'統計モード',drugs:'薬剤モード'};
+  const TITLES={map:'地図モード',beginner:'ベーシックモード',reflection:'ケースレビューモード',inventory:'インベントリーモード',quiz:'クイズモード',stats:'統計モード',drugs:'薬剤モード'};
   function open(id){
     appbarSub.textContent=TITLES[id]||'';
     show(id);
