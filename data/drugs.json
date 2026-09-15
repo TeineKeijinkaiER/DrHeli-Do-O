@@ -1731,7 +1731,14 @@
             "title": "人工呼吸中の鎮静（持続静注）",
             "route": "持続静注",
             "dosing": {
-              "mode": "text"
+              "mode": "infusion",
+              "unit": "mg",
+              "rateUnit": "mg/kg/時",
+              "perMinute": false,
+              "levels": [
+                0.06,
+                0.12
+              ]
             },
             "prep": {
               "stock": {
@@ -1744,10 +1751,10 @@
                 "ml": 8
               }
             },
-            "rule": "シリンジポンプで1mL/時",
-            "insertNote": "添付文書では0.06〜0.12mg/kg/時で開始し、状態を見て調節する。",
-            "basis": "offlabel",
-            "source": "TKH救急運用"
+            "rule": "0.06〜0.12mg/kg/時で持続静注（1mg/mL）",
+            "insertNote": "添付文書では0.06〜0.12mg/kg/時で開始し、鎮静状態を見ながら25%の範囲内で投与速度を増減する。",
+            "basis": "insert",
+            "source": "添付文書"
           }
         ]
       }
@@ -3112,10 +3119,12 @@
               "diluent": null
             },
             "give": "静注",
-            "over": "生食で希釈し10分かけて",
+            "over": "ゆっくり",
+            "rule": "15mg/kg（最大1g）を原液でゆっくり静注",
             "repeat": "その後2mg/kg/時で8時間（病院で）",
             "basis": "offlabel",
-            "source": "RCPCH勧告2012（15mg/kg、最大1g）"
+            "source": "RCPCH勧告2012（15mg/kg、最大1g）",
+            "notes": "付記：15mg/kg（最大1g）を生食等で希釈し、10分かけて点滴静注する方法もある。"
           }
         ]
       }
