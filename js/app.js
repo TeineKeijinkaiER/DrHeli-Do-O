@@ -59,11 +59,7 @@ const App = (() => {
     const el=document.getElementById('screen-'+name);
     if(el) el.classList.add('is-active');
     current=name;
-    btnBack.hidden = (name==='home');
-    /* ホームだけ明るいテーマ。各モード画面は従来の配色のまま */
-    document.body.classList.toggle('is-home', name==='home');
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', name==='home' ? '#f4f8fe' : '#0a1224');
-    if(name==='home'){ appbarSub.textContent='判断支援アプリ'; if(typeof MapMode!=='undefined') MapMode.closeSheet(); }
+    btnBack.hidden = (name==='home');    if(name==='home'){ appbarSub.textContent='判断支援アプリ'; if(typeof MapMode!=='undefined') MapMode.closeSheet(); }
     window.scrollTo(0,0);
   }
 
