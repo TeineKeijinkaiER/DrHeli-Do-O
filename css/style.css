@@ -62,29 +62,30 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* ===== Hero ===== */
-.hero{position:relative;padding:26px 20px 6px;overflow:hidden}
+.hero{position:relative;padding:6px 20px 0;overflow:hidden;flex:none}
 .hero__glow{position:absolute;top:-40px;right:-60px;width:340px;height:340px;
   background:radial-gradient(circle,rgba(47,109,246,.35),transparent 65%);filter:blur(6px);pointer-events:none}
 .hero__heli{
-  width:78%;max-width:420px;margin:4px auto -6px;filter:drop-shadow(0 22px 26px rgba(0,0,0,.55));
+  width:auto;height:clamp(58px,14dvh,118px);margin:0 auto -4px;filter:drop-shadow(0 14px 18px rgba(0,0,0,.5));
   animation:hover 5.5s ease-in-out infinite;
 }
 @keyframes hover{0%,100%{transform:translateY(0) rotate(-.4deg)}50%{transform:translateY(-12px) rotate(.4deg)}}
 .hero__text{position:relative;text-align:center;margin-top:2px}
-.hero__eyebrow{font-size:11px;letter-spacing:.32em;color:var(--sky);font-weight:700;margin:0 0 8px}
+.hero__eyebrow{font-size:11px;letter-spacing:.28em;color:var(--sky);font-weight:700;margin:0}
 .hero__title{font-size:30px;line-height:1.18;font-weight:900;margin:0 0 12px;letter-spacing:.01em}
 .hero__lead{font-size:13.5px;line-height:1.7;color:var(--muted);max-width:30em;margin:0 auto}
 
 /* ===== Mode grid ===== */
-.modes{display:grid;grid-template-columns:1fr 1fr;gap:13px;padding:22px 16px 8px}
+.screen--home.is-active{height:calc(100dvh - 65px - env(safe-area-inset-top));display:flex;flex-direction:column;overflow:hidden}
+.modes{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,minmax(44px,1fr));gap:8px;padding:8px 16px;flex:1;min-height:0}
 .mode{
-  position:relative;text-align:left;border-radius:var(--r-lg);padding:18px 16px 16px;min-height:138px;
+  position:relative;text-align:center;border-radius:16px;padding:8px 10px;min-height:0;
   background:linear-gradient(160deg,var(--surface2),var(--surface));
   border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;
-  display:flex;flex-direction:column;gap:8px;transition:transform .18s ease,border-color .18s ease;
+  display:grid;place-items:center;transition:transform .18s ease,border-color .18s ease;
 }
 .mode:active{transform:scale(.97)}
-.mode--primary{grid-column:1 / -1;min-height:120px;flex-direction:row;align-items:center;gap:16px;
+.mode--primary{grid-column:1 / -1;min-height:0;
   border-color:rgba(86,177,255,.35);
   background:linear-gradient(120deg,rgba(47,109,246,.28),rgba(230,0,18,.14) 90%);}
 .mode__ic{
@@ -94,8 +95,8 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .mode__ic svg{width:28px;height:28px}
 .mode--primary .mode__ic{width:64px;height:64px}
 .mode--primary .mode__ic svg{width:36px;height:36px}
-.mode__name{font-weight:800;font-size:16px;letter-spacing:.01em}
-.mode--primary .mode__name{font-size:20px}
+.mode__name{position:relative;z-index:1;font-weight:800;font-size:15px;line-height:1.25;letter-spacing:.01em}
+.mode--primary .mode__name{font-size:17px}
 .mode__desc{font-size:12px;color:var(--muted);line-height:1.55}
 .mode__body{display:flex;flex-direction:column;gap:5px;min-width:0}
 .mode__arrow{margin-left:auto;color:var(--sky);font-size:24px;align-self:center}
@@ -109,15 +110,15 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .accent-red{color:var(--red-soft)} .accent-blue{color:var(--sky)} .accent-cyan{color:var(--cyan)}
 .accent-amber{color:var(--warn)} .accent-green{color:var(--ok)}
 
-.home__foot{text-align:center;color:var(--dim);font-size:11.5px;padding:14px 16px calc(env(safe-area-inset-bottom) + 26px);letter-spacing:.03em}
-.home__role{display:inline-block;margin-top:10px;color:var(--muted);font-size:11.5px}
+.home__foot{margin:0;text-align:center;color:var(--dim);font-size:10px;padding:3px 12px 0;letter-spacing:.02em;line-height:1.25}
+.home__role{display:inline-block;margin-top:3px;color:var(--muted);font-size:10px}
 .home__role a{color:var(--muted);text-decoration:underline;text-underline-offset:2px}
 .home__role a:hover,.home__role a:focus-visible{color:var(--text)}
-.home__logout{display:inline-block;margin-top:12px;padding:7px 14px;color:var(--muted);font-size:11.5px;text-decoration:none;border:1px solid var(--line);border-radius:999px}
+.home__logout{display:inline-block;margin-top:3px;padding:3px 10px;color:var(--muted);font-size:10px;text-decoration:none;border:1px solid var(--line);border-radius:999px}
 .home__logout:hover,.home__logout:focus-visible{color:var(--text);border-color:var(--muted)}
-.home__private-links{margin:8px 0 0;text-align:center}
+.home__private-links{margin:2px 0 calc(env(safe-area-inset-bottom) + 3px);text-align:center;line-height:1}
 .home__private-links:empty{display:none}
-.home__usage{color:var(--dim);font-size:12px;text-decoration:underline;text-underline-offset:3px}
+.home__usage{color:var(--dim);font-size:10px;text-decoration:underline;text-underline-offset:2px}
 .home__usage:hover,.home__usage:focus-visible{color:var(--muted)}
 
 /* ===== Map screen ===== */
@@ -217,12 +218,12 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 
 @media(min-width:560px){
   .hero__title{font-size:36px}
-  .modes{padding:24px 20px}
+  .modes{padding-inline:20px}
 }
 
 /* ===== 更新: ヒーロー簡素化・モード追加色 ===== */
-.hero{text-align:center;padding:30px 20px 6px}
-.hero__eyebrow{font-size:16px;letter-spacing:.34em;margin:10px 0 0;font-weight:800;color:#cfe0ff}
+.hero{text-align:center}
+.hero__eyebrow{font-weight:800;color:#cfe0ff}
 .accent-purple{color:#a07bff}
 
 /* ===== 更新: 地図モードを明るく ===== */

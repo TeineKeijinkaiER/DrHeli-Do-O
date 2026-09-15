@@ -6,39 +6,22 @@ const App = (() => {
   const appbarSub = document.getElementById('appbarSub');
   let current = 'home';
 
-  /* --- アイコン (inline SVG) --- */
-  const I = {
-    map:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>`,
-    beginner:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h10a2 2 0 0 1 2 2v15l-3-2-3 2-3-2-3 2V5a2 2 0 0 1 2-2Z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>`,
-    reflection:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.6 3 7.6 7 9 4-1.4 7-4.4 7-9V6l-7-3Z"/><path d="M8.3 12h2l1-2 1.6 4 1-2h1.8"/></svg>`,
-    inventory:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 12.5v3.5M10.25 14.25h3.5"/></svg>`,
-    quiz:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.3a2.8 2.8 0 0 1 5.3 1c0 1.8-2.6 2.3-2.6 4"/><path d="M12 17.5h.01"/></svg>`,
-    stats:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>`,
-    drugs:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v5l3.5 6.1A4.6 4.6 0 0 1 14.5 21h-5a4.6 4.6 0 0 1-4-6.9L9 8V3Z"/><path d="M8 13h8M10 6h4"/></svg>`,
-  };
-
   /* --- モード定義 --- */
   const MODES = [
-    { id:'map',      name:'地図モード',         tag:'市町村別の注意事項',   icon:I.map,      accent:'accent-blue',   primary:true, public:true },
-    { id:'beginner', name:'ベーシックモード',   tag:'勤務中の状況別マニュアル', icon:I.beginner, accent:'accent-green', public:true },
-    { id:'reflection', name:'ケースレビューモード', tag:'議事録由来の反省・注意事項', icon:I.reflection, accent:'accent-red', public:false },
-    { id:'inventory', name:'器材モード',         tag:'バッグ物品管理',      icon:I.inventory, accent:'accent-amber', public:true },
-    { id:'drugs',    name:'薬剤モード',         tag:'成人・小児の緊急使用ガイド', icon:I.drugs, accent:'accent-red', public:true },
-    { id:'stats',    name:'統計モード',         tag:'',                     icon:I.stats,    accent:'accent-purple', public:false },
-    { id:'quiz',     name:'クイズモード',       tag:'',                     icon:I.quiz,     accent:'accent-cyan', public:true },
+    { id:'map',        name:'地図モード',           primary:true, public:true },
+    { id:'beginner',   name:'ベーシックモード',                  public:true },
+    { id:'reflection', name:'ケースレビューモード',               public:false },
+    { id:'inventory',  name:'器材モード',                         public:true },
+    { id:'drugs',      name:'薬剤モード',                         public:true },
+    { id:'stats',      name:'統計モード',                         public:false },
+    { id:'quiz',       name:'クイズモード',                       public:true },
   ].filter(m=>!IS_PUBLIC_BUILD||m.public);
 
   function renderModes(){
     const grid = document.getElementById('modeGrid');
     grid.innerHTML = MODES.map(m => `
       <button class="mode ${m.primary?'mode--primary':''} ${m.soon?'is-soon':''}" data-mode="${m.id}">
-        ${m.proto?'<span class="badge-soon badge-proto">試作</span>':''}
-        <span class="mode__ic ${m.accent}">${m.icon}</span>
-        <span class="mode__body">
-          <span class="mode__name">${m.name}</span>
-          ${m.tag?`<span class="mode__desc">${m.tag}</span>`:''}
-        </span>
-        ${m.primary?'<span class="mode__arrow">›</span>':''}
+        <span class="mode__name">${m.name}</span>
         <span class="mode__glow"></span>
       </button>`).join('');
     grid.querySelectorAll('.mode').forEach(b=>{
