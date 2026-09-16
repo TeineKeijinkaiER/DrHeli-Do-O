@@ -122,27 +122,84 @@ const DrugsMode = (() => {
     const m = data.meta;
     const f = form && form.kind === 'peds' ? form : (form = { kind: 'peds' });
     const [min, max] = m.pedsWeightRange;
+    const ages = m.pedsAgeWeights;
+    const [minAge, maxAge] = [ages[0].ageYears, ages[ages.length - 1].ageYears];
     shell(`${head('PEDIATRIC', '小児', '年齢を選ぶか、体重を入力してください')}
       <form class="patient-form" id="patient-form" novalidate>
-        <fieldset><legend>年齢（目安体重）</legend>
-          <div class="age-choices">${m.pedsAgePresets.map(p => `<button type="button" data-preset="${esc(p.id)}" aria-pressed="${f.presetId === p.id}" class="${f.presetId === p.id ? 'on' : ''}"><strong>${esc(p.age)}</strong><span>${esc(p.kg)}kg</span></button>`).join('')}</div>
-        </fieldset>
+        <div class="weight-field"><span id="age-label">年齢</span>
+          <div class="age-dial">
+            <button type="button" class="age-dial__step" data-age-step="-1" aria-label="年齢を1歳下げる">−</button>
+            <div class="age-dial__window" id="age-dial" role="spinbutton" tabindex="0" aria-labelledby="age-label" aria-describedby="age-weight" aria-valuemin="${minAge}" aria-valuemax="${maxAge}">
+              <div class="age-dial__track" id="age-track">
+                <div class="age-dial__item age-dial__item--none" data-age="">未選択</div>
+                ${ages.map(a => `<div class="age-dial__item" data-age="${esc(a.ageYears)}">${esc(a.ageYears)}<small>歳</small></div>`).join('')}
+              </div>
+            </div>
+            <button type="button" class="age-dial__step" data-age-step="1" aria-label="年齢を1歳上げる">＋</button>
+          </div>
+          <input type="hidden" id="age" value="${esc(f.age ?? '')}">
+        </div>
+        <p class="age-weight" id="age-weight" aria-live="polite"></p>
         <label class="weight-field">体重
           <div><input id="weight" type="number" inputmode="decimal" min="${min}" max="${max}" step="0.1" value="${esc(f.weight ?? '')}" placeholder="未入力"><b>kg</b></div>
         </label>
-        <p class="form-hint">体重を入力すれば体重で計算します。年齢だけのときは目安体重で計算します。年齢はもう一度押すと選択を外せます。</p>
+        <p class="form-hint">年齢はダイヤルを回すか −／＋ で選びます。体重を入力すれば体重で計算します。年齢だけのときは、1・3・6・9歳はキリのいい目安体重（10・15・20・30kg）、ほかの年齢は日本人の平均体重（四捨五入）で計算します。${minAge}歳未満と${maxAge + 1}歳以上は体重を入力してください。</p>
         <p class="form-error" id="form-error" role="alert"></p>
         <button type="submit" class="drug-primary drug-primary--wide">薬剤選択へ</button>
       </form>`);
-    onAll('[data-preset]', b => {
-      f.presetId = f.presetId === b.dataset.preset ? '' : b.dataset.preset;
-      f.weight = $('#weight').value;
-      render(false);
+    const showAgeWeight = () => {
+      const age = $('#age').value.trim();
+      const weight = $('#weight').value.trim();
+      const el = $('#age-weight');
+      const aw = age === '' ? null : C.ageWeight(Number(age), m);
+      el.classList.toggle('is-muted', !!(aw && weight));
+      el.classList.toggle('is-error', age !== '' && !aw);
+      el.textContent = age === '' ? ''
+        : !aw ? `${minAge}〜${maxAge}歳から選んでください`
+        : weight ? `${age}歳の${C.ageWeightName(aw)}は${C.fmtDose(aw.kg)}kg（入力した体重を優先します）`
+        : `${age}歳 → ${C.ageWeightName(aw)} ${C.fmtDose(aw.kg)}kg で計算します`;
+    };
+
+    /* 年齢ダイヤル：縦にスクロールして止まった位置の年齢を選ぶ。−／＋・タップ・矢印キーでも変更できる */
+    const track = $('#age-track');
+    const dial = $('#age-dial');
+    const items = [...track.querySelectorAll('.age-dial__item')];
+    const values = items.map(el => el.dataset.age);
+    let idx = Math.max(0, values.indexOf(String(f.age ?? '')));
+    const itemHeight = () => items[0].offsetHeight || 52;
+    const setAge = (i, scroll) => {
+      idx = Math.min(values.length - 1, Math.max(0, i));
+      $('#age').value = values[idx];
+      items.forEach((el, k) => el.classList.toggle('on', k === idx));
+      dial.setAttribute('aria-valuetext', values[idx] ? `${values[idx]}歳` : '未選択');
+      if (values[idx]) dial.setAttribute('aria-valuenow', values[idx]); else dial.removeAttribute('aria-valuenow');
+      if (scroll) track.scrollTo({ top: idx * itemHeight(), behavior: scroll });
+      showAgeWeight();
+    };
+    let settle;
+    track.addEventListener('scroll', () => {
+      clearTimeout(settle);
+      settle = setTimeout(() => {
+        const i = Math.round(track.scrollTop / itemHeight());
+        if (i !== idx) setAge(i, null);
+      }, 80);
     });
+    items.forEach((el, k) => el.addEventListener('click', () => setAge(k, 'smooth')));
+    onAll('[data-age-step]', b => setAge(idx + Number(b.dataset.ageStep), 'smooth'));
+    dial.addEventListener('keydown', e => {
+      const step = { ArrowUp: -1, ArrowDown: 1 }[e.key];
+      if (!step) return;
+      e.preventDefault();
+      setAge(idx + step, 'smooth');
+    });
+    setAge(idx, 'auto');
+    on('#weight', 'input', showAgeWeight);
+    showAgeWeight();
     on('#patient-form', 'submit', e => {
       e.preventDefault();
+      f.age = $('#age').value.trim();
       f.weight = $('#weight').value.trim();
-      submitPatient({ kind: 'peds', weight: f.weight || null, presetId: f.presetId || null });
+      submitPatient({ kind: 'peds', weight: f.weight || null, age: f.age === '' ? null : f.age });
     });
   }
 

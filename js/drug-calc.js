@@ -46,9 +46,17 @@ const DrugCalc = (() => {
 
   // ---------- 計算体重 ----------
 
+  /* 年齢（整数の歳）から、キリのいい平均的な体重を引く。表にない年齢は null */
+  function ageWeight(age, meta) {
+    if (!Number.isInteger(age)) return null;
+    return meta.pedsAgeWeights.find(x => x.ageYears === age) || null;
+  }
+  /* 指定したキリのいい値は「目安体重」、統計の平均を四捨五入した値は「平均体重」と呼ぶ */
+  const ageWeightName = aw => aw.kind === 'average' ? '平均体重' : '目安体重';
+
   /* input: 成人 { kind:'adult', sex:'male'|'female', weight?:number }
-            小児 { kind:'peds', weight?:number, presetId?:string }
-     体重の入力があれば必ずそれを使う。無ければ成人は性別の既定値、小児は年齢の目安体重。 */
+            小児 { kind:'peds', weight?:number, age?:number }
+     体重の入力があれば必ずそれを使う。無ければ成人は性別の既定値、小児は年齢の平均的な体重。 */
   function resolvePatient(input, meta) {
     const has = v => v != null && v !== '';
     if (input.kind === 'adult') {
@@ -64,18 +72,22 @@ const DrugCalc = (() => {
       return { kind: 'adult', sex: input.sex, kg: def, source: 'default',
         title: `成人・${SEX[input.sex]}`, label: `体重${def}kg（${SEX[input.sex]}の既定値）で計算` };
     }
-    const preset = has(input.presetId) ? meta.pedsAgePresets.find(p => p.id === input.presetId) : null;
-    if (has(input.presetId) && !preset) return { error: '年齢の選択が不正です' };
+    const ages = meta.pedsAgeWeights;
+    const [minAge, maxAge] = [ages[0].ageYears, ages[ages.length - 1].ageYears];
+    const age = has(input.age) ? Number(input.age) : null;
+    const aw = age == null ? null : ageWeight(age, meta);
+    if (age != null && !aw)
+      return { error: `年齢は${minAge}〜${maxAge}歳から選んでください（それ以外は体重を入力）` };
+    const title = age == null ? '小児' : `小児・${age}歳`;
     if (has(input.weight)) {
       const kg = Number(input.weight);
       const [min, max] = meta.pedsWeightRange;
       if (!(kg >= min && kg <= max)) return { error: `体重は${min}〜${max}kgで入力してください` };
-      return { kind: 'peds', kg, ageYears: preset ? preset.ageYears : null, source: 'input',
-        title: preset ? `小児・${preset.age}` : '小児', label: `体重${fmtDose(kg)}kgで計算` };
+      return { kind: 'peds', kg, ageYears: age, source: 'input', title, label: `体重${fmtDose(kg)}kgで計算` };
     }
-    if (preset) return { kind: 'peds', kg: preset.kg, ageYears: preset.ageYears, source: 'age',
-      title: `小児・${preset.age}`, label: `${preset.age}の目安体重${preset.kg}kgで計算（推定）` };
-    return { error: '体重を入力するか、年齢を選んでください' };
+    if (aw) return { kind: 'peds', kg: aw.kg, ageYears: age, source: 'age', title,
+      label: `${age}歳の${ageWeightName(aw)}${fmtDose(aw.kg)}kgで計算` };
+    return { error: '年齢か体重を入力してください' };
   }
 
   // ---------- 用法ごとの計算 ----------
@@ -172,15 +184,18 @@ const DrugCalc = (() => {
     if (!meta.adultDefaults || !(meta.adultDefaults.male > 0) || !(meta.adultDefaults.female > 0)) push('meta.adultDefaults に male・female の体重が必要');
     for (const key of ['adultWeightRange', 'pedsWeightRange'])
       if (!Array.isArray(meta[key]) || meta[key].length !== 2 || !(meta[key][0] < meta[key][1])) push(`meta.${key} は [下限, 上限]`);
-    const presets = meta.pedsAgePresets || [];
-    if (!presets.length) push('meta.pedsAgePresets が空');
-    presets.forEach((p, i) => {
-      if (!p.id || !p.age || !(p.kg > 0) || !(p.ageYears >= 0)) push(`pedsAgePresets#${i + 1}: id・age・ageYears・kg が必要`);
-      if (i && !(p.ageYears > presets[i - 1].ageYears && p.kg > presets[i - 1].kg)) push(`pedsAgePresets#${i + 1}: 年齢と体重は昇順にする`);
+    const ageWeights = meta.pedsAgeWeights || [];
+    if (!ageWeights.length) push('meta.pedsAgeWeights（年齢別の目安体重）が空');
+    ageWeights.forEach((a, i) => {
+      if (!Number.isInteger(a.ageYears) || a.ageYears < 1 || (i && a.ageYears !== ageWeights[i - 1].ageYears + 1))
+        push(`pedsAgeWeights#${i + 1}: 年齢は1歳以上の整数を1歳刻みで並べる`);
+      if (!(a.kg > 0)) push(`pedsAgeWeights#${i + 1}: kg が必要`);
+      if (!['set', 'average'].includes(a.kind)) push(`pedsAgeWeights#${i + 1}: kind は set（指定値）か average（平均の四捨五入）`);
+      if (i && a.kg < ageWeights[i - 1].kg) push(`pedsAgeWeights#${i + 1}: 年齢が上がって体重が減っている`);
     });
 
     const adultKgs = [...new Set([...meta.adultRefWeights, meta.adultDefaults?.male, meta.adultDefaults?.female, ...(meta.adultWeightRange || [])])].filter(x => x > 0);
-    const pedsPatients = [...meta.pedsWeights, ...presets].map(w => ({ kind: 'peds', kg: w.kg, ageYears: w.ageYears }));
+    const pedsPatients = [...meta.pedsWeights, ...ageWeights].map(w => ({ kind: 'peds', kg: w.kg, ageYears: w.ageYears }));
     const ids = new Set();
 
     const checkPrep = (drug, p, where) => {
@@ -247,5 +262,5 @@ const DrugCalc = (() => {
     if (errors.length) throw new Error(`drugs.json に不備があります:\n- ${errors.join('\n- ')}`);
   }
 
-  return { FACTOR, SEX, MIN_VOLUME_ML, fmtDose, fmtVol, pickPrep, prepTotal, prepConc, prepLine, resolvePatient, calcUse, scenesOf, sceneMatches, validate };
+  return { FACTOR, SEX, MIN_VOLUME_ML, fmtDose, fmtVol, pickPrep, prepTotal, prepConc, prepLine, ageWeight, ageWeightName, resolvePatient, calcUse, scenesOf, sceneMatches, validate };
 })();

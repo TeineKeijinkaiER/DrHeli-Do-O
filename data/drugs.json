@@ -2,7 +2,7 @@
   "meta": {
     "title": "道央ドクターヘリ 搭載薬剤 緊急使用ガイド",
     "status": "医師監修済み",
-    "updated": "2026-09-15",
+    "updated": "2026-09-17",
     "insertCheckedOn": "2026-09-14",
     "disclaimer": [
       "添付文書の情報は、2026-09-14時点でKEGG MEDICUSに載っている添付文書（先発品か代表製品）を要約したものです。搭載製品の銘柄が違う場合や改訂があった場合は、その製品の最新の添付文書を優先してください。",
@@ -47,38 +47,69 @@
       0.5,
       70
     ],
-    "pedsAgePresets": [
+    "pedsAgeWeights": [
       {
-        "id": "age0",
-        "age": "0歳",
-        "ageYears": 0,
-        "kg": 5
-      },
-      {
-        "id": "age1",
-        "age": "1歳",
         "ageYears": 1,
-        "kg": 10
+        "kg": 10,
+        "kind": "set"
       },
       {
-        "id": "age3",
-        "age": "3歳",
+        "ageYears": 2,
+        "kg": 12,
+        "kind": "average"
+      },
+      {
         "ageYears": 3,
-        "kg": 15
+        "kg": 15,
+        "kind": "set"
       },
       {
-        "id": "age6",
-        "age": "6歳",
+        "ageYears": 4,
+        "kg": 16,
+        "kind": "average"
+      },
+      {
+        "ageYears": 5,
+        "kg": 18,
+        "kind": "average"
+      },
+      {
         "ageYears": 6,
-        "kg": 20
+        "kg": 20,
+        "kind": "set"
       },
       {
-        "id": "age9",
-        "age": "9歳",
+        "ageYears": 7,
+        "kg": 24,
+        "kind": "average"
+      },
+      {
+        "ageYears": 8,
+        "kg": 27,
+        "kind": "average"
+      },
+      {
         "ageYears": 9,
-        "kg": 30
+        "kg": 30,
+        "kind": "set"
+      },
+      {
+        "ageYears": 10,
+        "kg": 35,
+        "kind": "average"
+      },
+      {
+        "ageYears": 11,
+        "kg": 40,
+        "kind": "average"
+      },
+      {
+        "ageYears": 12,
+        "kg": 45,
+        "kind": "average"
       }
-    ]
+    ],
+    "pedsAgeWeightsSource": "1・3・6・9歳はオーナー指定のキリのいい目安体重（10・15・20・30kg）。ほかは男女平均を四捨五入：2・4・5歳はこども家庭庁「令和5年乳幼児身体発育調査」表4（半年区分2つの男女平均。2歳12.33、4歳16.07、5歳18.29kg）、7・8・10〜12歳は文部科学省「令和6年度学校保健統計」（男女平均。7歳23.95、8歳27.25、10歳35.1、11歳39.85、12歳44.85kg）"
   },
   "drugs": [
     {

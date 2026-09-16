@@ -669,3 +669,24 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .drug-tkh b{display:block;margin-bottom:3px;color:#12408a;font-size:12px;letter-spacing:.04em}
 .drug-tkh p{margin:0;color:#10213a;font-size:14px;font-weight:700;line-height:1.65}
 .rate-grid small{color:#40618a;font-size:12px;font-weight:800}
+
+/* 薬剤モード: 小児の年齢入力と目安体重（2026-09-17） */
+.age-weight{min-height:1.4em;margin:8px 0 16px;color:#12408a;font-size:15px;font-weight:900;line-height:1.5}
+.age-weight.is-muted{color:#5f6f84;font-size:13px;font-weight:700}
+.age-weight.is-error{color:#c21f2a;font-size:13.5px}
+.age-dial{display:flex;align-items:center;gap:12px;margin-top:9px}
+.age-dial__step{flex:0 0 auto;width:52px;height:52px;border:2px solid #8eacd0;border-radius:50%;background:#fff;color:#1969c5;font-size:28px;font-weight:900;line-height:1}
+.age-dial__step:active{background:#eaf3ff}
+.age-dial__window{position:relative;width:132px;height:156px;border:2px solid #8eacd0;border-radius:16px;background:#fff;overflow:hidden}
+.age-dial__window:focus-visible{outline:3px solid #1969c5;outline-offset:2px}
+.age-dial__window::before{content:'';position:absolute;left:6px;right:6px;top:50%;height:50px;transform:translateY(-50%);border:2px solid #1969c5;border-radius:10px;background:#eaf3ff;pointer-events:none}
+.age-dial__track{position:relative;box-sizing:border-box;height:100%;padding-block:52px;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none;-webkit-mask-image:linear-gradient(transparent,#000 32%,#000 68%,transparent);mask-image:linear-gradient(transparent,#000 32%,#000 68%,transparent)}
+.age-dial__track::-webkit-scrollbar{display:none}
+.age-dial__item{display:flex;align-items:baseline;justify-content:center;gap:2px;height:52px;line-height:52px;scroll-snap-align:center;color:#8a9ab0;font-size:22px;font-weight:800;cursor:pointer;user-select:none;-webkit-user-select:none}
+.age-dial__item small{font-size:.55em}
+.age-dial__item.on{color:#10213a;font-size:30px;font-weight:900}
+.age-dial__item--none.on{font-size:18px;color:#5f6f84}
+.age-weight{font-size:17px}
+.weight-field .age-dial__window,.weight-field .age-dial__track{display:block;margin:0}
+.weight-field .age-dial__item{display:flex;margin:0}
+.age-dial__window{box-sizing:content-box}
