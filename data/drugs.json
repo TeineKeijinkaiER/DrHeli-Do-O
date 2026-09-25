@@ -1222,11 +1222,12 @@
       ],
       "peds": {
         "status": "use",
-        "hidden": true,
-        "note": "小児薬剤モードには収載しない。",
+        "hidden": false,
+        "note": "TKH救急の小児早見表（20倍希釈50μg/mLを15kgで1.0mL）に合わせ、3.3μg/kgを既定とする。",
         "cautions": [
           "【添付文書】小児の臨床試験は行われていない",
-          "少量から開始し、反射性徐脈に注意する"
+          "少量から開始し、反射性徐脈に注意する",
+          "【慣用】文献・他施設では5〜20μg/kgを用いることもある。効果が不十分なら指示を確認する"
         ],
         "uses": [
           {
@@ -1235,10 +1236,8 @@
             "route": "静注",
             "dosing": {
               "mode": "perKg",
-              "perKg": 5,
-              "unit": "μg",
-              "perKgHi": 20,
-              "max": 500
+              "perKg": 3.3,
+              "unit": "μg"
             },
             "prep": {
               "stock": {
@@ -1248,13 +1247,13 @@
               },
               "diluent": {
                 "name": "生食",
-                "ml": 9
+                "ml": 19
               }
             },
             "give": "静注",
             "repeat": "10〜15分ごと",
             "basis": "offlabel",
-            "source": "慣用"
+            "source": "TKH救急運用（RapidMed 2026-09）"
           }
         ]
       }
