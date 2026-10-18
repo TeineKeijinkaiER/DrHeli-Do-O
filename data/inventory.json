@@ -20,7 +20,7 @@
     ]
   ],
   "config": {
-    "submitUrl": "",
+    "submitUrl": "https://script.google.com/macros/s/AKfycbyTMyMcp0Rjy-K13XRlqICoIkB56L76iEM2f1Vx2Qo9Uh4yv2pyST4XipLjgNrj_zEA/exec",
     "masterCsvUrl": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRCp1tmr3YehjxMWTYbuWefiBxD6J47uge8dSNMGkvYKPf_fIHiAMQcNNkpbPMJW1R6JR9cFOxc96GE/pub?output=csv",
     "note": "物品一覧はオンライン時に masterCsvUrl(物品マスタースプレッドシートの公開CSV)から取得し、オフライン時はキャッシュ→下記 bags の順でフォールバックします。bags はオフライン最終手段なので削除しないこと。Google Apps Scriptのウェブアプリ URL を submitUrl(またはアプリの送信先設定)に入れると、点検結果がスプレッドシートに送信されます"
   },
