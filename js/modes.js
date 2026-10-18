@@ -13,7 +13,8 @@ const Modes = (() => {
     const u=new SpeechSynthesisUtterance(t); u.lang='ja-JP'; u.rate=rate||1.0; speechSynthesis.speak(u);}catch(e){} }
   const INVENTORY_STATE='doo-inventory-state-v1',INVENTORY_EP='doo-inventory-endpoint',INVENTORY_SPD='doo-inventory-speed';
   const INVENTORY_MASTER_URL='doo-inventory-master-url',INVENTORY_MASTER_CACHE='doo-inventory-master-cache';
-  let invMasterDone=false;
+  const invMasterDone=new Set(); // 取得済みのチェック種別id
+  let invList='daily';             // 表示中のチェック種別（モードを開くたびに日常へ戻す）
   const banner = txt => `<div class="proto-note">${txt}</div>`;
 
   /* 各モードの編集対象データファイル */
@@ -130,15 +131,20 @@ const Modes = (() => {
     for(const [bag,sm] of bagMap){ const sections=[]; for(const [sname,items] of sm) sections.push({s:sname,items}); bags.push({bag,sections}); }
     return bags;
   }
-  function masterUrl_(d){ const u=localStorage.getItem(INVENTORY_MASTER_URL); return (u!==null&&u!=='')?u:((d.config&&d.config.masterCsvUrl)||''); }
-  async function refreshMaster_(d){
-    const url=masterUrl_(d); if(!url) return false;
+  /* チェック種別ごとの物品の置き場所。日常は従来どおりトップレベル bags と既存の localStorage キーを使う */
+  function invSrc_(d,L){
+    const daily=L.id==='daily';
+    return { obj: daily?d:L, sfx: daily?'':'-'+L.id, def: daily?((d.config&&d.config.masterCsvUrl)||''):(L.masterCsvUrl||'') };
+  }
+  function masterUrl_(src){ const u=localStorage.getItem(INVENTORY_MASTER_URL+src.sfx); return (u!==null&&u!=='')?u:src.def; }
+  async function refreshMaster_(src){
+    const url=masterUrl_(src); if(!url) return false;
     try{
       const t=await fetch(url,{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.text();});
       const bags=csvToBags_(t);
       if(bags&&bags.length){
-        const changed=JSON.stringify(d.bags||[])!==JSON.stringify(bags);
-        d.bags=bags; try{localStorage.setItem(INVENTORY_MASTER_CACHE,JSON.stringify(bags));}catch(e){}
+        const changed=JSON.stringify(src.obj.bags||[])!==JSON.stringify(bags);
+        src.obj.bags=bags; try{localStorage.setItem(INVENTORY_MASTER_CACHE+src.sfx,JSON.stringify(bags));}catch(e){}
         return changed;
       }
     }catch(e){}
@@ -155,12 +161,21 @@ const Modes = (() => {
   }
   function rInventory(){
     const d=DATA.inventory||{bags:[],speeds:[],meta:[]};
-    try{const c=localStorage.getItem(INVENTORY_MASTER_CACHE); if(c){const cb=JSON.parse(c); if(Array.isArray(cb)&&cb.length) d.bags=cb;}}catch(e){}
+    const lists=(d.checklists&&d.checklists.length)?d.checklists:[{id:'daily',label:'日常チェック'}];
+    const L=lists.find(x=>x.id===invList)||lists[0]; invList=L.id;
+    const isDaily=L.id==='daily';
+    const src=invSrc_(d,L);
+    try{const c=localStorage.getItem(INVENTORY_MASTER_CACHE+src.sfx); if(c){const cb=JSON.parse(c); if(Array.isArray(cb)&&cb.length) src.obj.bags=cb;}}catch(e){}
+    const bags=src.obj.bags||[];
     const speeds=(d.speeds&&d.speeds.length)?d.speeds:[["ゆっくり",0.7],["標準",1.0],["速い",1.4]];
     let spd=parseFloat(localStorage.getItem(INVENTORY_SPD)||'1.0');
     if(!Number.isFinite(spd)) spd=1.0;
     const st=loadInvState();st.checks=st.checks||{};st.notes=st.notes||{};st.meta=st.meta||{};st.collapsed=st.collapsed||{};
     if(typeof st.handover!=='string') st.handover='';
+    /* チェック・Note・折り畳みは種別ごとに保持（日付・担当者・申し送りは共通） */
+    if(!st.lists||typeof st.lists!=='object') st.lists={};
+    const ls=isDaily?st:(st.lists[L.id]=st.lists[L.id]||{});
+    ls.checks=ls.checks||{};ls.notes=ls.notes||{};ls.collapsed=ls.collapsed||{};
     const today=new Date().toLocaleDateString('sv-SE');
     (d.meta||[]).forEach((m,i)=>{ if(/日付|date/i.test(m) && !st.meta[i]) st.meta[i]=today; });
     const save=()=>{try{localStorage.setItem(INVENTORY_STATE,JSON.stringify(st));}catch(e){}};
@@ -169,7 +184,8 @@ const Modes = (() => {
     const endpoint=()=>{const stored=localStorage.getItem(INVENTORY_EP);return stored!==null?stored:((d.config&&d.config.submitUrl)||'');};
     const R=root('inventory');
     R.innerHTML=`
-      <div class="mode-hd"><h2>器材</h2><p>${esc(d.title||'')}</p></div>
+      <div class="mode-hd"><h2>器材</h2><p>${esc((!isDaily&&L.title)||d.title||'')}</p></div>
+      ${lists.length>1?`<div class="scene"><span class="scene__lbl">チェック種別</span><div class="scene__b" id="invList">${lists.map(x=>`<button type="button" data-id="${escAttr(x.id)}" class="${x.id===L.id?'on':''}">${esc(x.label)}</button>`).join('')}</div></div>`:''}
       <div class="lmetarow">${(d.meta||[]).map((m,i)=>{const dt=/日付|date/i.test(m);return `<label class="lmeta"><span>${esc(m)}</span><input type="${dt?'date':'text'}" data-meta="${i}" value="${escAttr(st.meta[i]||'')}"></label>`;}).join('')}</div>
       <div class="audiobar">
         <div class="scene"><span class="scene__lbl">読み上げ速度</span><div class="scene__b" id="invSpd">${speeds.map(([nm,r])=>`<button type="button" data-r="${r}" class="${r==spd?'on':''}">${esc(nm)}</button>`).join('')}</div></div>
@@ -182,20 +198,25 @@ const Modes = (() => {
       <div class="handover">
         <label class="handover__lbl">前日担当者からの申し送り（物品）</label>
         <textarea id="invHandover" placeholder="">${esc(st.handover)}</textarea>
-        <button type="button" class="dangerbtn" id="invClear">前日のチェックを全削除</button>
+        <button type="button" class="dangerbtn" id="invClear">${isDaily?'前日のチェックを全削除':esc(L.label)+'を全削除'}</button>
       </div>
-      ${(!d.bags||!d.bags.length)?'<div class="proto-note warn">物品データを読み込めませんでした。ページを再読込してください（Ctrl+F5）。</div>':''}
-      ${(d.bags||[]).map(b=>{const sections=b.sections||[];return `<div class="bag">
+      ${!bags.length?(isDaily?'<div class="proto-note warn">物品データを読み込めませんでした。ページを再読込してください（Ctrl+F5）。</div>':`<div class="proto-note warn">${esc(L.label)}の物品はまだ登録されていません。</div>`):''}
+      ${bags.map(b=>{const sections=b.sections||[];return `<div class="bag">
         <div class="bag__h"><span>${esc(b.bag)}</span><button type="button" class="say" data-say="${escAttr(b.bag+'。'+sections.map(s=>s.s+'、'+(s.items||[]).map(it=>it.y||it.n).join('、')).join('。'))}">▶ 全体読み上げ</button></div>
-        ${sections.map(s=>{const items=s.items||[];const folded=!!st.collapsed[sk(b.bag,s.s)];return `<div class="sect ${folded?'sect--folded':''}" data-sk="${escAttr(sk(b.bag,s.s))}">
+        ${sections.map(s=>{const items=s.items||[];const folded=!!ls.collapsed[sk(b.bag,s.s)];return `<div class="sect ${folded?'sect--folded':''}" data-sk="${escAttr(sk(b.bag,s.s))}">
           <div class="sect__h"><button type="button" class="sect__toggle" data-sk="${escAttr(sk(b.bag,s.s))}"><span class="sect__chev">${folded?'＋':'−'}</span>${esc(s.s)}</button><button type="button" class="sectall" data-sk="${escAttr(sk(b.bag,s.s))}">全✓</button><button type="button" class="say" data-say="${escAttr(s.s+'。'+items.map(it=>it.y||it.n).join('、'))}">▶</button></div>
-          <div class="sect__items">${items.map(it=>{const k=key(b.bag,s.s,it.n);return `<label class="chk"><input type="checkbox" data-k="${escAttr(k)}" ${st.checks[k]?'checked':''}><span class="chk__n">${esc(it.n)}</span></label>`;}).join('')}</div></div>`;}).join('')}
-        <div class="bagnote"><label>Note（不足・交換など）</label><textarea data-note="${escAttr(b.bag)}" placeholder="">${esc(st.notes[b.bag]||'')}</textarea></div>
+          <div class="sect__items">${items.map(it=>{const k=key(b.bag,s.s,it.n);return `<label class="chk"><input type="checkbox" data-k="${escAttr(k)}" ${ls.checks[k]?'checked':''}><span class="chk__n">${esc(it.n)}</span></label>`;}).join('')}</div></div>`;}).join('')}
+        <div class="bagnote"><label>Note（不足・交換など）</label><textarea data-note="${escAttr(b.bag)}" placeholder="">${esc(ls.notes[b.bag]||'')}</textarea></div>
       </div>`;}).join('')}
       <div class="logibtns"><button type="button" class="bigbtn" id="invSend">スプレッドシートに送信</button>
         <button type="button" class="logisub" id="invCsv">CSVダウンロード</button><button type="button" class="logisub" id="invCfg">⚙ 送信先設定</button><button type="button" class="logisub" id="invMaster">📋 物品マスターURL</button></div>
       <div id="invMsg" class="logimsg"></div>`;
     const msg=(t,c)=>{const m=R.querySelector('#invMsg');m.textContent=t;m.className='logimsg'+(c?' '+c:'');};
+    /* チェック種別の切替 */
+    R.querySelectorAll('#invList button').forEach(btn=>btn.addEventListener('click',()=>{
+      if(btn.dataset.id===invList) return;
+      try{speechSynthesis.cancel();}catch(e){}
+      invList=btn.dataset.id; rInventory();}));
     /* 速度 */
     R.querySelector('#invSpd').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
       spd=parseFloat(btn.dataset.r);localStorage.setItem(INVENTORY_SPD,spd);
@@ -210,30 +231,31 @@ const Modes = (() => {
     /* セクション折り畳み */
     R.querySelectorAll('.sect__toggle').forEach(btn=>btn.addEventListener('click',()=>{
       const id=btn.dataset.sk;const sect=R.querySelector('.sect[data-sk="'+CSS.escape(id)+'"]');
-      const now=sect.classList.toggle('sect--folded');st.collapsed[id]=now;save();
+      const now=sect.classList.toggle('sect--folded');ls.collapsed[id]=now;save();
       btn.querySelector('.sect__chev').textContent=now?'＋':'−';}));
     /* チェック・メタ・Note・申し送り */
-    R.querySelectorAll('input[data-k]').forEach(c=>c.addEventListener('change',()=>{st.checks[c.dataset.k]=c.checked;save();}));
+    R.querySelectorAll('input[data-k]').forEach(c=>c.addEventListener('change',()=>{ls.checks[c.dataset.k]=c.checked;save();}));
     /* セクション一括チェック/解除（トグル） */
     R.querySelectorAll('.sectall').forEach(btn=>btn.addEventListener('click',()=>{
       const sect=R.querySelector('.sect[data-sk="'+CSS.escape(btn.dataset.sk)+'"]');
       const boxes=sect.querySelectorAll('input[data-k]');
       const allOn=Array.from(boxes).every(c=>c.checked);
-      boxes.forEach(c=>{c.checked=!allOn;st.checks[c.dataset.k]=!allOn;});
+      boxes.forEach(c=>{c.checked=!allOn;ls.checks[c.dataset.k]=!allOn;});
       save();}));
     R.querySelectorAll('input[data-meta]').forEach(i=>['input','change'].forEach(ev=>i.addEventListener(ev,()=>{st.meta[i.dataset.meta]=i.value;save();})));
-    R.querySelectorAll('textarea[data-note]').forEach(t=>t.addEventListener('input',()=>{st.notes[t.dataset.note]=t.value;save();}));
+    R.querySelectorAll('textarea[data-note]').forEach(t=>t.addEventListener('input',()=>{ls.notes[t.dataset.note]=t.value;save();}));
     R.querySelector('#invHandover').addEventListener('input',e=>{st.handover=e.target.value;save();});
     /* 前日チェック全削除 */
     R.querySelector('#invClear').addEventListener('click',()=>{
-      if(!confirm('前日のチェック（全項目のチェック）を全て外します。よろしいですか？\n※申し送りメモ・バッグNoteは保持されます。')) return;
-      st.checks={};save();
+      const what=isDaily?'前日のチェック':L.label;
+      if(!confirm(what+'（全項目のチェック）を全て外します。よろしいですか？\n※申し送りメモ・バッグNoteは保持されます。')) return;
+      ls.checks={};save();
       R.querySelectorAll('input[data-k]').forEach(c=>{c.checked=false;});
-      msg('前日のチェックを全削除しました');});
+      msg(what+'を全削除しました');});
     /* CSV/送信 ヘッダ・行 */
     const HEAD = ['日時', ...(d.meta || []), '申し送り'];
-    (d.bags || []).forEach(b => { HEAD.push(`Note: ${b.bag}`); });
-    (d.bags || []).forEach(b => {
+    bags.forEach(b => { HEAD.push(`Note: ${b.bag}`); });
+    bags.forEach(b => {
       (b.sections || []).forEach(s => {
         (s.items || []).forEach(it => {
           HEAD.push(`[${b.bag}] ${s.s} > ${it.n}`);
@@ -244,12 +266,12 @@ const Modes = (() => {
       const ts = new Date().toLocaleString('ja-JP');
       const meta = (d.meta || []).map((m, i) => st.meta[i] || '');
       const row = [ts, ...meta, st.handover || ''];
-      (d.bags || []).forEach(b => { row.push(st.notes[b.bag] || ''); });
-      (d.bags || []).forEach(b => {
+      bags.forEach(b => { row.push(ls.notes[b.bag] || ''); });
+      bags.forEach(b => {
         (b.sections || []).forEach(s => {
           (s.items || []).forEach(it => {
             const k = key(b.bag, s.s, it.n);
-            row.push(st.checks[k] ? 'OK' : '');
+            row.push(ls.checks[k] ? 'OK' : '');
           });
         });
       });
@@ -258,10 +280,12 @@ const Modes = (() => {
     R.querySelector('#invCsv').addEventListener('click', () => {
       const csv = [HEAD, ...rows()].map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(',')).join('\r\n');
       const url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' }));
-      const a = document.createElement('a'); a.href = url; a.download = '物品点検.csv'; a.click(); URL.revokeObjectURL(url); msg('CSVを保存しました');
+      const a = document.createElement('a'); a.href = url; a.download = isDaily ? '物品点検.csv' : `物品点検_${L.label}.csv`; a.click(); URL.revokeObjectURL(url); msg('CSVを保存しました');
     });
     const appName = location.pathname.includes('DrHeli-Do-O') || location.hostname.includes('teinekeijinkaier.github.io') ? 'DrHeli-Do-O' : 'DO-O';
-    const payload = () => ({ app: appName, sentAt: new Date().toISOString(), header: HEAD, rows: rows() });
+    const payload = () => ({ app: appName, sentAt: new Date().toISOString(), header: HEAD, rows: rows(),
+      /* 日常以外は記録先シート名を指定（旧スクリプトは無視し、列構成の署名別シートに入る） */
+      ...(isDaily ? {} : { sheet: '点検ログ_' + L.label }) });
     const sendFetch = (ep, data) => fetch(ep, {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -288,18 +312,18 @@ const Modes = (() => {
     });
     /* 物品マスターURL設定 */
     R.querySelector('#invMaster').addEventListener('click', () => {
-      const cur = masterUrl_(d);
-      const v = prompt('物品マスターのCSV公開URL\n（Googleスプレッドシート→ファイル→共有→ウェブに公開→CSV、または .../gviz/tq?tqx=out:csv&sheet=シート名）\n空欄で解除（同梱データに戻す）', cur);
+      const cur = masterUrl_(src);
+      const v = prompt(L.label + 'の物品マスターCSV公開URL\n（Googleスプレッドシート→ファイル→共有→ウェブに公開→CSV、または .../gviz/tq?tqx=out:csv&sheet=シート名）\n空欄で解除（同梱データに戻す）', cur);
       if (v === null) return;
-      localStorage.setItem(INVENTORY_MASTER_URL, v.trim());
-      invMasterDone = false;
+      localStorage.setItem(INVENTORY_MASTER_URL + src.sfx, v.trim());
+      invMasterDone.delete(L.id);
       msg(v.trim() ? '物品マスターURLを保存しました。最新を取得します…' : '物品マスターURLを解除しました（次回は同梱データ）');
       rInventory();
     });
     /* オンライン時にマスターを取得して最新化（変われば再描画） */
-    if (!invMasterDone && masterUrl_(d)) {
-      invMasterDone = true;
-      refreshMaster_(d).then(changed => { if (changed) rInventory(); });
+    if (!invMasterDone.has(L.id) && masterUrl_(src)) {
+      invMasterDone.add(L.id);
+      refreshMaster_(src).then(changed => { if (changed && invList === L.id) rInventory(); });
     }
   }
 
@@ -362,6 +386,7 @@ const Modes = (() => {
   async function open(id){
     if(!root(id)) return;
     await load(id);
+    if(id==='inventory') invList='daily';
     ({beginner:rBeginner,inventory:rInventory,quiz:rQuiz}[id]||(()=>{}))();
   }
   return { open };
