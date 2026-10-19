@@ -147,6 +147,40 @@ const App = (() => {
     links.appendChild(a);
   }
 
+  function renderWifiSync(){
+    const foot=document.querySelector('.home__foot');
+    if(!foot || !('serviceWorker' in navigator)) return;
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='home__sync';
+    button.textContent='Wi-Fiでデータを更新';
+    const status=document.createElement('span');
+    status.className='home__sync-status';
+    status.setAttribute('role','status');
+    foot.before(button,status);
+    button.addEventListener('click',async()=>{
+      if(!window.confirm('機内ではなく、Wi-Fiに接続していることを確認しましたか？')) return;
+      button.disabled=true;
+      status.textContent='更新中…';
+      try{
+        const reg=await navigator.serviceWorker.ready;
+        const channel=new MessageChannel();
+        const result=await new Promise((resolve,reject)=>{
+          const timer=setTimeout(()=>reject(new Error('timeout')),60000);
+          channel.port1.onmessage=e=>{ clearTimeout(timer); resolve(e.data); };
+          reg.active.postMessage({type:'SYNC_ON_CONFIRMED_WIFI'},[channel.port2]);
+        });
+        if(!result.ok) throw new Error('incomplete');
+        if(typeof Usage!=='undefined') await Usage.flush(true);
+        status.textContent='更新しました。ページを再読み込みします。';
+        window.location.reload();
+      }catch(e){
+        status.textContent='更新できませんでした。Wi-Fi接続とログイン状態を確認してください。';
+        button.disabled=false;
+      }
+    });
+  }
+
   function renderAboutLink(){
     const links=document.getElementById('privateLinks'); if(!links) return;
     const a=document.createElement('a');
@@ -156,7 +190,7 @@ const App = (() => {
   }
 
   function init(){
-    renderModes(); loadOpStatus(); renderAboutLink(); renderUsageLink(); renderFoot();
+    renderModes(); loadOpStatus(); renderAboutLink(); renderUsageLink(); renderFoot(); renderWifiSync();
     if(typeof Usage!=='undefined') Usage.session();
   }
   document.addEventListener('DOMContentLoaded',init);
