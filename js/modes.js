@@ -149,6 +149,27 @@ const Modes = (() => {
     }catch(e){}
     return null;
   }
+  /* 読み上げ: 品名の数量（①〜⑳・2本・3つ・各2個・適量）を拾い、品名のあと一拍おいて読む */
+  const CIRCLED='①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳';
+  /* よみがなに数量の語（ごこ・かくいっぽん・みっつ・にほんずつ 等）がある場合はそれを読み、前後に一拍入れる */
+  const YOMI_QTY=/^(かく)?(いっ|いち|に|さん|よん|ご|ろく|なな|はち|きゅう|じゅっ|じゅう|ひゃく|ひと|ふた|みっ|よっ|いつ|むっ|やっ)+(こ|ほん|ぽん|ぼん|つ|まい)(ずつ)?$/;
+  function itemQty_(n){
+    const q=[]; n=String(n||'');
+    n.replace(/(各\s*)?([①-⑳])(?!サイズ)/g,(m,k,c)=>{q.push((k?'各':'')+(CIRCLED.indexOf(c)+1)+'個');return m;});
+    n.replace(/(各\s*)?(\d+)\s*(本ずつ|本|つ|個|枚)/g,(m,k,d,u)=>{q.push((k?'各':'')+d+u);return m;});
+    if(/適量/.test(n)) q.push('適量');
+    return q;
+  }
+  function sayItem_(it){
+    const q=itemQty_(it.n);
+    if(it.y){
+      const tok=String(it.y).trim().split(/\s+/);
+      if(tok.some(t=>YOMI_QTY.test(t))) return tok.reduce((s,t,i)=>s+(i?((YOMI_QTY.test(t)||YOMI_QTY.test(tok[i-1]))?'、':' '):'')+t,'');
+      return q.length?tok.join(' ')+'、'+q.join('、'):tok.join(' ');
+    }
+    const base=String(it.n).replace(/各?\s*[①-⑳]/g,'');
+    return q.length?base+'、'+q.join('、'):base;
+  }
   function loadInvState(){
     try{
       const raw = JSON.parse(localStorage.getItem(INVENTORY_STATE)||'{}');
@@ -201,9 +222,9 @@ const Modes = (() => {
       </div>
       ${!bags.length?(isDaily?'<div class="proto-note warn">物品データを読み込めませんでした。ページを再読込してください（Ctrl+F5）。</div>':`<div class="proto-note warn">${esc(L.label)}の物品はまだ登録されていません。</div>`):''}
       ${bags.map(b=>{const sections=b.sections||[];return `<div class="bag">
-        <div class="bag__h"><span>${esc(b.bag)}</span><button type="button" class="say" data-say="${escAttr(b.bag+'。'+sections.map(s=>s.s+'、'+(s.items||[]).map(it=>it.y||it.n).join('、')).join('。'))}">▶ 全体読み上げ</button></div>
+        <div class="bag__h"><span>${esc(b.bag)}</span><button type="button" class="say" data-say="${escAttr(b.bag+'。'+sections.map(s=>s.s+'、'+(s.items||[]).map(sayItem_).join('。')).join('。'))}">▶ 全体読み上げ</button></div>
         ${sections.map(s=>{const items=s.items||[];const folded=!!ls.collapsed[sk(b.bag,s.s)];return `<div class="sect ${folded?'sect--folded':''}" data-sk="${escAttr(sk(b.bag,s.s))}">
-          <div class="sect__h"><button type="button" class="sect__toggle" data-sk="${escAttr(sk(b.bag,s.s))}"><span class="sect__chev">${folded?'＋':'−'}</span>${esc(s.s)}</button><button type="button" class="sectall" data-sk="${escAttr(sk(b.bag,s.s))}">全✓</button><button type="button" class="say" data-say="${escAttr(s.s+'。'+items.map(it=>it.y||it.n).join('、'))}">▶</button></div>
+          <div class="sect__h"><button type="button" class="sect__toggle" data-sk="${escAttr(sk(b.bag,s.s))}"><span class="sect__chev">${folded?'＋':'−'}</span>${esc(s.s)}</button><button type="button" class="sectall" data-sk="${escAttr(sk(b.bag,s.s))}">全✓</button><button type="button" class="say" data-say="${escAttr(s.s+'。'+items.map(sayItem_).join('。'))}">▶</button></div>
           <div class="sect__items">${items.map(it=>{const k=key(b.bag,s.s,it.n);return `<label class="chk"><input type="checkbox" data-k="${escAttr(k)}" ${ls.checks[k]?'checked':''}><span class="chk__n">${esc(it.n)}</span></label>`;}).join('')}</div></div>`;}).join('')}
         <div class="bagnote"><label>Note（不足・交換など）</label><textarea data-note="${escAttr(b.bag)}" placeholder="">${esc(ls.notes[b.bag]||'')}</textarea></div>
       </div>`;}).join('')}
