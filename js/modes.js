@@ -16,6 +16,7 @@ const Modes = (() => {
   const invMasterDone=new Set(); // 取得済みのチェック種別id
   let invList='daily';             // 表示中のチェック種別（モードを開くたびに日常へ戻す）
   const banner = txt => `<div class="proto-note">${txt}</div>`;
+  const wifiOnly = () => navigator.onLine !== false && !!navigator.connection && navigator.connection.type === 'wifi';
 
   /* 各モードの編集対象データファイル */
   const FILES = { beginner:'beginner', inventory:'inventory', quiz:'quiz' };
@@ -139,6 +140,7 @@ const Modes = (() => {
   function masterUrl_(src){ const u=localStorage.getItem(INVENTORY_MASTER_URL+src.sfx); return (u!==null&&u!=='')?u:src.def; }
   async function refreshMaster_(src){
     const url=masterUrl_(src); if(!url) return false;
+    if(!wifiOnly()) return false;
     try{
       const t=await fetch(url,{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.text();});
       const bags=csvToBags_(t);
@@ -305,6 +307,7 @@ const Modes = (() => {
       const ep = endpoint();
       if (!ep) { msg('先に「⚙ 送信先設定」でURLを設定してください（CSVダウンロードも可）', 'warn'); return; }
       if (/docs\.google\.com\/spreadsheets/.test(ep)) { msg('送信先がスプレッドシートのURLになっています。Apps Scriptの …/exec URL に設定し直してください', 'warn'); return; }
+      if (!wifiOnly()) { msg('送信はWi‑Fi接続時だけ行えます。機内ではCSV保存をご利用ください', 'warn'); return; }
       msg('送信中...');
       sendFetch(ep, payload())
         .then(() => msg('スプレッドシートに送信しました。シートをご確認ください'))

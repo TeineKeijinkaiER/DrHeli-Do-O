@@ -1,5 +1,5 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v64';
+const CACHE = 'doo-heli-v65';
 const TILES = 'doo-heli-tiles-v1';      /* 地図タイル専用キャッシュ(件数上限つき) */
 const TILE_LIMIT = 800;
 const KEEP = [CACHE, TILES];
@@ -15,11 +15,19 @@ const CORE = [
   './data/quiz.json','./data/inventory.json','./data/beginner.json','./data/drugs.json',
   './image/Heli.png','./image/Heriteinu.png','./image/public-icon-192.png','./image/public-icon-512.png','./image/public-icon-180.png'
 ];
+/* Wi‑Fi以外、または接続種別を取得できない場合はネットワークへ出ない。
+   既にキャッシュされたアプリ・データ・地図だけで動作させる。 */
+function wifiOnly() {
+  const c = self.navigator && self.navigator.connection;
+  return self.navigator && self.navigator.onLine !== false && !!c && c.type === 'wifi';
+}
 /* 版を上げたときの取り込みはブラウザのHTTPキャッシュを通さない。
    通すと古い js/css がそのまま新しい版のキャッシュに入り、画面が更新されない
    （改名した見出しが旧名のまま残った実績あり）。 */
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u=>c.add(new Request(u, { cache: 'reload' })).catch(()=>{})))).then(()=>self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c => wifiOnly()
+    ? Promise.all(CORE.map(u=>c.add(new Request(u, { cache: 'reload' })).catch(()=>{})))
+    : Promise.resolve()).then(()=>self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k=>!KEEP.includes(k)).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
@@ -52,8 +60,9 @@ function putIfUsable(req, res) {
    到達できるようにするため。ただし電波が弱いと待たされるので、キャッシュが
    あれば NAV_TIMEOUT_MS で打ち切ってキャッシュを返す。 */
 async function navigation(req) {
-  const netP = fetch(req).catch(() => null);
   const cached = (await caches.match(req)) || (await caches.match('./index.html'));
+  if (!wifiOnly()) return cached || Response.error();
+  const netP = fetch(req).catch(() => null);
   const res = await Promise.race([netP, new Promise(r => setTimeout(() => r(null), cached ? NAV_TIMEOUT_MS : 15000))]);
   if (res) {
     if (!unusable(req, res)) { const cp = res.clone(); caches.open(CACHE).then(c => c.put('./index.html', cp)); }
@@ -84,6 +93,7 @@ async function putTile(req, res) {
 async function tileFirst(req) {
   const hit = await caches.match(req, { cacheName: TILES });
   if (hit) return hit;
+  if (!wifiOnly()) return Response.error();
   try {
     const res = await fetch(req);
     if (res && (res.ok || res.type === 'opaque')) putTile(req, res.clone());
@@ -106,7 +116,7 @@ self.addEventListener('fetch', e => {
     if (isData) {
       /* データJSON: ネットワーク優先(オンライン時は常に最新)・失敗時のみキャッシュ */
       e.respondWith(
-        fetch(req).then(res => {
+        (wifiOnly() ? fetch(req) : Promise.reject()).then(res => {
           if (!putIfUsable(req, res)) return caches.match(req).then(hit => hit || res);
           return res;
         }).catch(() => caches.match(req))
@@ -114,6 +124,7 @@ self.addEventListener('fetch', e => {
     } else {
       /* アプリ本体(html/js/css/画像/vendor): キャッシュ優先＋背景更新 */
       e.respondWith(caches.match(req).then(hit => {
+        if (!wifiOnly()) return hit || Response.error();
         /* 背景更新もHTTPキャッシュの古い版で上書きしないよう、サーバに確認させる */
         const net = fetch(req, { cache: 'no-cache' }).then(res => {
           if (!putIfUsable(req, res)) return hit || res;
@@ -127,7 +138,7 @@ self.addEventListener('fetch', e => {
     e.respondWith(tileFirst(req));
   } else {
     /* その他の別オリジン: ネット優先・失敗時キャッシュ */
-    e.respondWith(fetch(req).then(res => {
+    e.respondWith((wifiOnly() ? fetch(req) : Promise.reject()).then(res => {
       if (res && (res.ok || res.type === 'opaque')) { const cp = res.clone(); caches.open(CACHE).then(c => c.put(req, cp)); }
       return res;
     }).catch(() => caches.match(req)));

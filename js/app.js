@@ -46,7 +46,7 @@ const App = (() => {
   function open(id){
     appbarSub.textContent=TITLES[id]||'';
     show(id);
-    if(typeof Usage!=='undefined') Usage.log('mode',{mode:id});
+    if(typeof Usage!=='undefined') Usage.beginMode(id);
     if(id==='map'){ if(typeof MapMode!=='undefined') MapMode.ensure(); return; }
     if(id==='reflection'){ if(typeof ReflectionMode!=='undefined') ReflectionMode.open(); return; }
     if(id==='stats'){ if(typeof StatsMode!=='undefined') StatsMode.open(); return; }
@@ -67,6 +67,7 @@ const App = (() => {
     if(typeof MapMode!=='undefined' && MapMode.sheetOpen()){ MapMode.closeSheet(); return; }
     /* 薬剤モードの中では1段階だけ戻す。誤ってホームへ戻り、体重を入れ直す事故を防ぐ。 */
     if(current==='drugs' && typeof DrugsMode!=='undefined' && DrugsMode.back()) return;
+    if(typeof Usage!=='undefined') Usage.endMode();
     show('home');
   });
 
