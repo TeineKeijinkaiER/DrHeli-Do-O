@@ -186,8 +186,37 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   background:rgba(255,255,255,.88);backdrop-filter:blur(8px);padding:8px 10px;border-radius:14px;border:1px solid rgba(42,68,106,.18);
   box-shadow:0 8px 24px rgba(31,52,82,.16);
 }
+.map__legend[hidden]{display:none}
 .legend__item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:600}
 .legend__dot{width:10px;height:10px;border-radius:50%}
+
+/* タイルが無いときの固定RP図。座標の相対位置だけを示し、道路地図とは誤認させない。 */
+.map--offline{overflow-y:auto;background:#edf3fa}
+.offline-map{width:min(100%,860px);margin:0 auto;padding:18px 14px calc(36px + env(safe-area-inset-bottom))}
+.offline-map__head{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#132946}
+.offline-map__head strong{display:block;font-size:20px}.offline-map__head small{display:block;color:#5b6d84;font-size:11px}
+.offline-map__head>span{white-space:nowrap;font-size:12px;font-weight:800;color:#245ea8}
+.offline-map__note{margin:9px 0 12px;color:#425975;font-size:12px;line-height:1.6}
+.offline-map__regions{display:flex;flex-wrap:wrap;gap:5px 11px;margin:0 0 10px;color:#3d516c;font-size:11px;font-weight:700}
+.offline-map__regions span{display:inline-flex;align-items:center;gap:4px}.offline-map__regions i{display:inline-block;width:9px;height:9px;border-radius:50%}.offline-map__regions .offline-map__base-dot{background:#c62828}
+.offline-map__plot{position:relative;width:100%;aspect-ratio:1.4;min-height:245px;border:1px solid #a9bfd8;border-radius:16px;overflow:hidden;
+  background-color:#d9e9f4;background-image:linear-gradient(rgba(77,116,155,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(77,116,155,.16) 1px,transparent 1px);
+  background-size:25% 25%;box-shadow:inset 0 0 55px rgba(255,255,255,.5)}
+.offline-map__plot::after{content:'位置は座標に基づく目安・道路情報なし';position:absolute;left:10px;bottom:9px;padding:3px 6px;border-radius:6px;background:rgba(255,255,255,.88);color:#48627d;font-size:10px;pointer-events:none}
+.offline-map__north{position:absolute;top:9px;right:10px;color:#345678;font-size:12px;font-weight:900}
+.offline-map__pin,.offline-map__base{position:absolute;z-index:1;transform:translate(-50%,-50%);width:17px;height:17px;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 7px rgba(17,42,72,.45)}
+.offline-map__pin:hover,.offline-map__pin:focus-visible,.offline-map__base:hover,.offline-map__base:focus-visible{z-index:3;outline:3px solid #1b4b85;outline-offset:2px}
+.offline-map__base{z-index:2;display:grid;place-items:center;width:28px;height:28px;background:#c62828;color:#fff;font-size:13px;font-weight:900}
+.offline-map__search{display:block;margin:16px 0 9px;color:#263c5a;font-size:12px;font-weight:800}
+.offline-map__search input{display:block;width:100%;margin-top:5px;padding:10px 12px;border:1px solid #aac0d8;border-radius:10px;background:#fff;color:#172b47;font:inherit;font-size:14px}
+.offline-map__results{display:grid;gap:6px}.offline-map__empty,.offline-map__missing{padding:20px;border:1px solid #ccd8e7;border-radius:12px;background:#fff;color:#4d6079;line-height:1.7}
+.offline-rp{display:grid;grid-template-columns:16px minmax(0,1fr) auto auto;align-items:center;gap:8px;width:100%;padding:10px 11px;border:1px solid #cbd9e9;border-radius:11px;background:#fff;color:#172b47;text-align:left}
+.offline-rp:focus-visible,.offline-rp:hover{outline:2px solid #3571b9}.offline-rp__dot{width:12px;height:12px;border-radius:50%}
+.offline-rp__name{display:grid;min-width:0;gap:2px}.offline-rp__name b,.offline-rp__name small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.offline-rp__name b{font-size:13px}.offline-rp__name small{color:#5f7087;font-size:11px}
+.offline-rp__times{display:grid;gap:1px;min-width:56px;color:#1e4f89;font-size:12px;font-weight:900;text-align:right}
+.offline-rp__times small{color:#718096;font-size:9px;font-weight:600}
+@media(max-width:420px){.offline-rp{gap:5px;padding:9px 7px}.offline-rp__times{min-width:48px;font-size:11px}}
 
 /* marker pin: Leaflet の iconAnchor を座標基準にする（ズーム時の位置ずれ防止） */
 .map-pin-icon{background:none;border:0}

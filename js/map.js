@@ -12,6 +12,9 @@ const MapMode = (() => {
   };
   const SCENES=[10,15,20,25]; let scene=20;
   let map, regions=[], ready=false, curR=null, curP=null;
+  let offlinePoints=[], fallbackBound=false;
+  /* RPの分布を固定表示する範囲。背景地図ではなく座標の模式図として扱う。 */
+  const OFFLINE_AREA={north:43.72,south:42.05,west:139.85,east:142.95};
   /* ベースマップ: 地理院タイル淡色を既定、取得不能時は OSM 標準へ自動フォールバック。
      いずれも API キー不要（CARTO は 2025 年にキー必須化し、タイルに透かしが入るため使用しない）。 */
   const BASEMAPS=[
@@ -32,7 +35,8 @@ const MapMode = (() => {
     html:'<div class="pin pin--base"><div class="base-ring">H</div><div class="pin__label">基地病院</div></div>'
   });
   function setBaseLayer(i){
-    if(i>=BASEMAPS.length) return;
+    if(!map) return;
+    if(i>=BASEMAPS.length){ renderFallback('背景地図を取得できないため、保存済みのRP情報を表示しています。'); return; }
     const b=BASEMAPS[i];
     if(baseLayer){ map.removeLayer(baseLayer); attrib.removeAttribution(BASEMAPS[baseIdx].attr); }
     baseIdx=i; tileErrors=0;
@@ -41,8 +45,72 @@ const MapMode = (() => {
     attrib.addAttribution(b.attr);
     baseLayer.bringToBack();
   }
-  const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  const esc=s=>String(s??'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  const escAttr=s=>esc(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   const regionOf=r=>REGIONS[r.subpref]||REGIONS[(r.id||'').split('-')[1]]||{label:'—',color:'#5a6b86'};
+
+  function pointPosition(lat,lng){
+    const x=(lng-OFFLINE_AREA.west)/(OFFLINE_AREA.east-OFFLINE_AREA.west)*100;
+    const y=(OFFLINE_AREA.north-lat)/(OFFLINE_AREA.north-OFFLINE_AREA.south)*100;
+    return {x:Math.max(0,Math.min(100,x)),y:Math.max(0,Math.min(100,y))};
+  }
+  function offlineRows(q=''){
+    const needle=q.trim().toLocaleLowerCase('ja');
+    const hits=offlinePoints.map((v,i)=>({v,i})).filter(({v})=>
+      !needle||`${v.r.municipality} ${v.p.rp||''} ${v.r.fireDepartment||''}`.toLocaleLowerCase('ja').includes(needle));
+    return hits.map(({v,i})=>{
+      const flight=v.p.heliFlightMin;
+      const ground=v.p.groundToBaseMin;
+      return `<button type="button" class="offline-rp" data-offline-rp="${i}">
+        <span class="offline-rp__dot" style="background:${regionOf(v.r).color}"></span>
+        <span class="offline-rp__name"><b>${esc(v.r.municipality)}</b><small>${esc(v.p.rp||v.r.municipality)}</small></span>
+        <span class="offline-rp__times">🚁 ${flight==null?'—':flight+'分'}<small>飛行のみ</small></span>
+        <span class="offline-rp__times">🚑 ${ground==null?'—':ground+'分'}<small>基地まで</small></span>
+      </button>`;
+    }).join('')||'<p class="offline-map__empty">該当するRPがありません。</p>';
+  }
+  function renderFallback(reason){
+    if(map){ map.remove(); map=null; baseLayer=null; attrib=null; }
+    const root=document.getElementById('map');
+    const legend=document.getElementById('mapLegend');
+    legend.hidden=true;
+    root.classList.add('map--offline');
+    offlinePoints=regions.flatMap(r=>(r.points||[]).filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lng)).map(p=>({r,p})));
+    const base=pointPosition(BASE.lat,BASE.lng);
+    const regionChips=Object.values(REGIONS).map(reg=>`<span><i style="background:${reg.color}"></i>${reg.label}</span>`).join('');
+    const pins=offlinePoints.map(({r,p},i)=>{
+      const pos=pointPosition(p.lat,p.lng);
+      return `<button type="button" class="offline-map__pin" data-offline-rp="${i}"
+        style="left:${pos.x.toFixed(2)}%;top:${pos.y.toFixed(2)}%;background:${regionOf(r).color}"
+        title="${escAttr(r.municipality+' / '+(p.rp||r.municipality))}"
+        aria-label="${escAttr(r.municipality+' '+(p.rp||'')+'の詳細')}"></button>`;
+    }).join('');
+    root.innerHTML=`<div class="offline-map">
+      <div class="offline-map__head"><div><strong>道央RP簡易図</strong><small>固定表示・道路や地形は表示しません</small></div><span>${offlinePoints.length} RP</span></div>
+      <p class="offline-map__note">${esc(reason)}　点または一覧を選ぶと、搬送時間や近隣病院を確認できます。</p>
+      <div class="offline-map__regions">${regionChips}<span><i class="offline-map__base-dot"></i>基地病院</span></div>
+      <div class="offline-map__plot" aria-label="道央のRP位置の模式図">
+        <span class="offline-map__north">北 ↑</span>
+        ${pins}<button type="button" class="offline-map__base" data-offline-base="1"
+          style="left:${base.x.toFixed(2)}%;top:${base.y.toFixed(2)}%" aria-label="基地病院の詳細">H</button>
+      </div>
+      <label class="offline-map__search">RP・市町村を検索<input id="offlineRpSearch" type="search" placeholder="例：石狩市、消防学校" autocomplete="off"></label>
+      <div class="offline-map__results" id="offlineRpResults">${offlineRows()}</div>
+    </div>`;
+    if(!fallbackBound){
+      root.addEventListener('click',e=>{
+        const target=e.target.closest('[data-offline-rp], [data-offline-base]');
+        if(!target||!root.contains(target)) return;
+        if(target.hasAttribute('data-offline-base')){ openBase(); return; }
+        const item=offlinePoints[Number(target.dataset.offlineRp)];
+        if(item) openDetail(item.r,item.p);
+      });
+      root.addEventListener('input',e=>{
+        if(e.target.id==='offlineRpSearch') document.getElementById('offlineRpResults').innerHTML=offlineRows(e.target.value);
+      });
+      fallbackBound=true;
+    }
+  }
 
   function refreshSize(){
     clearTimeout(resizeTimer);
@@ -50,11 +118,26 @@ const MapMode = (() => {
   }
   async function ensure(){
     if(ready){ refreshSize(); return; }
-    ready=true;
-    regions=await fetch('data/regions.json',{cache:'no-cache'}).then(r=>r.json());
-    initMap(); renderLegend();
+    try{
+      regions=await fetch('data/regions.json',{cache:'no-cache'}).then(r=>{if(!r.ok) throw new Error('regions');return r.json();});
+      ready=true;
+      if(navigator.onLine===false||typeof L==='undefined'){
+        renderFallback('通信なしでも保存済みのRP情報を参照できます。');
+        return;
+      }
+      try{ initMap(); renderLegend(); }
+      catch(e){ renderFallback('背景地図を表示できないため、保存済みのRP情報を表示しています。'); }
+    }catch(e){
+      ready=false;
+      const root=document.getElementById('map');
+      root.classList.add('map--offline');
+      root.innerHTML='<div class="offline-map__missing">RPデータが端末に保存されていません。通信可能な場所でホームの「データを保存・更新」を実行してください。</div>';
+    }
   }
   function initMap(){
+    const root=document.getElementById('map');
+    root.classList.remove('map--offline');
+    root.innerHTML='';
     map=L.map('map',{
       zoomControl:true, attributionControl:false, preferCanvas:true,
       zoomAnimation:false, fadeAnimation:false, markerZoomAnimation:false
@@ -78,6 +161,7 @@ const MapMode = (() => {
     refreshSize();
   }
   function renderLegend(){
+    document.getElementById('mapLegend').hidden=false;
     document.getElementById('mapLegend').innerHTML=
       Object.values(REGIONS).map(r=>`<span class="legend__item"><span class="legend__dot" style="background:${r.color}"></span>${r.label}</span>`).join('')
       +`<span class="legend__item"><span class="legend__dot legend__dot--base">H</span>基地病院</span>`;
