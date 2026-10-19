@@ -380,11 +380,14 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .seg__b button:disabled{opacity:.35}
 .bigbtn{width:100%;margin-top:14px;padding:14px;border-radius:14px;background:linear-gradient(120deg,#2f6df6,#1f57d6);color:#fff;font-weight:800;font-size:15px}
 /* quiz */
-.qcard{margin-top:16px;border:1px solid var(--line);border-radius:18px;padding:18px;background:linear-gradient(160deg,var(--surface2),var(--surface))}
+.qsum{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;font-weight:700;color:var(--muted);margin:2px 0 0}
+.qsum__chg{font-size:12.5px;font-weight:800;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text)}
+#quiz-root .mode-hd h2{margin:0}
+.qcard{margin-top:10px;border:1px solid var(--line);border-radius:16px;padding:14px;background:linear-gradient(160deg,var(--surface2),var(--surface))}
 .qnum{font-size:12px;color:var(--muted);font-weight:700}
-.qq{font-size:17px;font-weight:800;margin:8px 0 14px;line-height:1.5}
-.qopts{display:flex;flex-direction:column;gap:9px}
-.qopt{text-align:left;padding:13px 15px;border:1px solid var(--line);border-radius:13px;background:var(--surface);color:var(--text);font-size:14px;font-weight:600}
+.qq{font-size:16px;font-weight:800;margin:6px 0 12px;line-height:1.5}
+.qopts{display:flex;flex-direction:column;gap:8px}
+.qopt{text-align:left;padding:11px 14px;border:1px solid var(--line);border-radius:13px;background:var(--surface);color:var(--text);font-size:14px;font-weight:600}
 .qopt.ok{background:rgba(47,208,122,.18);border-color:rgba(47,208,122,.5)}
 .qopt.ng{background:rgba(230,0,18,.16);border-color:rgba(230,0,18,.5)}
 .qresult{font-size:30px;font-weight:900;text-align:center}
