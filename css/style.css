@@ -190,7 +190,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .legend__item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:600}
 .legend__dot{width:10px;height:10px;border-radius:50%}
 
-/* タイルが無いときの固定RP図。座標の相対位置だけを示し、道路地図とは誤認させない。 */
+/* タイルが無いときの固定RP地図。背景SVGとピンは同じ緯度経度範囲を使う。 */
 .map--offline{overflow-y:auto;background:#edf3fa}
 .offline-map{width:min(100%,860px);margin:0 auto;padding:18px 14px calc(36px + env(safe-area-inset-bottom))}
 .offline-map__head{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#132946}
@@ -199,10 +199,10 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .offline-map__note{margin:9px 0 12px;color:#425975;font-size:12px;line-height:1.6}
 .offline-map__regions{display:flex;flex-wrap:wrap;gap:5px 11px;margin:0 0 10px;color:#3d516c;font-size:11px;font-weight:700}
 .offline-map__regions span{display:inline-flex;align-items:center;gap:4px}.offline-map__regions i{display:inline-block;width:9px;height:9px;border-radius:50%}.offline-map__regions .offline-map__base-dot{background:#c62828}
-.offline-map__plot{position:relative;width:100%;aspect-ratio:1.4;min-height:245px;border:1px solid #a9bfd8;border-radius:16px;overflow:hidden;
-  background-color:#d9e9f4;background-image:linear-gradient(rgba(77,116,155,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(77,116,155,.16) 1px,transparent 1px);
-  background-size:25% 25%;box-shadow:inset 0 0 55px rgba(255,255,255,.5)}
-.offline-map__plot::after{content:'位置は座標に基づく目安・道路情報なし';position:absolute;left:10px;bottom:9px;padding:3px 6px;border-radius:6px;background:rgba(255,255,255,.88);color:#48627d;font-size:10px;pointer-events:none}
+.offline-map__plot{position:relative;width:100%;aspect-ratio:1.4;border:1px solid #a9bfd8;border-radius:16px;overflow:hidden;
+  background-color:#d7ebf7;background-image:url('../image/doo-offline-map.svg');background-size:100% 100%;background-repeat:no-repeat}
+.offline-map__plot::after{content:'概略図・航法に使用しない';position:absolute;left:10px;bottom:9px;padding:3px 6px;border-radius:6px;background:rgba(255,255,255,.88);color:#48627d;font-size:10px;pointer-events:none}
+.offline-map__source{margin:5px 3px 0;color:#64778d;font-size:10px;text-align:right}
 .offline-map__north{position:absolute;top:9px;right:10px;color:#345678;font-size:12px;font-weight:900}
 .offline-map__pin,.offline-map__base{position:absolute;z-index:1;transform:translate(-50%,-50%);width:17px;height:17px;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 7px rgba(17,42,72,.45)}
 .offline-map__pin:hover,.offline-map__pin:focus-visible,.offline-map__base:hover,.offline-map__base:focus-visible{z-index:3;outline:3px solid #1b4b85;outline-offset:2px}

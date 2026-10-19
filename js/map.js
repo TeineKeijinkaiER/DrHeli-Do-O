@@ -86,14 +86,15 @@ const MapMode = (() => {
         aria-label="${escAttr(r.municipality+' '+(p.rp||'')+'の詳細')}"></button>`;
     }).join('');
     root.innerHTML=`<div class="offline-map">
-      <div class="offline-map__head"><div><strong>道央RP簡易図</strong><small>固定表示・道路や地形は表示しません</small></div><span>${offlinePoints.length} RP</span></div>
+      <div class="offline-map__head"><div><strong>道央RP固定地図</strong><small>海岸線と主な地名を表示・拡大縮小なし</small></div><span>${offlinePoints.length} RP</span></div>
       <p class="offline-map__note">${esc(reason)}　点または一覧を選ぶと、搬送時間や近隣病院を確認できます。</p>
       <div class="offline-map__regions">${regionChips}<span><i class="offline-map__base-dot"></i>基地病院</span></div>
-      <div class="offline-map__plot" aria-label="道央のRP位置の模式図">
+      <div class="offline-map__plot" aria-label="道央の海岸線を背景にしたRP固定地図">
         <span class="offline-map__north">北 ↑</span>
         ${pins}<button type="button" class="offline-map__base" data-offline-base="1"
           style="left:${base.x.toFixed(2)}%;top:${base.y.toFixed(2)}%" aria-label="基地病院の詳細">H</button>
       </div>
+      <p class="offline-map__source">背景地図: Natural Earth 10m land（パブリックドメイン）</p>
       <label class="offline-map__search">RP・市町村を検索<input id="offlineRpSearch" type="search" placeholder="例：石狩市、消防学校" autocomplete="off"></label>
       <div class="offline-map__results" id="offlineRpResults">${offlineRows()}</div>
     </div>`;
