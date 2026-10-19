@@ -121,11 +121,13 @@ const MapMode = (() => {
      オフラインでも提供する。画像座標はSVGの1400x1000に合わせる。 */
   function initOfflineMap(plot){
     offlineMap=true;
+    plot.classList.add('offline-map__plot--interactive');
     plot.querySelectorAll('.offline-map__pin,.offline-map__base').forEach(el=>el.remove());
     map=L.map(plot,{crs:L.CRS.Simple,zoomControl:true,attributionControl:false,
       minZoom:-3,maxZoom:3,zoomSnap:.25,zoomDelta:.5,
       dragging:true,touchZoom:true,scrollWheelZoom:true,doubleClickZoom:true,
-      boxZoom:false,keyboard:true}).setView([500,700],-1);
+      boxZoom:false,keyboard:true,
+      zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false}).setView([500,700],-1);
     L.imageOverlay('image/doo-offline-map.svg',[[0,0],[1000,1400]],{interactive:false}).addTo(map);
     offlinePoints.forEach(({r,p},i)=>{
       const pos=pointPosition(p.lat,p.lng);
@@ -136,7 +138,11 @@ const MapMode = (() => {
     L.marker(offlineLatLng(pointPosition(BASE.lat,BASE.lng)),{icon:baseIcon(),zIndexOffset:1000})
       .addTo(map).on('click',openBase);
     map.fitBounds([[0,0],[1000,1400]],{padding:[0,0]});
-    map.setZoom(Math.min(3,map.getZoom()+1),{animate:false});
+    const initialZoom=Math.min(3,map.getZoom()+1);
+    map.setZoom(initialZoom,{animate:false});
+    /* 初期表示より縮小すると、固定SVGだけが画面中央で小さくなってしまう。
+       端末サイズから決めた初期倍率を下限にし、拡大方向だけ操作できるようにする。 */
+    map.setMinZoom(initialZoom);
     refreshSize();
   }
   function offlineLatLng(pos){ return [1000-pos.y*10,pos.x*14]; }
