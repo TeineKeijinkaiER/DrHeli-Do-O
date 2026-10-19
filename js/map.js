@@ -11,7 +11,7 @@ const MapMode = (() => {
     hidaka:{label:'日高',color:'#d63a52'}, rumoi:{label:'留萌',color:'#2f7fe0'},
   };
   const SCENES=[10,15,20,25]; let scene=20;
-  let map, regions=[], ready=false, curR=null, curP=null;
+  let map, regions=[], ready=false, curR=null, curP=null, offlineMap=false;
   let offlinePoints=[], fallbackBound=false;
   /* RPの分布を固定表示する範囲。背景地図ではなく座標の模式図として扱う。 */
   const OFFLINE_AREA={north:43.72,south:42.05,west:139.85,east:142.95};
@@ -71,6 +71,7 @@ const MapMode = (() => {
   }
   function renderFallback(reason){
     if(map){ map.remove(); map=null; baseLayer=null; attrib=null; }
+    offlineMap=false;
     const root=document.getElementById('map');
     const legend=document.getElementById('mapLegend');
     legend.hidden=true;
@@ -78,7 +79,7 @@ const MapMode = (() => {
     offlinePoints=regions.flatMap(r=>(r.points||[]).filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lng)).map(p=>({r,p})));
     const base=pointPosition(BASE.lat,BASE.lng);
     const regionChips=Object.values(REGIONS).map(reg=>`<span><i style="background:${reg.color}"></i>${reg.label}</span>`).join('');
-    const pins=offlinePoints.map(({r,p},i)=>{
+    const staticPins=offlinePoints.map(({r,p},i)=>{
       const pos=pointPosition(p.lat,p.lng);
       return `<button type="button" class="offline-map__pin" data-offline-rp="${i}"
         style="left:${pos.x.toFixed(2)}%;top:${pos.y.toFixed(2)}%;background:${regionOf(r).color}"
@@ -86,18 +87,20 @@ const MapMode = (() => {
         aria-label="${escAttr(r.municipality+' '+(p.rp||'')+'の詳細')}"></button>`;
     }).join('');
     root.innerHTML=`<div class="offline-map">
-      <div class="offline-map__head"><div><strong>道央RP固定地図</strong><small>海岸線と主な地名を表示・拡大縮小なし</small></div><span>${offlinePoints.length} RP</span></div>
+      <div class="offline-map__head"><div><strong>道央RP固定地図</strong><small>指で移動・ピンチで拡大縮小できます</small></div><span>${offlinePoints.length} RP</span></div>
       <p class="offline-map__note">${esc(reason)}　点または一覧を選ぶと、搬送時間や近隣病院を確認できます。</p>
       <div class="offline-map__regions">${regionChips}<span><i class="offline-map__base-dot"></i>基地病院</span></div>
       <div class="offline-map__plot" aria-label="道央の海岸線を背景にしたRP固定地図">
         <span class="offline-map__north">北 ↑</span>
-        ${pins}<button type="button" class="offline-map__base" data-offline-base="1"
+        ${staticPins}<button type="button" class="offline-map__base" data-offline-base="1"
           style="left:${base.x.toFixed(2)}%;top:${base.y.toFixed(2)}%" aria-label="基地病院の詳細">H</button>
       </div>
       <p class="offline-map__source">背景地図: Natural Earth 10m land（パブリックドメイン）</p>
       <label class="offline-map__search">RP・市町村を検索<input id="offlineRpSearch" type="search" placeholder="例：石狩市、消防学校" autocomplete="off"></label>
       <div class="offline-map__results" id="offlineRpResults">${offlineRows()}</div>
     </div>`;
+    const plot=root.querySelector?.('.offline-map__plot');
+    if(typeof L!=='undefined' && plot) initOfflineMap(plot);
     if(!fallbackBound){
       root.addEventListener('click',e=>{
         const target=e.target.closest('[data-offline-rp], [data-offline-base]');
@@ -112,6 +115,31 @@ const MapMode = (() => {
       fallbackBound=true;
     }
   }
+
+  /* Leafletが読み込めている場合は、保存済みSVGをCRS.Simpleの画像レイヤーとして
+     表示する。地理院/OSMの通信は一切使わず、通常地図と同じパン・ピンチズームを
+     オフラインでも提供する。画像座標はSVGの1400x1000に合わせる。 */
+  function initOfflineMap(plot){
+    offlineMap=true;
+    plot.querySelectorAll('.offline-map__pin,.offline-map__base').forEach(el=>el.remove());
+    map=L.map(plot,{crs:L.CRS.Simple,zoomControl:true,attributionControl:false,
+      minZoom:-3,maxZoom:3,zoomSnap:.25,zoomDelta:.5,
+      dragging:true,touchZoom:true,scrollWheelZoom:true,doubleClickZoom:true,
+      boxZoom:false,keyboard:true}).setView([500,700],-1);
+    L.imageOverlay('image/doo-offline-map.svg',[[0,0],[1000,1400]],{interactive:false}).addTo(map);
+    offlinePoints.forEach(({r,p},i)=>{
+      const pos=pointPosition(p.lat,p.lng);
+      const marker=L.marker(offlineLatLng(pos),{icon:pointIcon(`<div class="pin__dot" style="background:${regionOf(r).color}"></div><div class="pin__label">${esc(r.municipality)}</div>`),zIndexOffset:100+i})
+        .addTo(map).on('click',()=>openDetail(r,p));
+      marker.bindTooltip(`${esc(r.municipality)} / ${esc(p.rp||r.municipality)}`,{direction:'top',offset:[0,-10]});
+    });
+    L.marker(offlineLatLng(pointPosition(BASE.lat,BASE.lng)),{icon:baseIcon(),zIndexOffset:1000})
+      .addTo(map).on('click',openBase);
+    map.fitBounds([[0,0],[1000,1400]],{padding:[0,0]});
+    map.setZoom(Math.min(3,map.getZoom()+1),{animate:false});
+    refreshSize();
+  }
+  function offlineLatLng(pos){ return [1000-pos.y*10,pos.x*14]; }
 
   function refreshSize(){
     clearTimeout(resizeTimer);
@@ -136,6 +164,7 @@ const MapMode = (() => {
     }
   }
   function initMap(){
+    offlineMap=false;
     const root=document.getElementById('map');
     root.classList.remove('map--offline');
     root.innerHTML='';
@@ -174,7 +203,7 @@ const MapMode = (() => {
   function setScene(v){ scene=v; renderDetail(); }
   function openDetail(r,p){ curR=r; curP=p; scene=20; renderDetail();
     sheet.classList.add('is-open'); sheet.setAttribute('aria-hidden','false');
-    if(map&&p.lat!=null) map.setView([p.lat,p.lng],Math.max(map.getZoom(),10),{animate:false}); }
+    if(map&&p.lat!=null) map.setView(offlineMap?offlineLatLng(pointPosition(p.lat,p.lng)):[p.lat,p.lng],offlineMap?Math.max(map.getZoom(),0):Math.max(map.getZoom(),10),{animate:false}); }
   function openBase(){ curR=null; curP=null;
     sheetBody.innerHTML=`<div class="det__head"><div>
         <div class="det__name">${esc(BASE.name)}</div>
@@ -183,7 +212,7 @@ const MapMode = (() => {
       ${transferSec(BASE.transfers)}`;
     document.getElementById('detClose').addEventListener('click',closeSheet);
     sheet.classList.add('is-open'); sheet.setAttribute('aria-hidden','false');
-    if(map) map.setView([BASE.lat,BASE.lng],Math.max(map.getZoom(),9),{animate:false}); }
+    if(map) map.setView(offlineMap?offlineLatLng(pointPosition(BASE.lat,BASE.lng)):[BASE.lat,BASE.lng],offlineMap?Math.max(map.getZoom(),0):Math.max(map.getZoom(),9),{animate:false}); }
 
   function renderDetail(){
     const r=curR,p=curP; if(!r) return; const reg=regionOf(r);
