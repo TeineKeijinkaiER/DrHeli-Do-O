@@ -1,5 +1,5 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v71';
+const CACHE = 'doo-heli-v73';
 const TILES = 'doo-heli-tiles-v1';      /* 地図タイル専用キャッシュ(件数上限つき) */
 const TILE_LIMIT = 800;
 const KEEP = [CACHE, TILES];
@@ -36,10 +36,15 @@ async function refreshCore() {
   /* 一部が失敗しても、取得済みの旧データは消さない。認証画面も保存しない。 */
   await Promise.all(CORE.map(async url => {
     try {
-      const req = new Request(url, { cache: 'reload' });
-      const res = await fetch(req);
+      /*
+       * 更新用 Request(cache:'reload') をそのまま cache.put() に渡すと、
+       * Safari 等では Cache API が「reload モードの Request」を拒否する。
+       * 通信は no-store で強制更新し、保存時は通常の URL をキーにする。
+       */
+      const req = new Request(url, { credentials: 'same-origin' });
+      const res = await fetch(req, { cache: 'no-store', credentials: 'same-origin' });
       if (unusable(req, res)) return;
-      await cache.put(req, res.clone());
+      await cache.put(url, res.clone());
       updated++;
     } catch (_) { /* 通信不能なら既存キャッシュを保持 */ }
   }));

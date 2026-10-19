@@ -3,14 +3,10 @@ const Modes = (() => {
   const root = id => document.getElementById(id+'-root');
   const esc = s => String(s ?? '').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   const escAttr = s => esc(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-  function speak(t,rate){ try{ if(!('speechSynthesis' in window)) return; speechSynthesis.cancel();
-    const pauseBtn = document.getElementById('btnSpeakPause');
-    const resumeBtn = document.getElementById('btnSpeakResume');
-    if (pauseBtn && resumeBtn) {
-      pauseBtn.style.display = 'inline-block';
-      resumeBtn.style.display = 'none';
-    }
-    const u=new SpeechSynthesisUtterance(t); u.lang='ja-JP'; u.rate=rate||1.0; speechSynthesis.speak(u);}catch(e){} }
+  function speak(t,rate,onDone){ try{ if(!('speechSynthesis' in window)) return; speechSynthesis.cancel(); speechSynthesis.resume(); /* 一時停止中に別の読み上げを始めても止まったままにならないよう解除 */
+    const u=new SpeechSynthesisUtterance(t); u.lang='ja-JP'; u.rate=rate||1.0;
+    if(onDone){u.onend=onDone;u.onerror=onDone;}
+    speechSynthesis.speak(u);}catch(e){} }
   const INVENTORY_STATE='doo-inventory-state-v1',INVENTORY_EP='doo-inventory-endpoint',INVENTORY_SPD='doo-inventory-speed';
   const INVENTORY_MASTER_URL='doo-inventory-master-url',INVENTORY_MASTER_CACHE='doo-inventory-master-cache';
   let invList='daily';             // 表示中のチェック種別（モードを開くたびに日常へ戻す）
@@ -187,9 +183,9 @@ const Modes = (() => {
     const src=invSrc_(d,L);
     try{const c=localStorage.getItem(INVENTORY_MASTER_CACHE+src.sfx); if(c){const cb=JSON.parse(c); if(Array.isArray(cb)&&cb.length) src.obj.bags=cb;}}catch(e){}
     const bags=src.obj.bags||[];
-    const speeds=(d.speeds&&d.speeds.length)?d.speeds:[["ゆっくり",0.7],["標準",1.0],["速い",1.4]];
+    const speeds=(d.speeds&&d.speeds.length)?d.speeds:[["ゆっくり",0.7],["標準",1.0]];
     let spd=parseFloat(localStorage.getItem(INVENTORY_SPD)||'1.0');
-    if(!Number.isFinite(spd)) spd=1.0;
+    if(!speeds.some(([,r])=>r==spd)) spd=1.0; // 廃止した「速い」等が保存されていたら標準に戻す
     const st=loadInvState();st.checks=st.checks||{};st.notes=st.notes||{};st.meta=st.meta||{};st.collapsed=st.collapsed||{};
     if(typeof st.handover!=='string') st.handover='';
     /* チェック・Note・折り畳みは種別ごとに保持（日付・担当者・申し送りは共通） */
@@ -209,11 +205,6 @@ const Modes = (() => {
       <div class="lmetarow">${(d.meta||[]).map((m,i)=>{const dt=/日付|date/i.test(m);return `<label class="lmeta"><span>${esc(m)}</span><input type="${dt?'date':'text'}" data-meta="${i}" value="${escAttr(st.meta[i]||'')}"></label>`;}).join('')}</div>
       <div class="audiobar">
         <div class="scene"><span class="scene__lbl">読み上げ速度</span><div class="scene__b" id="invSpd">${speeds.map(([nm,r])=>`<button type="button" data-r="${r}" class="${r==spd?'on':''}">${esc(nm)}</button>`).join('')}</div></div>
-        <div class="audioctl">
-          <button type="button" class="actl" id="btnSpeakPause">⏸ 一時停止</button>
-          <button type="button" class="actl" id="btnSpeakResume" style="display:none">▶ 再開</button>
-          <button type="button" class="actl actl--stop" id="btnSpeakStop">⏹ 停止</button>
-        </div>
       </div>
       <div class="handover">
         <label class="handover__lbl">前日担当者からの申し送り（物品）</label>
@@ -222,9 +213,9 @@ const Modes = (() => {
       </div>
       ${!bags.length?(isDaily?'<div class="proto-note warn">物品データを読み込めませんでした。ページを再読込してください（Ctrl+F5）。</div>':`<div class="proto-note warn">${esc(L.label)}の物品はまだ登録されていません。</div>`):''}
       ${bags.map(b=>{const sections=b.sections||[];return `<div class="bag">
-        <div class="bag__h"><span>${esc(b.bag)}</span><button type="button" class="say" data-say="${escAttr(b.bag+'。'+sections.map(s=>s.s+'、'+(s.items||[]).map(sayItem_).join('。')).join('。'))}">▶ 全体読み上げ</button></div>
-        ${sections.map(s=>{const items=s.items||[];const folded=!!ls.collapsed[sk(b.bag,s.s)];return `<div class="sect ${folded?'sect--folded':''}" data-sk="${escAttr(sk(b.bag,s.s))}">
-          <div class="sect__h"><button type="button" class="sect__toggle" data-sk="${escAttr(sk(b.bag,s.s))}"><span class="sect__chev">${folded?'＋':'−'}</span>${esc(s.s)}</button><button type="button" class="sectall" data-sk="${escAttr(sk(b.bag,s.s))}">全✓</button><button type="button" class="say" data-say="${escAttr(s.s+'。'+items.map(sayItem_).join('。'))}">▶</button></div>
+        <div class="bag__h"><span>${esc(b.bag)}</span><span class="sayctl"><button type="button" class="say" data-say="${escAttr(b.bag+'。'+sections.map(s=>s.s+'、'+(s.items||[]).map(sayItem_).join('。')).join('。'))}">▶ 全体読み上げ</button><button type="button" class="saystop" hidden>⏹ 停止</button></span></div>
+        ${sections.map(s=>{const items=s.items||[];const folded=ls.collapsed[sk(b.bag,s.s)]!==false; /* 既定は折り畳み */return `<div class="sect ${folded?'sect--folded':''}" data-sk="${escAttr(sk(b.bag,s.s))}">
+          <div class="sect__h"><button type="button" class="sect__toggle" data-sk="${escAttr(sk(b.bag,s.s))}"><span class="sect__chev">${folded?'＋':'−'}</span>${esc(s.s)}</button><button type="button" class="sectall" data-sk="${escAttr(sk(b.bag,s.s))}">全✓</button><span class="sayctl"><button type="button" class="say" data-say="${escAttr(s.s+'。'+items.map(sayItem_).join('。'))}">▶</button><button type="button" class="saystop" hidden>⏹</button></span></div>
           <div class="sect__items">${items.map(it=>{const k=key(b.bag,s.s,it.n);return `<label class="chk"><input type="checkbox" data-k="${escAttr(k)}" ${ls.checks[k]?'checked':''}><span class="chk__n">${esc(it.n)}</span></label>`;}).join('')}</div></div>`;}).join('')}
         <div class="bagnote"><label>Note（不足・交換など）</label><textarea data-note="${escAttr(b.bag)}" placeholder="">${esc(ls.notes[b.bag]||'')}</textarea></div>
       </div>`;}).join('')}
@@ -240,14 +231,25 @@ const Modes = (() => {
     /* 速度 */
     R.querySelector('#invSpd').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
       spd=parseFloat(btn.dataset.r);localStorage.setItem(INVENTORY_SPD,spd);
-      R.querySelector('#invSpd').querySelectorAll('button').forEach(x=>x.classList.remove('on'));btn.classList.add('on');speak('速度'+(btn.textContent),spd);}));
-    /* 音声 一時停止 / 再開 / 停止 */
-    const bPause=R.querySelector('#btnSpeakPause'),bResume=R.querySelector('#btnSpeakResume'),bStop=R.querySelector('#btnSpeakStop');
-    bPause.addEventListener('click',()=>{try{speechSynthesis.pause();}catch(e){} bPause.style.display='none';bResume.style.display='inline-block';});
-    bResume.addEventListener('click',()=>{try{speechSynthesis.resume();}catch(e){} bResume.style.display='none';bPause.style.display='inline-block';});
-    bStop.addEventListener('click',()=>{try{speechSynthesis.cancel();}catch(e){} bResume.style.display='none';bPause.style.display='inline-block';});
-    /* セクション読み上げ・全体読み上げ */
-    R.querySelectorAll('.say').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();speak(b.dataset.say,spd);}));
+      R.querySelector('#invSpd').querySelectorAll('button').forEach(x=>x.classList.remove('on'));btn.classList.add('on');sayReset();speak('速度'+(btn.textContent),spd);}));
+    /* セクション読み上げ・全体読み上げ: 再生中のボタンは 一時停止⇄再開 に変わり、横に停止ボタンが出る */
+    let saying=null;
+    const sayReset=()=>{ if(!saying) return; const b=saying.btn; b.textContent=saying.label; b.classList.remove('say--on','say--paused'); saying.stop.hidden=true; saying=null; };
+    R.querySelectorAll('.say').forEach(b=>{
+      const label=b.textContent, big=label.length>1, stop=b.nextElementSibling;
+      const show=paused=>{ b.textContent=paused?(big?'▶ 再開':'▶'):(big?'⏸ 一時停止':'⏸'); b.classList.toggle('say--paused',paused); };
+      b.addEventListener('click',e=>{e.preventDefault();
+        if(saying&&saying.btn===b){
+          try{ if(speechSynthesis.paused){speechSynthesis.resume();show(false);} else {speechSynthesis.pause();show(true);} }catch(err){}
+          return;
+        }
+        sayReset();
+        const me={btn:b,stop,label}; saying=me;
+        b.classList.add('say--on'); show(false); stop.hidden=false;
+        speak(b.dataset.say,spd,()=>{ if(saying===me) sayReset(); });
+      });
+      stop.addEventListener('click',e=>{e.preventDefault(); try{speechSynthesis.cancel();}catch(err){} sayReset();});
+    });
     /* セクション折り畳み */
     R.querySelectorAll('.sect__toggle').forEach(btn=>btn.addEventListener('click',()=>{
       const id=btn.dataset.sk;const sect=R.querySelector('.sect[data-sk="'+CSS.escape(id)+'"]');
