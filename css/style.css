@@ -546,9 +546,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .exempty{color:var(--dim);font-size:13px;text-align:center;padding:28px 0}
 
 /* --- 統計・リフレクション共通の折りたたみフィルタ --- */
-.statbar{display:flex;align-items:flex-start;gap:10px;margin:10px 0 12px}
-.statnote{flex:1;margin:0;font-size:11.5px;line-height:1.7;color:var(--muted)}
-.statnote b{color:var(--warn)}
+.statbar{display:flex;justify-content:flex-end;align-items:flex-start;gap:10px;margin:10px 0 12px}
 .statbar>button{flex:0 0 auto;padding:6px 12px;font-size:11.5px;font-weight:800;
   border:1px solid var(--line);border-radius:999px;background:var(--surface);
   color:var(--muted);font-family:inherit;cursor:pointer}
