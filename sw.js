@@ -1,5 +1,5 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v73';
+const CACHE = 'doo-heli-v74';
 const TILES = 'doo-heli-tiles-v1';      /* 地図タイル専用キャッシュ(件数上限つき) */
 const TILE_LIMIT = 800;
 const KEEP = [CACHE, TILES];
@@ -42,7 +42,7 @@ async function refreshCore() {
        * 通信は no-store で強制更新し、保存時は通常の URL をキーにする。
        */
       const req = new Request(url, { credentials: 'same-origin' });
-      const res = await fetch(req, { cache: 'no-store', credentials: 'same-origin' });
+      const res = sameOriginRedirect(req, await fetch(req, { cache: 'no-store', credentials: 'same-origin' }));
       if (unusable(req, res)) return;
       await cache.put(url, res.clone());
       updated++;
@@ -86,6 +86,15 @@ function unusable(req, res) {
   if (/\.js$/i.test(path) && !/(javascript|ecmascript)/i.test(ct)) return true;
   if (/\.css$/i.test(path) && !/css/i.test(ct)) return true;
   return false;
+}
+/* Cloudflare Pages は index.html → /、about.html → /about へ 308 で寄せる。
+   同一オリジン内の寄せ替えは中身が同じなので保存してよい。redirected のまま
+   キャッシュすると画面遷移で使えないため、応答を作り直して印を外す。
+   別オリジンへの転送(キャプティブポータル等)は従来どおり unusable() で弾く。 */
+function sameOriginRedirect(req, res) {
+  if (!res || !res.redirected) return res;
+  if (new URL(res.url).origin !== new URL(req.url).origin) return res;
+  return new Response(res.body, { status: res.status, statusText: res.statusText, headers: res.headers });
 }
 async function putIfUsable(req, res) {
   if (unusable(req, res)) return false;
