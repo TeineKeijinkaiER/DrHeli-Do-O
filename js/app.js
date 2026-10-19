@@ -157,10 +157,7 @@ const App = (() => {
     const status=document.createElement('span');
     status.className='home__sync-status';
     status.setAttribute('role','status');
-    const hint=document.createElement('small');
-    hint.className='home__sync-hint';
-    hint.textContent='出動前に更新。地図タイルは見た範囲のみ保存。飛行中は機内モード＋Wi-Fi/Bluetoothオフ。';
-    foot.before(button,status,hint);
+    foot.before(button,status);
     try{
       const last=localStorage.getItem('doo-last-data-sync');
       if(last) status.textContent='最終保存：'+new Date(last).toLocaleString('ja-JP');

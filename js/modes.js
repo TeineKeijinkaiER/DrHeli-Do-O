@@ -230,7 +230,7 @@ const Modes = (() => {
         <textarea id="invHandover" placeholder="">${esc(st.handover)}</textarea>
         <button type="button" class="dangerbtn" id="invClear">${isDaily?'前日のチェックを全削除':esc(L.label)+'を全削除'}</button>
       </div>
-      ${!bags.length?(isDaily?'<div class="proto-note warn">物品データを読み込めませんでした。ページを再読込してください（Ctrl+F5）。</div>':`<div class="proto-note warn">${esc(L.label)}の物品はまだ登録されていません。</div>`):''}
+      ${!bags.length?(isDaily?'<div class="proto-note warn">物品データを読み込めませんでした。ページを再読み込みしてください。</div>':`<div class="proto-note warn">${esc(L.label)}の物品はまだ登録されていません。</div>`):''}
       ${bags.map(b=>{const sections=b.sections||[];return `<div class="bag">
         <div class="bag__h"><span>${esc(b.bag)}</span><span class="sayctl"><button type="button" class="say" data-say="${escAttr(b.bag+'。'+sections.map(s=>s.s+'、'+(s.items||[]).map(sayItem_).join('。')).join('。'))}">▶ 全体読み上げ</button><button type="button" class="saystop" hidden>⏹ 停止</button></span></div>
         ${sections.map(s=>{const items=s.items||[];const folded=ls.collapsed[sk(b.bag,s.s)]!==false; /* 既定は折り畳み */return `<div class="sect ${folded?'sect--folded':''}" data-sk="${escAttr(sk(b.bag,s.s))}">
@@ -338,7 +338,7 @@ const Modes = (() => {
       if (v === null) return;
       const u = v.trim();
       if (u && !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(u)) {
-        msg('そのURLは受け口ではありません。Apps Scriptを「ウェブアプリ」公開して得た script.google.com/macros/s/…/exec を入れてください（スプレッドシートのURLは不可）', 'warn'); return;
+        msg('送信先URLとして使用できません。Apps ScriptのウェブアプリURL（…/exec）を入力してください。スプレッドシートのURLは使用できません。', 'warn'); return;
       }
       localStorage.setItem(INVENTORY_EP, u); msg('送信先URLを保存しました');
     });

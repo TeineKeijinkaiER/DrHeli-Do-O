@@ -247,7 +247,7 @@ const MapMode = (() => {
                   ? `採用＝<b>回帰推定 ${p.heliFlightReg}分</b>｜実績中央値（参考）${p.heliFlightObsMed}分（n=${p.heliFlightN}・少数/外れ）`
                   : `採用＝<b>回帰推定 ${p.heliFlightReg}分</b>（実績なし）`)}</div>`:''}</div>
         <div class="tx__card tx__card--ground"><div class="tx__lbl">🚑 救急車（手稲渓仁会）</div><div class="tx__val">${ground??'—'}<small>分</small></div>
-          ${ground==null?'<div class="tx__bd">admin入力待ち</div>':''}</div>
+          ${ground==null?'<div class="tx__bd">搬送時間未登録</div>':''}</div>
       </div>
       ${save!=null?`<div class="tx__save">ヘリで概ね <b>${save}分</b> の差（現場滞在${scene}分込み）</div>`:''}`;
 
