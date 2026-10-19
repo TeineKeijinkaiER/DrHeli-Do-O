@@ -64,7 +64,10 @@
 <script src="js/modes.js"></script>
 <script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
+  /* 制御済みページの再訪ごとに明示的な更新確認をしない。初回だけ登録する。 */
+  window.addEventListener('load', () => {
+    if (!navigator.serviceWorker.controller) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
 }
 </script>
 </body>

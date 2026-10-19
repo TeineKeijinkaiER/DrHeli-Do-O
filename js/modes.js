@@ -13,10 +13,8 @@ const Modes = (() => {
     const u=new SpeechSynthesisUtterance(t); u.lang='ja-JP'; u.rate=rate||1.0; speechSynthesis.speak(u);}catch(e){} }
   const INVENTORY_STATE='doo-inventory-state-v1',INVENTORY_EP='doo-inventory-endpoint',INVENTORY_SPD='doo-inventory-speed';
   const INVENTORY_MASTER_URL='doo-inventory-master-url',INVENTORY_MASTER_CACHE='doo-inventory-master-cache';
-  const invMasterDone=new Set(); // 取得済みのチェック種別id
   let invList='daily';             // 表示中のチェック種別（モードを開くたびに日常へ戻す）
   const banner = txt => `<div class="proto-note">${txt}</div>`;
-  const wifiOnly = () => navigator.onLine !== false && !!navigator.connection && navigator.connection.type === 'wifi';
 
   /* 各モードの編集対象データファイル */
   const FILES = { beginner:'beginner', inventory:'inventory', quiz:'quiz' };
@@ -139,10 +137,9 @@ const Modes = (() => {
   }
   function masterUrl_(src){ const u=localStorage.getItem(INVENTORY_MASTER_URL+src.sfx); return (u!==null&&u!=='')?u:src.def; }
   async function refreshMaster_(src){
-    const url=masterUrl_(src); if(!url) return false;
-    if(!wifiOnly()) return false;
+    const url=masterUrl_(src); if(!url) return null;
     try{
-      const t=await fetch(url,{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.text();});
+      const t=await fetch(url,{cache:'reload'}).then(r=>{if(!r.ok)throw 0;return r.text();});
       const bags=csvToBags_(t);
       if(bags&&bags.length){
         const changed=JSON.stringify(src.obj.bags||[])!==JSON.stringify(bags);
@@ -150,7 +147,7 @@ const Modes = (() => {
         return changed;
       }
     }catch(e){}
-    return false;
+    return null;
   }
   function loadInvState(){
     try{
@@ -211,7 +208,7 @@ const Modes = (() => {
         <div class="bagnote"><label>Note（不足・交換など）</label><textarea data-note="${escAttr(b.bag)}" placeholder="">${esc(ls.notes[b.bag]||'')}</textarea></div>
       </div>`;}).join('')}
       <div class="logibtns"><button type="button" class="bigbtn" id="invSend">スプレッドシートに送信</button>
-        <button type="button" class="logisub" id="invCsv">CSVダウンロード</button><button type="button" class="logisub" id="invCfg">⚙ 送信先設定</button><button type="button" class="logisub" id="invMaster">📋 物品マスターURL</button></div>
+        <button type="button" class="logisub" id="invCsv">CSVダウンロード</button><button type="button" class="logisub" id="invCfg">⚙ 送信先設定</button><button type="button" class="logisub" id="invMaster">📋 物品マスターURL</button><button type="button" class="logisub" id="invRefreshMaster">物品マスターを更新</button></div>
       <div id="invMsg" class="logimsg"></div>`;
     const msg=(t,c)=>{const m=R.querySelector('#invMsg');m.textContent=t;m.className='logimsg'+(c?' '+c:'');};
     /* チェック種別の切替 */
@@ -307,7 +304,7 @@ const Modes = (() => {
       const ep = endpoint();
       if (!ep) { msg('先に「⚙ 送信先設定」でURLを設定してください（CSVダウンロードも可）', 'warn'); return; }
       if (/docs\.google\.com\/spreadsheets/.test(ep)) { msg('送信先がスプレッドシートのURLになっています。Apps Scriptの …/exec URL に設定し直してください', 'warn'); return; }
-      if (!wifiOnly()) { msg('送信はWi‑Fi接続時だけ行えます。機内ではCSV保存をご利用ください', 'warn'); return; }
+      if (!confirm('飛行中ではなく、通信を行ってよい状態ですか？')) return;
       msg('送信中...');
       sendFetch(ep, payload())
         .then(() => msg('スプレッドシートに送信しました。シートをご確認ください'))
@@ -319,15 +316,18 @@ const Modes = (() => {
       const v = prompt(L.label + 'の物品マスターCSV公開URL\n（Googleスプレッドシート→ファイル→共有→ウェブに公開→CSV、または .../gviz/tq?tqx=out:csv&sheet=シート名）\n空欄で解除（同梱データに戻す）', cur);
       if (v === null) return;
       localStorage.setItem(INVENTORY_MASTER_URL + src.sfx, v.trim());
-      invMasterDone.delete(L.id);
-      msg(v.trim() ? '物品マスターURLを保存しました。最新を取得します…' : '物品マスターURLを解除しました（次回は同梱データ）');
+      msg(v.trim() ? '物品マスターURLを保存しました。必要なときに「物品マスターを更新」を押してください' : '物品マスターURLを解除しました（次回は同梱データ）');
       rInventory();
     });
-    /* オンライン時にマスターを取得して最新化（変われば再描画） */
-    if (!invMasterDone.has(L.id) && masterUrl_(src)) {
-      invMasterDone.add(L.id);
-      refreshMaster_(src).then(changed => { if (changed && invList === L.id) rInventory(); });
-    }
+    R.querySelector('#invRefreshMaster').addEventListener('click', async () => {
+      if (!masterUrl_(src)) { msg('先に物品マスターURLを設定してください', 'warn'); return; }
+      if (!confirm('飛行中ではなく、通信を行ってよい状態ですか？')) return;
+      msg('物品マスターを更新中…');
+      const changed = await refreshMaster_(src);
+      if (changed === null) { msg('取得に失敗しました。保存済みのデータを使います', 'warn'); return; }
+      if (changed && invList === L.id) rInventory();
+      msg('物品マスターを更新しました');
+    });
   }
 
   /* ---------- ベーシック（内部IDは利用履歴互換のため beginner を維持） ---------- */

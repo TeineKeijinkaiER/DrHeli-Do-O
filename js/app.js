@@ -147,19 +147,26 @@ const App = (() => {
     links.appendChild(a);
   }
 
-  function renderWifiSync(){
+  function renderDataSync(){
     const foot=document.querySelector('.home__foot');
     if(!foot || !('serviceWorker' in navigator)) return;
     const button=document.createElement('button');
     button.type='button';
     button.className='home__sync';
-    button.textContent='Wi-Fiでデータを更新';
+    button.textContent='データを保存・更新';
     const status=document.createElement('span');
     status.className='home__sync-status';
     status.setAttribute('role','status');
-    foot.before(button,status);
+    const hint=document.createElement('small');
+    hint.className='home__sync-hint';
+    hint.textContent='出動前に更新。地図タイルは見た範囲のみ保存。飛行中は機内モード＋Wi-Fi/Bluetoothオフ。';
+    foot.before(button,status,hint);
+    try{
+      const last=localStorage.getItem('doo-last-data-sync');
+      if(last) status.textContent='最終保存：'+new Date(last).toLocaleString('ja-JP');
+    }catch(e){}
     button.addEventListener('click',async()=>{
-      if(!window.confirm('機内ではなく、Wi-Fiに接続していることを確認しましたか？')) return;
+      if(!window.confirm('飛行中ではなく、通信を行ってよい状態ですか？')) return;
       button.disabled=true;
       status.textContent='更新中…';
       try{
@@ -168,14 +175,18 @@ const App = (() => {
         const result=await new Promise((resolve,reject)=>{
           const timer=setTimeout(()=>reject(new Error('timeout')),60000);
           channel.port1.onmessage=e=>{ clearTimeout(timer); resolve(e.data); };
+          /* v66 の旧SWにも更新指示が届くよう、メッセージ名だけ互換維持する。 */
           reg.active.postMessage({type:'SYNC_ON_CONFIRMED_WIFI'},[channel.port2]);
         });
         if(!result.ok) throw new Error('incomplete');
-        if(typeof Usage!=='undefined') await Usage.flush(true);
+        if(typeof Usage!=='undefined' && !(await Usage.flush())) {
+          window.alert('データは更新しましたが、使用履歴は送信できませんでした。履歴は端末に残しています。');
+        }
+        try{localStorage.setItem('doo-last-data-sync',new Date().toISOString());}catch(e){}
         status.textContent='更新しました。ページを再読み込みします。';
         window.location.reload();
       }catch(e){
-        status.textContent='更新できませんでした。Wi-Fi接続とログイン状態を確認してください。';
+        status.textContent='更新できませんでした。接続とログイン状態を確認してください。';
         button.disabled=false;
       }
     });
@@ -190,7 +201,7 @@ const App = (() => {
   }
 
   function init(){
-    renderModes(); loadOpStatus(); renderAboutLink(); renderUsageLink(); renderFoot(); renderWifiSync();
+    renderModes(); loadOpStatus(); renderAboutLink(); renderUsageLink(); renderFoot(); renderDataSync();
     if(typeof Usage!=='undefined') Usage.session();
   }
   document.addEventListener('DOMContentLoaded',init);
