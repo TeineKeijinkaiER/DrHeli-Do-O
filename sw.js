@@ -1,5 +1,5 @@
 /* 道央ドクターヘリ PWA Service Worker */
-const CACHE = 'doo-heli-v76';
+const CACHE = 'doo-heli-v77';
 const TILES = 'doo-heli-tiles-v1';      /* 地図タイル専用キャッシュ(件数上限つき) */
 const TILE_LIMIT = 800;
 const KEEP = [CACHE, TILES];
@@ -12,7 +12,7 @@ const CORE = [
   './vendor/leaflet/leaflet.js','./vendor/leaflet/leaflet.css',
   './data/regions.json','./data/operating-hours.json',
   './data/quiz.json','./data/inventory.json','./data/beginner.json','./data/drugs.json',
-  './image/Heli.png','./image/Heriteinu.png','./image/public-icon-192.png','./image/public-icon-512.png','./image/public-icon-180.png','./image/doo-offline-map.svg'
+  './image/Heli.png','./image/Heriteinu.png','./image/public-icon-192.png','./image/public-icon-512.png','./image/public-icon-180.png','./image/public-icon-maskable-512.png','./image/doo-offline-map.svg'
 ];
 /* 通常利用中はキャッシュを優先し、背景更新しない。
    キャッシュが無い場合のみネットワークに取りに行く。飛行中の無線停止は端末の機内モードで行う。 */
